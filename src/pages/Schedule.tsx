@@ -408,9 +408,10 @@ export default function Schedule() {
               const home = lookupTeam(e.strHomeTeam);
               const away = lookupTeam(e.strAwayTeam);
               return (
-                <div
+                <Link
                   key={e.idEvent}
-                  className={`rounded-xl border p-4 transition ${
+                  to={`/match/${e.idEvent}`}
+                  className={`block rounded-xl border p-4 transition hover:border-sky-500/20 ${
                     isLive(e)
                       ? 'border-red-500/30 bg-red-500/5'
                       : 'border-white/5 bg-white/5'
@@ -425,16 +426,7 @@ export default function Schedule() {
                     const goalPill = (key: string | number, scorerName: string, teamCode: string, minute: number | null, isPenalty: boolean, isOwnGoal: boolean) => {
                       const player = lookupGoalScorer(scorerName, teamCode);
                       const displayName = player?.cnName || player?.exactName || scorerName || '未知';
-                      const nameEl = player ? (
-                        <Link
-                          to={`/players/${player.teamCode}/${encodeURIComponent(player.exactName)}`}
-                          className="hover:text-green-300 hover:underline"
-                        >
-                          {displayName}
-                        </Link>
-                      ) : (
-                        displayName
-                      );
+                      const nameEl = displayName;
                       return (
                         <span
                           key={key}
@@ -518,23 +510,17 @@ export default function Schedule() {
                       <>
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex flex-1 items-start gap-3">
-                          <Link
-                            to={hCode ? `/teams/${hCode}` : '#'}
-                            className="shrink-0 hover:opacity-75 transition"
-                          >
+                          <span className="shrink-0">
                             <img
                               src={home ? home.flagUrl : e.strHomeTeamBadge}
                               alt=""
                               className="mt-0.5 h-10 w-10 object-contain"
                             />
-                          </Link>
+                          </span>
                           <div className="min-w-0 flex-1">
-                            <Link
-                              to={hCode ? `/teams/${hCode}` : '#'}
-                              className="block truncate font-semibold hover:text-sky-400 transition"
-                            >
+                            <span className="block truncate font-semibold">
                               {home?.cnName ?? e.strHomeTeam}
-                            </Link>
+                            </span>
                             <p className="text-xs text-slate-500">主场</p>
                             {hg.length > 0 && (
                               <div className="mt-1.5 flex flex-wrap gap-1">
@@ -568,12 +554,7 @@ export default function Schedule() {
                                 <div className="flex flex-col items-center text-sm font-medium text-slate-400">
                                   <span>{formatBeijingTime(e.dateEvent, e.strTime).split(' ').pop()}</span>
                                   <span className={`text-xs ${period.color}`}>{period.label}</span>
-                    <Link
-                      to={`/match/${e.idEvent}`}
-                      className="mt-2 block text-center text-xs text-sky-400 hover:text-sky-300"
-                    >
-                      查看详情 →
-                    </Link>
+
                   </div>
                               );
                             })()
@@ -590,12 +571,9 @@ export default function Schedule() {
 
                         <div className="flex flex-1 items-start gap-3 justify-end">
                           <div className="min-w-0 flex-1 text-right">
-                            <Link
-                              to={aCode ? `/teams/${aCode}` : '#'}
-                              className="block truncate font-semibold hover:text-sky-400 transition"
-                            >
+                            <span className="block truncate font-semibold">
                               {away?.cnName ?? e.strAwayTeam}
-                            </Link>
+                            </span>
                             <p className="text-xs text-slate-500">客场</p>
                             {ag.length > 0 && (
                               <div className="mt-1.5 flex flex-wrap justify-end gap-1">
@@ -603,16 +581,13 @@ export default function Schedule() {
                               </div>
                             )}
                           </div>
-                          <Link
-                            to={aCode ? `/teams/${aCode}` : '#'}
-                            className="shrink-0 hover:opacity-75 transition"
-                          >
+                          <span className="shrink-0">
                             <img
                               src={away ? away.flagUrl : e.strAwayTeamBadge}
                               alt=""
                               className="mt-0.5 h-10 w-10 object-contain"
                             />
-                          </Link>
+                          </span>
                         </div>
                       </div>
                       {showHalf && (
@@ -628,20 +603,7 @@ export default function Schedule() {
                   })()}
 
                   <div className="mt-2 flex items-center justify-between text-xs text-slate-500">
-                    {(() => {
-                      const vid = venueIdFromName(e.strVenue);
-                      const label = venueLabel(e.strVenue);
-                      return vid ? (
-                        <Link
-                          to={`/venues/${vid}`}
-                          className="transition hover:text-sky-400 hover:underline"
-                        >
-                          {label}
-                        </Link>
-                      ) : (
-                        <span>{label}</span>
-                      );
-                    })()}
+                    <span>{venueLabel(e.strVenue)}</span>
                     {(e.strGroup || roundMap[e.idEvent]) && (
                       <span>
                         {e.strGroup && `第 ${e.strGroup} 组`}
@@ -650,7 +612,7 @@ export default function Schedule() {
                       </span>
                     )}
                   </div>
-                </div>
+                </Link>
               );
             })}
           </div>

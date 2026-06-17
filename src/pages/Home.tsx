@@ -285,7 +285,7 @@ function MatchCard({ match }: { match: FlatMatch }) {
   const isLive = match.strStatus !== 'FT' && match.strStatus !== 'NS' && match.strStatus !== null;
 
   return (
-    <div className="rounded-xl border border-white/5 bg-white/5 p-4">
+    <Link to={`/match/${match.idEvent}`} className="block rounded-xl border border-white/5 bg-white/5 p-4 transition hover:border-sky-500/20">
       <div className="mb-2 flex items-center justify-between">
         <span className="text-xs text-slate-400">{formatBeijingTime(match.dateEvent, match.strTime)}</span>
         {isFinished && (
@@ -302,16 +302,13 @@ function MatchCard({ match }: { match: FlatMatch }) {
       <div className="flex items-center gap-2">
         <div className="flex flex-1 min-w-0 items-center gap-2">
           {home && (
-            <Link to={`/teams/${home.shortName}`} className="shrink-0 hover:opacity-75 transition">
+            <span className="shrink-0">
               <img src={home.flagUrl} alt="" className="h-8 w-8 object-contain" />
-            </Link>
+            </span>
           )}
-          <Link
-            to={home ? `/teams/${home.shortName}` : '#'}
-            className="min-w-0 truncate text-sm font-medium hover:text-sky-400 transition"
-          >
+          <span className="min-w-0 truncate text-sm font-medium">
             {home?.cnName ?? match.strHomeTeam}
-          </Link>
+          </span>
         </div>
         <div className="flex shrink-0 items-center gap-2 text-lg font-bold">
           <span>{match.intHomeScore ?? '-'}</span>
@@ -319,33 +316,17 @@ function MatchCard({ match }: { match: FlatMatch }) {
           <span>{match.intAwayScore ?? '-'}</span>
         </div>
         <div className="flex flex-1 min-w-0 items-center gap-2 justify-end">
-          <Link
-            to={away ? `/teams/${away.shortName}` : '#'}
-            className="min-w-0 truncate text-sm font-medium hover:text-sky-400 transition"
-          >
+          <span className="min-w-0 truncate text-sm font-medium">
             {away?.cnName ?? match.strAwayTeam}
-          </Link>
+          </span>
           {away && (
-            <Link to={`/teams/${away.shortName}`} className="shrink-0 hover:opacity-75 transition">
+            <span className="shrink-0">
               <img src={away.flagUrl} alt="" className="h-8 w-8 object-contain" />
-            </Link>
+            </span>
           )}
         </div>
       </div>
-      {(() => {
-        const vid = venueIdFromName(match.strVenue);
-        const label = venueLabel(match.strVenue);
-        return vid ? (
-          <Link
-            to={`/venues/${vid}`}
-            className="mt-2 block text-xs text-slate-500 transition hover:text-sky-400 hover:underline"
-          >
-            {label}
-          </Link>
-        ) : (
-          <p className="mt-2 text-xs text-slate-500">{label}</p>
-        );
-      })()}
-    </div>
+      <p className="mt-2 text-xs text-slate-500">{venueLabel(match.strVenue)}</p>
+    </Link>
   );
 }

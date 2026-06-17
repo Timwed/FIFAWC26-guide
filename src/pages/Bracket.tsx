@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { buildAllMatches, type BracketMatch, R32_VISUAL, R16_VISUAL, QF_VISUAL, SF_VISUAL } from '../data/bracket';
 import { formatBeijingTime } from '../utils/datetime';
+import { computeGroupStandings } from '../utils/standings';
 import teamsData from '../data/teams.json';
 
 interface TeamEntry {
@@ -35,6 +36,17 @@ export default function Bracket() {
     return m;
   }, [matches]);
 
+  const groupTeams = useMemo(() => {
+    const s = computeGroupStandings();
+    const map = new Map<string, string>(); // "1A" → Argentina, "2B" → Switzerland, etc.
+    for (const g of s) {
+      const grp = g.group;
+      if (g.teams.length >= 1) map.set(`1${grp}`, g.teams[0].enName);
+      if (g.teams.length >= 2) map.set(`2${grp}`, g.teams[1].enName);
+    }
+    return map;
+  }, []);
+
   const resolveTeam = (match: BracketMatch, side: 'home' | 'away'): BracketMatch['homeTeam'] => {
     const slot = side === 'home' ? match.homeSlot : match.awaySlot;
     if (slot.startsWith('r32-') || slot.startsWith('r16-') || slot.startsWith('qf-') || slot.startsWith('sf-')) {
@@ -42,6 +54,8 @@ export default function Bracket() {
       if (prev?.winner) return prev.winner === 'home' ? prev.homeTeam : prev.awayTeam;
       return null;
     }
+    const m = slot.match(/^([12])([A-L])$/);
+    if (m) return groupTeams.get(slot) || null;
     return null;
   };
 

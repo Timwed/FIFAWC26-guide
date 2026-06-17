@@ -12,8 +12,8 @@
 | `src/data/wiki-teams.json` | 球队百科介绍 | 以英文队名(如 Argentina)为 key，含 `extract`(英文) |
 | `src/data/teams.json` | 球队中文介绍 | 以数字索引为 key，含 `cnExtract`(中文)、group 等 |
 | `src/data/players-wiki.json` | **球员个人介绍(叙事)** | 以球员英文名(如 Lionel Messi)为 key，含 `careerReview` + `wcSpotlight` |
-| `src/data/wiki-players.json` | 球员百科原始数据 | 仅部分球员有，raw wiki extract |
-| `TEAM_INTROS.md` | 球队中文介绍(人工撰写) | 每队一段，用于页面展示，已全部完成 48 队 |
+| `public/data/players-wiki/*.json` | 球员介绍分队文件 | 网站实际读取的 48 个分队文件，由 `split-to-public.cjs` 生成 |
+| `src/data/player-names.json` | 球员中文名映射 | 英文名 → 中文名 |
 
 **核心编辑目标**：`players-wiki.json` 中所有 48 队 × 26 人 = 1248 人的 `careerReview` + `wcSpotlight`。
 
@@ -302,6 +302,36 @@ if (failures.length > 0) {
 6. **JS 字符串中的中文引号**：中文字符 `""` 在 JS 代码中会被解析为字符串定界符导致语法错误。中文文本内需要强调时用 `「」`，**绝对不要**在 JS 字符串中使用 `"`
 7. **字数超标比字数不足更隐蔽**：AI 天然倾向写长。写每个球员时心里必须有目标总字数，写完立即数。B 档球员写到 600 字和 C 档写到 200 字一样是失败。
 8. **扩句 ≠ 补充信息**：一个原本 200 字的信息量，乘以 2 倍形容词变成 400 字，和原来 200 字没有区别——用户读到的是同样的内容。字数增长必须对应信息密度增长。
+
+---
+
+## 部署流水线
+
+Vercel 已连接 GitHub 仓库 `Timwed/FIFAWC26-guide`，推送即自动部署。
+
+| 步骤 | 命令 | 说明 |
+|------|------|------|
+| 构建验证 | `npx vite build` | 本地检查 |
+| 提交推送 | `git add -A && git commit -m "..." && git push origin master` | 推送触发 Vercel 自动部署 |
+| 状态查看 | `npx vercel list fifawc26-guide` | 检查部署进度 |
+
+**生产域名**：`fifawc26-guide.vercel.app`
+
+**关键规则**：
+- 修改 `src/data/players-wiki.json` 后**必须运行** `node scripts/split-to-public.cjs` 同步到 `public/data/players-wiki/*.json`，否则网站显示旧数据
+- `public/data/players-wiki/*.json` 已纳入 git，无需 .gitignore
+- 构建前确保 `split-to-public.cjs` 已执行
+
+---
+
+## 项目清理记录
+
+- **Phase 1 全量扫描**：0 句号填充 · 0 截断句 · 425 人缺 2025-26 · 226 人 <180 字符 · 23 灌水 · 2 贬低
+- **Phase 2 硬伤修复**：1 derogatory（Ghana/Partey）+ 23 fluff 已修复
+- **Phase 3 批补 2025-26**：`scripts/phase3_batch26.cjs` 为 780 人追加赛季数据
+- **51 对重复条目清理**：6 对 Senegal 用去重音版覆盖重音版，45 对删去重音版，1 孤儿条目删除
+- **已删除文件**：`wiki-players.json`、`wikipedia.ts`、`TEAM_INTROS.md`
+- **最终质量**：贬低 0 · 灌水 0 · 句号填充 0 · 截断 0 · 2025-26 缺失 0
 
 ---
 

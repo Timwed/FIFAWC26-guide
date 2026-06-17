@@ -558,7 +558,13 @@ export default function Schedule() {
                                 <div className="flex flex-col items-center text-sm font-medium text-slate-400">
                                   <span>{formatBeijingTime(e.dateEvent, e.strTime).split(' ').pop()}</span>
                                   <span className={`text-xs ${period.color}`}>{period.label}</span>
-                                </div>
+                    <Link
+                      to={`/match/${e.idEvent}`}
+                      className="mt-2 block text-center text-xs text-sky-400 hover:text-sky-300"
+                    >
+                      查看详情 →
+                    </Link>
+                  </div>
                               );
                             })()
                           )}

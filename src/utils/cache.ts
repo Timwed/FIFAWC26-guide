@@ -84,6 +84,7 @@ const FINISHED_TTL = 7 * 24 * 3600_000; // finished matches: 7 days
 const UPCOMING_TTL = 6 * 3600_000;       // distant future: 6 hours
 const SOON_TTL = 5 * 60_000;             // match starting soon: 5 min
 const PERMANENT = Number.MAX_SAFE_INTEGER;
+const EVENT_TTL = 60 * 60_000; // events: 1 hour to avoid stale cache
 
 interface CachedEvent {
   intHomeScore: string | null;
@@ -121,6 +122,6 @@ export const cache = {
   },
   setMatchDetail: (matchId: number, data: unknown) => set(`match_${matchId}`, data),
 
-  getEvent: (eventId: string) => get<CachedEvent>(`evt_${eventId}`, PERMANENT),
+  getEvent: (eventId: string) => get<CachedEvent>(`evt_${eventId}`, EVENT_TTL),
   setEvent: (eventId: string, data: CachedEvent) => set(`evt_${eventId}`, data),
 };

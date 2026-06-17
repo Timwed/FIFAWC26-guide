@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import scheduleData from '../data/venue-schedule.json';
 import teamsData from '../data/teams.json';
@@ -85,22 +85,41 @@ export default function MatchDetail() {
     [match]
   );
 
-  useEffect(() => {
-    let cancelled = false;
-    fetchSeasonEvents()
-      .then((events) => {
-        if (cancelled) return;
-        const m = new Map<string, { hs: string; as: string; st: string }>();
-        for (const e of events) {
-          if (e.intHomeScore != null) {
-            m.set(e.idEvent, { hs: e.intHomeScore, as: e.intAwayScore || '0', st: e.strStatus || '' });
-          }
+  const pollingRef = useRef(false);
+
+  const pollScores = useCallback(async () => {
+    if (pollingRef.current) return;
+    pollingRef.current = true;
+    try {
+      const events = await fetchSeasonEvents();
+      const m = new Map<string, { hs: string; as: string; st: string }>();
+      for (const e of events) {
+        if (e.intHomeScore != null) {
+          m.set(e.idEvent, { hs: e.intHomeScore, as: e.intAwayScore || '0', st: e.strStatus || '' });
         }
-        setLiveScores(m);
-      })
-      .catch(() => {});
-    return () => { cancelled = true; };
+      }
+      setLiveScores(m);
+    } catch {} finally {
+      pollingRef.current = false;
+    }
   }, []);
+
+  useEffect(() => {
+    pollScores();
+  }, [pollScores]);
+
+  const hasLiveRef = useRef(false);
+  useEffect(() => {
+    const live = liveScores.get(match?.idEvent ?? '');
+    hasLiveRef.current = !!(live && live.st && live.st !== 'FT' && live.st !== 'NS');
+  }, [liveScores, match]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (hasLiveRef.current) pollScores();
+    }, 30_000);
+    return () => clearInterval(interval);
+  }, [pollScores]);
 
   if (!match) {
     return (

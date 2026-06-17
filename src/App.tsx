@@ -10,6 +10,7 @@ const Schedule = lazy(() => import('./pages/Schedule'));
 const Standings = lazy(() => import('./pages/Standings'));
 const Venues = lazy(() => import('./pages/Venues'));
 const VenueDetail = lazy(() => import('./pages/VenueDetail'));
+const Bracket = lazy(() => import('./pages/Bracket'));
 
 function PageLoader() {
   return (
@@ -33,6 +34,7 @@ export default function App() {
             <Route path="/standings" element={<Standings />} />
             <Route path="/venues" element={<Venues />} />
             <Route path="/venues/:venueId" element={<VenueDetail />} />
+            <Route path="/bracket" element={<Bracket />} />
           </Route>
         </Routes>
       </Suspense>

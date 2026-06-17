@@ -6,6 +6,7 @@ const navItems = [
   { path: '/teams', label: '球队' },
   { path: '/schedule', label: '赛程' },
   { path: '/standings', label: '积分榜' },
+  { path: '/bracket', label: '淘汰赛' },
   { path: '/venues', label: '场馆' },
 ];
 

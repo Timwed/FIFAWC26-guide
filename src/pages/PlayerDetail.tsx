@@ -2,7 +2,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import squadsData from '../data/squads.json';
 import teamsData from '../data/teams.json';
+import scheduleData from '../data/venue-schedule.json';
 import { lookupPlayerByExactName } from '../utils/playerLookup';
+import { formatBeijingTime } from '../utils/datetime';
+import type { StaticGoal } from '../types';
 
 interface TeamEntry {
   shortName: string;
@@ -40,7 +43,40 @@ interface WikiPlayer {
   wcSpotlight: string;
 }
 
+interface MatchData {
+  idEvent: string;
+  strHomeTeam: string;
+  strAwayTeam: string;
+  intHomeScore: string | null;
+  intAwayScore: string | null;
+  dateEvent: string;
+  strTime: string;
+  strStatus: string;
+  goals?: StaticGoal[];
+}
+
+interface PlayerMatchGoals {
+  idEvent: string;
+  dateEvent: string;
+  strTime: string;
+  opponentEn: string;
+  opponentCn: string;
+  opponentFlag: string;
+  intHomeScore: string | null;
+  intAwayScore: string | null;
+  isHomeTeam: boolean;
+  goals: StaticGoal[];
+}
+
 const teams = teamsData as TeamEntry[];
+const teamFlagMap = new Map<string, string>();
+const teamCnMap = new Map<string, string>();
+for (const t of teams) {
+  teamFlagMap.set(t.enName, t.olgIcon);
+  teamCnMap.set(t.enName, t.cnName);
+}
+
+const allMatches: MatchData[] = Object.values(scheduleData as unknown as Record<string, MatchData[]>).flat();
 
 const POSITION_LABELS: Record<string, string> = {
   GK: '守门员', DF: '后卫', MF: '中场', FW: '前锋',
@@ -85,6 +121,35 @@ export default function PlayerDetail() {
     () => (wikiPlayers != null ? wikiPlayers[decodedName] ?? null : null),
     [decodedName, wikiPlayers]
   );
+
+  const playerGoals = useMemo((): PlayerMatchGoals[] => {
+    if (!player || !team) return [];
+    const pName = player.name;
+    const results: PlayerMatchGoals[] = [];
+    for (const m of allMatches) {
+      if (!m.goals || m.goals.length === 0) continue;
+      const myGoals = m.goals.filter((g) => g.name === pName);
+      if (myGoals.length === 0) continue;
+      const isHomeTeam = m.strHomeTeam === team.enName;
+      const opponentEn = isHomeTeam ? m.strAwayTeam : m.strHomeTeam;
+      results.push({
+        idEvent: m.idEvent,
+        dateEvent: m.dateEvent,
+        strTime: m.strTime,
+        opponentEn,
+        opponentCn: teamCnMap.get(opponentEn) || opponentEn,
+        opponentFlag: teamFlagMap.get(opponentEn) || '',
+        intHomeScore: m.intHomeScore,
+        intAwayScore: m.intAwayScore,
+        isHomeTeam,
+        goals: myGoals,
+      });
+    }
+    results.sort((a, b) => `${a.dateEvent}${a.strTime}`.localeCompare(`${b.dateEvent}${b.strTime}`));
+    return results;
+  }, [player, team]);
+
+  const totalGoals = playerGoals.reduce((sum, m) => sum + m.goals.length, 0);
 
   if (!team || !player) {
     return (
@@ -150,6 +215,74 @@ export default function PlayerDetail() {
           </div>
         </div>
       </div>
+
+      {/* Goals This Tournament */}
+      {totalGoals > 0 && (
+        <section className="rounded-xl border border-l-4 border-l-emerald-500 border-white/5 bg-white/5 p-5">
+          <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
+            本届进球
+            <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-sm font-medium text-emerald-400">
+              {totalGoals}球
+            </span>
+          </h3>
+          <div className="space-y-3">
+            {playerGoals.map((m) => (
+              <div
+                key={m.idEvent}
+                className="rounded-lg border border-white/5 bg-white/[0.03] p-3"
+              >
+                <div className="mb-2 flex items-center gap-2">
+                  <img
+                    src={m.opponentFlag}
+                    alt=""
+                    className="h-5 w-5 object-contain"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                  <span className="text-sm font-medium text-slate-300">
+                    vs {m.opponentCn}
+                  </span>
+                  <span className="ml-auto text-xs tabular-nums text-slate-500">
+                    {formatBeijingTime(m.dateEvent, m.strTime)}
+                  </span>
+                </div>
+                <div className="mb-2 text-sm tabular-nums text-slate-400">
+                  全场 {m.intHomeScore ?? '?'} - {m.intAwayScore ?? '?'}
+                </div>
+                <div className="space-y-1">
+                  {m.goals.map((g, i) => (
+                    <div key={i} className="flex items-center gap-2 text-sm">
+                      <span className="tabular-nums text-emerald-400 font-medium min-w-[1.2rem]">
+                        {g.minute ?? "?"}'
+                      </span>
+                      <span className={g.isOwnGoal ? 'text-red-400' : 'text-white'}>
+                        {g.homeScore} - {g.awayScore}
+                      </span>
+                      {g.isPenalty && (
+                        <span className="rounded bg-amber-500/20 px-1 py-0.5 text-[10px] text-amber-400">
+                          点球
+                        </span>
+                      )}
+                      {g.isOwnGoal && (
+                        <span className="rounded bg-red-500/20 px-1 py-0.5 text-[10px] text-red-400">
+                          乌龙
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <Link
+                  to="/schedule"
+                  className="mt-2 inline-block text-xs text-sky-400 hover:text-sky-300"
+                >
+                  查看赛程 →
+                </Link>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Career Review */}
       {wiki?.careerReview && (

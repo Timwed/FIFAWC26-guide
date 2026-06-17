@@ -1,0 +1,278 @@
+const fs = require('fs');
+const path = require('path');
+
+const playersWikiPath = path.join(__dirname, '..', 'src', 'data', 'players-wiki.json');
+const squadPath = path.join(__dirname, '..', 'src', 'data', 'squads.json');
+
+const wiki = JSON.parse(fs.readFileSync(playersWikiPath, 'utf8'));
+const squad = JSON.parse(fs.readFileSync(squadPath, 'utf8'));
+
+const ec = squad.find(t => t.name === 'Ecuador');
+const opps = squad.filter(t => t.group === ec.group && t.name !== 'Ecuador').map(t => t.name);
+const oppLabel = opps.join('、'); // Curaçao, Germany, Ivory Coast
+
+const COACH_NOTE = '厄瓜多尔由阿根廷教练塞巴斯蒂安·贝卡塞塞（Sebastián Beccacece）执掌，2024年上任后带队仅输1场比赛。';
+
+function oppFix(text) {
+  return text
+    .replace(/同组对手/g, oppLabel)
+    .replace(/小组赛对手/g, oppLabel)
+    .replace(/德国队/g, '德国')
+    .replace(/科特迪瓦队/g, '科特迪瓦')
+    .replace(/库拉索队/g, '库拉索');
+}
+
+function cleanProse(text) {
+  return text
+    // Sensationalist
+    .replace(/永不停歇的永动机/g, '主力左后卫')
+    .replace(/无可争议的王者人物和第一核心/g, '防线核心')
+    .replace(/全世界目光都将汇聚在这位天才少年身上/g, '')
+    .replace(/见证他的左脚魔法能否在足球最宏大舞台上完美绽放/g, '他将迎来真正的大赛考验')
+    .replace(/能否复制梅西2006世界杯的少年神话/g, '')
+    .replace(/每个厄瓜多尔球迷都怀着巨大而真挚无比的期待和梦想/g, '')
+    .replace(/这极有可能是世界杯告别演出/g, '')
+    .replace(/每次起脚射门都包含着传奇告别的深沉分量和对荣誉再度冲刺的坚定渴望/g, '他的终结能力仍是球队最可靠的武器')
+    .replace(/巅峰Battle之一/g, '攻防对决之一')
+    .replace(/核武器和导弹/g, '关键武器')
+    .replace(/核武器/g, '关键武器')
+    .replace(/导弹/g, '利器')
+    .replace(/传奇告别的深沉分量/g, '')
+    .replace(/亿元先生能否在世界杯上完美配得上他的天文数字身价/g, '中场核心将决定球队能走多远')
+    .replace(/全世界都将密切关注/g, '')
+    .replace(/全球球迷的厚望与期待/g, '')
+    .replace(/亿元先生/g, '')
+    .replace(/不可复制的财富/g, '核心资产')
+    .replace(/最无价最/g, '')
+    // Exaggerated
+    .replace(/库拉索整条进攻线路的运转效率和创造力都高度依赖他的活跃程度/g, '他的边路活跃度直接影响球队进攻流畅性')
+    .replace(/厄瓜多尔整条进攻线路的运转效率和创造力都高度依赖他的活跃程度和临场个人发挥的水准与竞技状态和关键表现/g, '他的边路活跃度直接影响球队整体节奏')
+    .replace(/在整个南美洲足坛都属于第一流水准/g, '在南美赛场属上乘水平')
+    .replace(/整个南美足坛为之震惊和赞叹/g, '成为南美最受关注的年轻中卫之一')
+    .replace(/完美中卫的理想模板和标杆型球员/g, '风格全面的现代中卫')
+    .replace(/代表了南美足球新一代天才的最高水准和最大希望/g, '')
+    .replace(/南美足坛近年来最令人兴奋也最令人惊叹的19岁天才少年/g, '19岁天才中场')
+    .replace(/华丽到了艺术品级别/g, '细腻')
+    .replace(/如行云流水般流畅自然/g, '出色')
+    .replace(/被南美主流媒体和业内专家一致公认为新一代最具巨星潜质和无限未来可能的攻击型中场/g, '被广泛视为南美最具潜力的新生代攻击型中场')
+    .replace(/左右两翼齐飞是厄瓜多尔最著名的招牌战术和犀利法宝/g, '边路进攻是厄瓜多尔的重要战术手段')
+    .replace(/世界级资产和不可动摇的防守基石/g, '后防中坚')
+    .replace(/巨人般存在/g, '')
+    .replace(/无可争议头号球星和第一核心支柱/g, '头号球星')
+    .replace(/地球上最昂贵的防守型中场之一/g, '身价最高的防守型中场之一')
+    .replace(/惊天动地的/g, '')
+    .replace(/创造了当时整个英超联赛历史转会费最高纪录/g, '成为英超历史最高转会费纪录之一')
+    .replace(/天价转会费/g, '转会费')
+    .replace(/加入了蓝军/g, '')
+    // Remove redundant / emotional
+    .replace(/酋长球场的阿森纳球迷同样翘首以待自家球星的世界杯精彩表现/g, '')
+    .replace(/巴黎圣日耳曼球迷以及全世界球迷对他在最大舞台上的发挥都充满期待/g, '')
+    .replace(/巴黎圣日耳曼级别的顶级中卫在世界足坛极为稀缺也极为珍贵/g, '帕乔作为巴黎圣日耳曼主力中卫')
+    .replace(/一脚跨越整个半场的超远距离精准出球足以瞬间撕裂任何对手的防线结构布局/g, '一脚跨半场长传可直接打穿对手防线')
+    .replace(/全球足坛/g, '足坛')
+    .replace(/轰动了全欧洲足坛/g, '引起广泛关注')
+    .replace(/每一个厄瓜多尔球迷都怀揣着巨大期待/g, '')
+    .replace(/在世界杯赛场上将直接面对由哈弗茨和穆西亚拉组成的德国顶级攻击组合的轮番冲击和严峻考验/g, '将直面德国一众顶级攻击手')
+    .replace(/直接对位硬撼德国队由基米希和格雷茨卡组成的顶级中场以及硬朗的科特迪瓦队长凯西级别的中场悍将/g, '将直面德国的顶级中场组合以及科特迪瓦的强力中场')
+    .replace(/直接面对由哈弗茨和穆西亚拉组成的德国顶级攻击组合的轮番冲击和严峻考验/g, '将直面德国顶级攻击群')
+    .replace(/基米希或勒韦林等德国名将的攻防对位/g, '德国右路攻击手')
+    .replace(/这一组极致对决将是小组赛最具观赏价值和竞技含量的/g, '这组攻防对决将是小组赛的')
+    .replace(/对位科特迪瓦队长凯西/g, '对位科特迪瓦中场')
+    .replace(/凯西级别的中场悍将/g, '中场悍将')
+    // Clean up verbose
+    .replace(/绝对核心和领袖/g, '核心')
+    .replace(/无价之宝/g, '精神支柱')
+    .replace(/摧城拔寨进球如麻/g, '保持高效输出')
+    .replace(/厄瓜多尔阵中极少数/g, '厄瓜多尔阵中少数')
+    .replace(/他的加盟加盟无疑极大提升了厄瓜多尔防线的上限和天花板高度/g, '他的存在提升了厄瓜多尔防线的整体上限')
+    .replace(/不可多得的/g, '重要的')
+    .replace(/在世界杯这个最大的舞台上证明自己能否跻身世界级精英后卫行列的终极考场和最好时机/g, '在世界杯赛场进一步证明自己的实力');
+}
+
+const corrections = {
+  // ====== GK ======
+  'Hernán Galíndez': {
+    careerReview: '加林德斯，39岁门将，出道于厄瓜多尔巴塞罗那SC并在国内联赛成名。2022年世界杯担任首发门将，对阵荷兰时发挥出色，多次完成关键扑救。现效力阿根廷飓风，年近四十，大赛经验丰富，门前发挥稳定。35次国家队出场。',
+    wcSpotlight: '加林德斯是2022世界杯首发门将，39岁的大赛经验是球队最后一道屏障。预选赛中仍然是厄瓜多尔后防最可靠的基石——世界杯高压舞台上，他不可复制的大赛经验和心理承受力无可替代。'
+  },
+  'Moisés Ramírez': {
+    careerReview: '拉米雷斯，25岁门将，效力希腊基菲西亚俱乐部，7次国家队出场。门线技术扎实，反应速度快，是厄瓜多尔门将位置的重要储备。',
+    wcSpotlight: '拉米雷斯是球队二号门将，门线技术扎实，随时等待替补登场——作为Galíndez身后的第一替补，他的临场准备是门将位置深度的关键保障。'
+  },
+  'Gonzalo Valle': {
+    careerReview: '贡萨洛·巴列，30岁门将，厄瓜多尔本土联赛基多大学主力，熟悉球队战术体系，门线发挥沉稳。4次国家队出场。',
+    wcSpotlight: '巴列是球队三号门将，作为门将深度储备，出场概率极低——但本土联赛稳定的主力位置保证了他随时可上场的竞技状态。'
+  },
+
+  // ====== DF ======
+  'Piero Hincapié': {
+    careerReview: '因卡皮耶，24岁防线新星。出自阿根廷塔列雷斯，后加盟德甲勒沃库森并迅速成长为德甲最受关注的年轻中卫。2025年夏天以租借形式加盟阿森纳，合同含4500万英镑买断条款。2025-26赛季英超出场25次打入2球。52次国家队出场已是防线核心，比赛阅读能力出色，兼顾速度、对抗与出球能力。',
+    wcSpotlight: '因卡皮耶是厄瓜多尔防线核心，阿森纳高强度对抗中练就的比赛阅读和预判能力是他的最强武器。世界杯上将直面德国顶级攻击群——在勒沃库森和阿森纳的欧战历练让他在面对顶级锋线时具备足够的底气。英超25场2球的数据证明了他攻防双向的威胁。'
+  },
+  'Félix Torres': {
+    careerReview: '托雷斯，29岁中卫，身体素质出众，高空对抗能力突出，擅长头球争顶与摆渡。目前效力巴西国际，拥有丰富的南美解放者杯和世预赛经验。49次国家队出场打入5球。',
+    wcSpotlight: '托雷斯是厄瓜多尔定位球攻防的重要支点——他的空中对抗和头球在角球战术中是最直接有效的进攻手段。小组赛面对德国和科特迪瓦的冲击型前锋时，身体对抗是他的核心价值。'
+  },
+  'Joel Ordóñez': {
+    careerReview: '奥多涅斯，22岁年轻中卫，目前效力比利时布鲁日，在欧冠和比甲联赛中积累了宝贵的欧战经验。防守心态成熟，是球队重点培养的后备力量。17次国家队出场。',
+    wcSpotlight: '奥多涅斯与因卡皮耶的年轻中卫搭档是厄瓜多尔防线未来十年的核心组合——布鲁日的欧冠经历让他提前适应了高强度对抗。本届世界杯是检验二人配合实力的重要舞台。'
+  },
+  'Willian Pacho': {
+    careerReview: '帕乔，24岁中卫效力巴黎圣日耳曼，是厄瓜多尔后防中坚。职业生涯先后效力安特卫普、法兰克福，后转会巴黎。2025-26赛季法甲出场23次完成9次零封，欧冠出场17次打入2球——在欧冠赛场积累了丰富的顶级对决经验。34次国家队出场打入2球，身体强壮、传球精准，是风格全面的现代中卫。',
+    wcSpotlight: '帕乔作为巴黎圣日耳曼主力中卫，他的由守转攻能力和跨半场精准长传是厄瓜多尔战术体系中的关键武器——法甲23场9零封的数据印证了他的防守稳定性。PSG的欧冠历练让他在面对德国、科特迪瓦的锋线群时底气十足。'
+  },
+  'Pervis Estupiñán': {
+    careerReview: '埃斯图皮尼安，28岁左后卫，效力意甲AC米兰。从西甲比利亚雷亚尔成名，54次国家队出场打入5球。以充沛体能和往返覆盖能力著称，传中质量和进攻意识在欧洲足坛受到广泛认可。防守端投入度和铲抢硬度同样出色，攻防两端均衡发展。2025-26赛季意甲出场19次打入1球助攻1次。',
+    wcSpotlight: '埃斯图皮尼安是厄瓜多尔左路核心，意甲19场1球1助攻的表现证明了他持续的高水平输出。世界杯上将遭遇德国右路攻击手——他的攻防强度和覆盖范围直接决定厄瓜多尔左翼的运转效率，这组攻防对决将是小组赛的重要看点。'
+  },
+  'Ángelo Preciado': {
+    careerReview: '普雷西亚多，28岁主力右后卫，目前效力巴西米内罗竞技，欧战经验丰富。攻防兼备，边路前插与传中是厄瓜多尔的重要进攻手段，与左路队友形成边路互补。55次国家队出场。',
+    wcSpotlight: '普雷西亚多是厄瓜多尔右路铁打首发，米内罗竞技的南美解放者杯经历让他习惯了高强度淘汰赛节奏。他的前插助攻和传中是厄瓜多尔破解密集防守的重要手段——与Estupiñán的左右联动是球队战术体系的关键组成。'
+  },
+  'Jackson Porozo': {
+    careerReview: '波洛索，25岁中卫，有2022世界杯参赛经历，身体对抗与长传能力不错。目前效力墨西哥蒂华纳，是防线轮换替补。10次国家队出场打入1球。',
+    wcSpotlight: '波洛索作为防线轮换，大赛不怯场是其优势。2022世界杯的经历让他在替补席上保持大赛级别的心理准备——需要身体硬度加强防守时，他是重要的替补选择。'
+  },
+  'Yaimar Medina': {
+    careerReview: '梅迪纳，21岁年轻左后卫，效力比利时亨克，耐力出色。6次国家队出场，作为边路储备人才培养，大赛经验尚在积累阶段。',
+    wcSpotlight: '梅迪纳是厄瓜多尔左后卫位置的储备力量，比甲联赛的历练正逐步提升他的对抗能力和比赛阅读。本届以积累经验为主，出场机会有限。'
+  },
+
+  // ====== MF ======
+  'Moisés Caicedo': {
+    careerReview: '凯塞多（Moisés Caicedo），厄瓜多尔头号球星，24岁中场效力英超切尔西。从厄瓜多尔山谷独立加盟布莱顿，仅用一个英超赛季便引起广泛关注。2023年以1.15亿英镑转会费加盟切尔西，成为英超历史最高转会费纪录之一。2025-26赛季英超33场打入3球助攻1次，欧冠10场打入2球，随切尔西夺得2025年世俱杯冠军。61次国家队出场打入3球，防守覆盖、拦截与出球能力均处于世界一流水准。',
+    wcSpotlight: '凯塞多是厄瓜多尔出征世界杯的最大王牌，切尔西亿元身价的背后是英超33场3球、欧冠10场2球的赛季数据支撑。世界杯上将直面德国和科特迪瓦的顶级中场组合——他的每一次抢断和出球都牵动着全场节奏，中场表现直接决定球队走势。2025年世俱杯冠军的荣誉更让他在大场面中底气十足。'
+  },
+  'Jordy Alcívar': {
+    careerReview: '阿尔西瓦尔，26岁中场，目前效力厄瓜多尔本土劲旅山谷独立。国际大赛经验相对不足是现阶段需要补强的环节。但在本土联赛和国家队比赛中展现了良好的中场组织与拦截能力。11次国家队出场打入1球。',
+    wcSpotlight: '阿尔西瓦尔是厄瓜多尔中场的轮换力量，面对德国和科特迪瓦的顶级中场时，需要在高强度对决中证明自身实力。山谷独立的南美解放者杯经历为他的大赛初体验提供了部分准备。'
+  },
+  'Kendry Páez': {
+    careerReview: '派斯，19岁天才中场，26次国家队出场打入2球，远超同龄人的早熟令人惊叹。年少时与切尔西签下未来转会协议，2026年2月租借至阿根廷河床，2026赛季出场14次。赛前河床已决定提前终止租约，世界杯后将返回切尔西。左脚技术细腻、盘带出色，被广泛视为南美最具潜力的新生代攻击型中场。',
+    wcSpotlight: '派斯是世界杯最年轻参赛球员之一，19岁便以26场国家队经验扛起厄瓜多尔进攻创造重任。世界杯后将返回切尔西，本届赛事是他在世界舞台证明天赋的首次大考——脚法细腻、盘带出众，是球队前场主要创造力来源。'
+  },
+  'Alan Minda': {
+    careerReview: '明达，23岁边路球员，盘带能力不俗。目前效力巴西米内罗竞技，在巴甲和解放者杯中积累了高水平比赛经验，需在高强度比赛中进一步证明对抗能力。20次国家队出场打入2球。',
+    wcSpotlight: '明达是边路轮换球员，速度和技术是他的优势。作为替补登场时，他的盘带突破可为厄瓜多尔在比赛后段提供战术变化——踢好每一分钟有限的出场时间是对他的基本要求。'
+  },
+  'Pedro Vite': {
+    careerReview: '维特，24岁中场，传球稳定，擅长在劣势局面下稳住球权。目前效力墨西哥美洲狮，17次国家队出场打入1球，是球队中场的轮换选项。',
+    wcSpotlight: '维特作为中场轮换球员，在球队需要控制节奏、稳定局面时登场。他的技术特点是低调但实用——面对德国的高压逼抢时，控球和传球稳定性是厄瓜多尔保持阵型的关键。'
+  },
+  'Denil Castillo': {
+    careerReview: '卡斯蒂略，22岁年轻中场，从厄瓜多尔联赛转战丹麦中日德兰，跑动能力强。5次国家队出场，仍在国际赛场积累经验，大赛出场机会有限。',
+    wcSpotlight: '卡斯蒂略是球队中场的长远规划成员，丹麦联赛的欧战经历为他的成长提供了平台。本届以训练和学习为主，年轻中场的首次世界杯之旅。'
+  },
+  'Alan Franco': {
+    careerReview: '佛朗哥，27岁中场，目前效力巴西米内罗竞技。中场攻防枢纽，抢断后出球迅速，是球队反击的发起点。58次国家队出场打入1球，在厄瓜多尔中场体系中经验最丰富。',
+    wcSpotlight: '佛朗哥是厄瓜多尔由守转攻的第一道启动器——抢断后快速出球至边路是球队反击战术的核心环节。面对德国的中场压制时，他的防守纪律性和转换效率将直接影响厄瓜多尔的反击质量。'
+  },
+  'Anthony Valencia': {
+    careerReview: '安东尼·瓦伦西亚，22岁年轻边路球员，与传奇安东尼奥·瓦伦西亚同姓但无血缘关系。目前效力比利时安特卫普，在欧洲联赛逐步成长。3次国家队出场打入1球，以替补冲击为主要角色。',
+    wcSpotlight: '安东尼·瓦伦西亚是厄瓜多尔锋线的年轻储备力量，安特卫普的比甲和欧战经历帮助他积累高水平比赛经验。本届主要从替补席出发，速度和冲击力是他的标签。'
+  },
+
+  // ====== FW ======
+  'John Yeboah': {
+    careerReview: '耶博阿，25岁前锋，德国出道，成长于德国足球环境，对对手战术风格较为了解。目前效力意乙威尼斯，边路速度与变向能力突出。23次国家队出场打入3球。',
+    wcSpotlight: '耶博阿作为德国足球环境成长起来的球员，面对德国时拥有天然的战术熟悉度。意乙的主力位置保证了他的比赛状态——边路速度和变向是他的核心武器，替补登场可冲击对手防线。'
+  },
+  'Kevin Rodríguez': {
+    careerReview: '罗德里格斯，26岁高中锋，目前效力比利时圣吉罗斯联合。2022年世界杯有出战经历，面对顶级防线毫不怯场。高大支点型中锋，头球与策应能力突出，可为边路队友创造机会。31次国家队出场打入2球。',
+    wcSpotlight: '罗德里格斯是厄瓜多尔锋线的高中锋选项——他的头球摆渡和身体支点作用是释放两翼速度天赋的关键战术环节。面对德国和科特迪瓦的中卫群时，身体对抗是他最大的资本。'
+  },
+  'Enner Valencia': {
+    careerReview: '瓦伦西亚（Enner Valencia），厄瓜多尔足球史上最伟大的射手。105次国家队出场打入49球，高居队史第一。先后效力西汉姆联、费内巴切，2014和2022两届世界杯均有进球入账。2025年9月从巴西国际转会墨西哥帕丘卡，2025-26赛季墨超出场22次打入8球，队内第二射手。36岁禁区终结能力依旧锋利。',
+    wcSpotlight: '三届世界杯功勋老队长是更衣室的精神支柱，墨超22场8球的数据证明时间和联赛转换并未消磨他的门前嗅觉。他的经验和禁区直觉是厄瓜多尔最核心资产——作为队史射手王，他在关键时刻的终结能力仍是球队最可靠的武器。'
+  },
+  'Gonzalo Plata': {
+    careerReview: '普拉塔，25岁边锋，先后效力葡萄牙体育、巴西弗拉门戈。可胜任双边路，内切远射是招牌技能。2026赛季巴甲出场10次打入2球助攻2次。50次国家队出场打入8球，锋线核心之一，边路突破与终结能力突出。',
+    wcSpotlight: '普拉塔是厄瓜多尔锋线核心，弗拉门戈的南美赛场上持续输出——巴甲2球2助攻的数据体现了他的进攻效率。与队友的边路配合默契，他的内切射门是厄瓜多尔破局的重要手段。'
+  },
+  'Nilson Angulo': {
+    careerReview: '安古洛，22岁前锋，效力英冠桑德兰，速度出众。14次国家队出场打入2球，替补登场擅长冲击疲劳防线。',
+    wcSpotlight: '安古洛的速度是厄瓜多尔替补席上最具威胁的变量——在比赛后段对方体能下降时登场，冲刺对手疲劳防线。桑德兰的英冠历练提升了他的身体对抗能力。'
+  },
+  'Jordy Caicedo': {
+    careerReview: '凯塞多（Jordy Caicedo），28岁高中锋，身体对抗优势明显。目前效力阿根廷飓风，高中锋轮换人选，主打高空战术，是破解密集防守的备选方案。20次国家队出场打入4球，门前终结效率仍有提升空间。',
+    wcSpotlight: '凯塞多（Jordy Caicedo）是厄瓜多尔高空战术的专项武器——当球队需要轰炸禁区时，他的身体对抗和头球能力是直接的得分手段。作为与凯塞多（Moisés Caicedo）同姓不同位置的球员，需注意区分。'
+  },
+  'Jeremy Arévalo': {
+    careerReview: '阿雷瓦洛，21岁前锋，效力德甲斯图加特，熟悉德国球队风格。4次国家队出场，替补登场可发挥自身特点，利用对德国足球的了解为球队提供战术情报。',
+    wcSpotlight: '阿雷瓦洛效力斯图加特让他对德国球员的防守习惯有独特认知——这是厄瓜多尔面对德国时的一张特殊情报牌。年轻前锋的首次世界杯之旅，以替补冲击为主要角色。'
+  }
+};
+
+// Apply corrections
+let applied = 0;
+const results = [];
+
+for (const [name, updates] of Object.entries(corrections)) {
+  const entry = wiki[name];
+  if (!entry) {
+    console.log(`NOT FOUND: ${name}`);
+    results.push({ name, status: 'NOT_FOUND' });
+    continue;
+  }
+
+  const original = { careerReview: entry.careerReview, wcSpotlight: entry.wcSpotlight };
+
+  if (updates.careerReview) {
+    entry.careerReview = oppFix(cleanProse(updates.careerReview));
+  }
+  if (updates.wcSpotlight) {
+    entry.wcSpotlight = oppFix(cleanProse(updates.wcSpotlight));
+  }
+
+  applied++;
+  results.push({
+    name,
+    status: 'UPDATED',
+    careerChanged: original.careerReview !== entry.careerReview,
+    wcChanged: original.wcSpotlight !== entry.wcSpotlight,
+  });
+}
+
+// GC fixes for remaining Ecuador players not in corrections
+const ecPlayers = ec.players.map(p => p.name);
+for (const name of ecPlayers) {
+  const entry = wiki[name];
+  if (!entry || corrections[name]) continue;
+
+  let changed = false;
+  if (entry.careerReview && entry.careerReview.match(/德国队|同组对手|科特迪瓦队|库拉索队|凯西|核武器|永动机|亿元先生/)) {
+    entry.careerReview = oppFix(cleanProse(entry.careerReview));
+    changed = true;
+  }
+  if (entry.wcSpotlight && entry.wcSpotlight.match(/德国队|同组对手|科特迪瓦队|库拉索队|凯西|核武器|永动机|亿元先生/)) {
+    entry.wcSpotlight = oppFix(cleanProse(entry.wcSpotlight));
+    changed = true;
+  }
+
+  if (changed) {
+    console.log(`GC fix: ${name}`);
+    applied++;
+  }
+}
+
+fs.writeFileSync(playersWikiPath, JSON.stringify(wiki, null, 2), 'utf8');
+
+console.log(`\n=== Ecuador Summary ===`);
+console.log(`Applied: ${applied}`);
+for (const r of results) {
+  if (r.status === 'UPDATED') {
+    const changes = [];
+    if (r.careerChanged) changes.push('careerReview');
+    if (r.wcChanged) changes.push('wcSpotlight');
+    console.log(`  ${r.name}: ${changes.join(',')}`);
+  } else {
+    console.log(`  ${r.name}: ${r.status}`);
+  }
+}
+
+// Verify
+console.log(`\n=== Verification ===`);
+for (const p of ecPlayers) {
+  if (!wiki[p.name]) console.log(`  MISSING: ${p.name}`);
+}
+console.log('Done.');

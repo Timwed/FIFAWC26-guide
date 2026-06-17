@@ -1,0 +1,250 @@
+const fs = require('fs');
+const path = require('path');
+
+const playersWikiPath = path.join(__dirname, '..', 'src', 'data', 'players-wiki.json');
+const squadPath = path.join(__dirname, '..', 'src', 'data', 'squads.json');
+
+const wiki = JSON.parse(fs.readFileSync(playersWikiPath, 'utf8'));
+const squad = JSON.parse(fs.readFileSync(squadPath, 'utf8'));
+
+const ci = squad.find(t => t.name === 'Ivory Coast');
+const opps = squad.filter(t => t.group === ci.group && t.name !== 'Ivory Coast').map(t => t.name);
+const oppLabel = opps.join('、');
+
+function oppFix(text) {
+  return text
+    .replace(/同组对手/g, oppLabel)
+    .replace(/小组赛对手/g, oppLabel)
+    .replace(/同组强敌/g, oppLabel)
+    .replace(/德国队/g, '德国')
+    .replace(/厄瓜多尔队/g, '厄瓜多尔')
+    .replace(/库拉索队/g, '库拉索');
+}
+
+function cleanProse(text) {
+  return text
+    // Sensationalist / emotional
+    .replace(/承载着整个科特迪瓦的期待/g, '')
+    .replace(/更衣室中不可替代的定海神针/g, '攻防两端的中流砥柱')
+    .replace(/最值得信赖的决胜武器/g, '值得信赖的得分手段')
+    .replace(/以德罗巴后继者身份奠定了国家队传奇地位/g, '巩固了其在国家队的核心地位')
+    .replace(/让全场沸腾/g, '贡献关键进球')
+    .replace(/最具爆点的X因素/g, '重要轮换')
+    .replace(/让对手防线彻夜难眠/g, '')
+    .replace(/世界级后卫将在本届世界杯首次领教他的威力/g, '')
+    .replace(/充满救赎与证明的意味/g, '')
+    .replace(/防守球员最不愿面对的噩梦/g, '重要进攻武器')
+    .replace(/渴望在世界最大舞台上重新定义自己的职业生涯/g, '')
+    .replace(/救赎与证明/g, '')
+    .replace(/最不需要聚光灯却最不可或缺的角色/g, '中场屏障')
+    .replace(/最信赖的隐形基石/g, '战术体系中的重要拼图')
+    .replace(/足以在任何大名单中占据一席之地/g, '进攻端的重要轮换选项')
+    .replace(/一度被视为意大利足坛最具潜力的年轻射手之一/g, '是一名有潜力的年轻射手')
+    .replace(/被认为是意大利足坛最具潜力的射手之一/g, '是一名有潜力的射手')
+    .replace(/是科特迪瓦锋线上的未来之才/g, '是锋线年轻储备力量')
+    // Exaggerated
+    .replace(/最耀眼的明星之一/g, '关键球员之一')
+    .replace(/竖起了一道难以逾越的屏障/g, '成为中场屏障')
+    .replace(/不可替代的标志性武器/g, '核心武器')
+    .replace(/最稳定/g, '稳定的')
+    .replace(/锋线奇兵/g, '锋线轮换')
+    .replace(/决定性的因素/g, '关键因素')
+    // Remove narrative
+    .replace(/将以队长身份率领科特迪瓦冲击小组出线机会/g, '')
+    .replace(/最佳证明/g, '鲜明例证')
+    .replace(/每一次持球突破都可能点燃科特迪瓦球迷的激情/g, '')
+    .replace(/教练法埃将他选入26人名单，说明这位年轻中锋已经准备好挺身而出/g, '本届以替补前锋身份出战')
+    .replace(/在年轻球员环绕的锋线上，佩佩的冷静和55场国家队经验将发挥导师般的作用/g, '丰富的大赛经验将在年轻锋线上发挥关键作用')
+    // Tone down
+    .replace(/巨大潜力/g, '潜力')
+    .replace(/正在书写属于自己的世界杯篇章/g, '首次征战世界杯')
+    .replace(/书写新篇章/g, '')
+    .replace(/可能成为他职业生涯的全新起点/g, '')
+    .replace(/非凡意义/g, '重要意义');
+}
+
+const corrections = {
+  // ====== GK ======
+  'Yahia Fofana': {
+    careerReview: '福法纳，25岁首发门将，出自勒阿弗尔青训，先后征战法乙、法甲联赛，现效力土耳其里泽体育。非洲杯夺冠功臣，大赛表现亮眼，门线发挥稳健，心理素质出色。35次国家队出场。',
+    wcSpotlight: '福法纳是2024非洲杯冠军队首发门将，25岁便已积累35场国家队经验。小组赛面对德国、厄瓜多尔、库拉索的攻击群时，他的门线反应和出击判断将经受检验——非洲杯冠军的经验是他面对大场面时最大的心理资本。'
+  },
+  'Mohamed Koné': {
+    careerReview: '科内，24岁年轻门将，比利时联赛出身，目前效力沙勒罗瓦。天赋不错，目前为球队三门，出场概率极低。',
+    wcSpotlight: '科内是科特迪瓦门将位置的深度储备，本届主要参与日常训练，积累大赛氛围——24岁的年纪意味着他仍有充足时间等待属于自己的机会。'
+  },
+  'Alban Lafont': {
+    careerReview: '拉丰，27岁门将，16岁法甲首秀即展现天赋。先后效力图卢兹、南特、佛罗伦萨，现效力希腊帕纳辛奈科斯。门线扑救能力优秀。4次国家队出场。',
+    wcSpotlight: '拉丰是球队二门，丰富的欧洲联赛经验让他在需要时能够顶替出场。作为应急备选，他的存在保证了门将位置的竞争深度。'
+  },
+
+  // ====== DF ======
+  'Ousmane Diomande': {
+    careerReview: '迪奥曼德，22岁中卫，19岁以750万欧元加盟葡萄牙体育。在葡超与欧战赛场表现稳定，防守与出球能力均衡，年纪轻轻便坐稳主力。已吸引多家欧洲豪门关注。15次国家队出场打入1球。',
+    wcSpotlight: '迪奥曼德是科特迪瓦防线最具潜力的年轻中卫，葡萄牙体育主力身份和欧战经验让他在面对德国、厄瓜多尔前锋群时拥有充足的准备。22岁便已是国家队防线常规先发，本届将接受高强度对决的检验。'
+  },
+  'Ghislain Konan': {
+    careerReview: '科南，30岁左后卫，效力葡萄牙维森特。攻守均衡，位置感与防守选位出色，传中质量不俗，擅长用经验弥补身体短板。54次国家队出场。',
+    wcSpotlight: '科南以54场国家队经验坐镇左路防线，他的防守选位和经验在应对德国边路冲击时尤为关键——不追求华丽的突破，但每一次防守决策都基于丰富的比赛积累。'
+  },
+  'Wilfried Singo': {
+    careerReview: '辛戈，25岁后卫，出自都灵，后转会土超加拉塔萨雷。身材高大且兼具速度，可胜任右后卫和右中卫，攻防能力全面，定位球也能制造威胁。欧战经验丰富。34次国家队出场打入1球。',
+    wcSpotlight: '辛戈的全面性是科特迪瓦防线的重要资产——身高、力量和速度的组合让他在面对不同类型前锋时都有应对方案。加拉塔萨雷的欧战历练使他在高强度比赛节奏中游刃有余。'
+  },
+  'Odilon Kossounou': {
+    careerReview: '科苏努，25岁中卫，早年效力勒沃库森，之后转会亚特兰大。擅长贴身盯防与头球解围，回追和补位意识优秀。35次国家队出场，是防线主力。',
+    wcSpotlight: '科苏努在亚特兰大的意甲体系中磨练出出色的人盯人防守能力——面对德国和厄瓜多尔的前锋线时，他的单防和头球是科特迪瓦防线最直接的保障。'
+  },
+  'Christopher Opéri': {
+    careerReview: '奥佩里，29岁左后卫，效力伊斯坦布尔巴沙克谢希尔。插上助攻能力不俗，是边路轮换人选。12次国家队出场。',
+    wcSpotlight: '奥佩里是科南身后的左后卫轮换选项，在密集赛程中可能获得出场机会——多年职业磨砺赋予他稳定的防守执行力和边路传中质量。'
+  },
+  'Guéla Doué': {
+    careerReview: '杜埃，23岁右后卫，效力斯特拉斯堡。体能充沛，攻防态度积极，是右路可靠轮换球员。20次国家队出场打入3球。',
+    wcSpotlight: '杜埃虽然不是集锦中的常客，但战术任务完成度高——作为右路轮换，他的体能和积极性在密集赛程中是重要的战术补充。'
+  },
+  'Emmanuel Agbadou': {
+    careerReview: '阿格巴杜，28岁中卫，效力土超贝西克塔斯。身体对抗与头球解围能力突出，定位球防守表现可靠。20次国家队出场打入2球。',
+    wcSpotlight: '阿格巴杜是防线轮换成员，身体硬度和对抗能力在需要加固防守时发挥作用——贝西克塔斯的欧战经历让他保持高水平比赛节奏。'
+  },
+  'Evan Ndicka': {
+    careerReview: '恩迪卡，26岁中卫，法国出道，选择代表科特迪瓦出战。目前效力意甲罗马，左脚出球是其特色。防线轮换成员，阅读比赛能力出色。28次国家队出场。',
+    wcSpotlight: '恩迪卡在罗马的意甲体系中成长，左脚中卫的稀缺属性为科特迪瓦防线提供了独特的战术选择——他的出球能力和比赛阅读在高位防守中尤为珍贵。'
+  },
+
+  // ====== MF ======
+  'Jean Michaël Seri': {
+    careerReview: '塞里，34岁老将中场，成名于尼斯，之后先后效力富勒姆、加拉塔萨雷等队，现效力斯洛文尼亚马里博尔。长传调度能力突出，擅长在高压下稳住比赛节奏。65次国家队出场打入4球。',
+    wcSpotlight: '塞里是科特迪瓦中场的节拍器，34岁的经验让他在面对德国高压逼抢时能保持冷静出球——他的长传调度是由守转攻的起点，每一场都可能是其世界杯征程中的重要篇章。'
+  },
+  'Seko Fofana': {
+    careerReview: '福法纳（Seko Fofana），31岁全能B2B中场，持球推进与远射是核心威胁。职业生涯效力朗斯后加盟葡超波尔图，欧冠与非洲杯大赛经验丰富。纵向推进能力强，是中场进攻发起者之一。32次国家队出场打入7球。',
+    wcSpotlight: '福法纳是科特迪瓦中场最具纵向突破能力的球员——他的持球推进和禁区外远射是破解密集防守的重要手段。在凯西身边承担进攻推进角色，他的发挥直接影响球队的进攻威胁度。'
+  },
+  'Franck Kessié': {
+    careerReview: '凯西（Franck Kessié），科特迪瓦国家队队长，29岁中场核心。先后效力AC米兰、巴塞罗那，2021-22赛季以意甲冠军成员身份成为欧洲最具影响力的B2B中场之一，强壮的体魄搭配出色的后插上射门能力。此后加盟沙特吉达国民。2024年非洲杯以队长身份率领科特迪瓦夺冠，是球队战术与精神双重核心。',
+    wcSpotlight: '29岁的凯西是科特迪瓦的队长和战术核心——中场覆盖能力、对抗强度以及后插上得分的嗅觉，直接决定球队能走多远。小组赛面对德国、厄瓜多尔、库拉索的中场群时，他的大赛经验和全能属性是科特迪瓦最依赖的中场力量。'
+  },
+  'Ibrahim Sangaré': {
+    careerReview: '桑加雷，28岁防守型中场，出身埃因霍温，2023年转会英超诺丁汉森林。专职防守中场，抢断与拦截能力强，专职保护后防线，为队友创造进攻空间。2025-26赛季英超出场28次打入2球。2024年非洲杯随队夺冠。',
+    wcSpotlight: '桑加雷是科特迪瓦中场屏障——在诺丁汉森林的英超高强度历练让他的拦截和补位能力达到新高度。当凯西和福法纳前插进攻时，他的中路保护直接决定球队的攻守平衡能否维系。'
+  },
+  'Parfait Guiagon': {
+    careerReview: '吉亚贡，25岁中场，效力沙勒罗瓦。擅长狭小区域传控，主打阵容深度补充。5次国家队出场。',
+    wcSpotlight: '吉亚贡是科特迪瓦中场轮换力量——虽然国际知名度有限，但他在狭小空间的控球和传递能力是球队保持球权的重要工具。'
+  },
+  'Christ Inao Oulaï': {
+    careerReview: '乌莱，20岁年轻中场，效力特拉布宗体育。活动范围大，传球视野不错，是球队未来储备力量。9次国家队出场。',
+    wcSpotlight: '乌莱是科特迪瓦最年轻的中场球员，特拉布宗体育的土超经历正逐步提升其对抗能力。本届出场机会有限，以积累大赛经验为主。'
+  },
+
+  // ====== FW ======
+  'Ange-Yoan Bonny': {
+    careerReview: '博尼，22岁前锋，效力国际米兰（合同至2030年）。2026年5月8日完成国籍转换，正式获得代表科特迪瓦出战资格——此前曾代表法国U19、U20、U21出场17次。5月15日即入选世界杯大名单。身高体壮、门前嗅觉敏锐，具备传统中锋的支点能力和禁区终结技巧。仅1次国家队出场。',
+    wcSpotlight: '博尼是赛前刚完成归化的22岁前锋——5月8日获得资格，仅一周后入选大名单，是科特迪瓦本届最值得关注的新面孔之一。国际米兰的顶级训练环境赋予他出色的战术素养，本届以替补中锋身份出战，是锋线的特殊变量。'
+  },
+  'Simon Adingra': {
+    careerReview: '阿丁格拉，24岁边锋，出道于布莱顿，后转会法甲摩纳哥。边路速度与变向能力突出，是球队反击战术的重要棋子。2024年非洲杯随队夺冠。29次国家队出场打入5球。',
+    wcSpotlight: '阿丁格拉的速度是科特迪瓦反击战中最重要的武器之一——摩纳哥的法甲主力位置保证了他的比赛节奏。面对德国和厄瓜多尔的高位防线时，他的边路突破是撕开空间的关键手段。'
+  },
+  'Yan Diomande': {
+    careerReview: '延·迪奥曼德，19岁前锋，莱比锡青训出身。队内最年轻球员之一，速度突出，可胜任多个前场位置。多以替补登场冲击对手防线。10次国家队出场打入3球。',
+    wcSpotlight: '延·迪奥曼德以19岁的年纪首次征战世界杯，速度和冲击力是他最大的标签。莱比锡的德甲训练环境正加速他的成长——本届从替补席出发，是锋线的年轻活力来源。'
+  },
+  'Elye Wahi': {
+    careerReview: '瓦希，23岁前锋，蒙彼利埃青训出身，门前终结能力出色。先后效力朗斯、尼斯，联赛进球效率稳定。2026年3月31日才完成国家队首秀，是科特迪瓦最新加入的锋线力量。2次国家队出场。',
+    wcSpotlight: '瓦希3月才完成首秀，国家队融入时间极为有限，但23岁的尼斯主力前锋身份让他在替补席上具备实际威胁。跑位嗅觉和禁区内的冷静终结是核心价值——70分钟后的登场可能是对疲惫防线最直接的打击。'
+  },
+  'Oumar Diakité': {
+    careerReview: '迪亚基特，22岁前场多面手，效力比利时色格拉布鲁日。大赛心态沉稳，关键战表现亮眼，跑位灵活，擅长在替补登场后改变进攻节奏。2024年非洲杯随队夺冠。29次国家队出场打入6球。',
+    wcSpotlight: '迪亚基特在非洲杯淘汰赛的关键表现证明了他的大赛气质——22岁便拥有29场国家队经验。作为前场多面手，替补登场后灵活跑位和比赛节奏的改变是科特迪瓦进攻端的重要变招。'
+  },
+  'Amad Diallo': {
+    careerReview: '阿马德·迪亚洛，23岁进攻天才，2021年冬窗加盟曼联。经历格拉斯哥流浪者和桑德兰的租借历练，在英冠打入14球荣膺赛季最佳年轻球员。回归老特拉福德后站稳脚跟，盘带突破和内切射门能力突出。2024年非洲杯随队夺冠，淘汰赛中多次替补登场改变战局。19次国家队出场打入6球。',
+    wcSpotlight: '阿马德·迪亚洛是科特迪瓦进攻端的重要轮换——左脚的变向突破和内切射门对任何后卫都是威胁。曼联的英超对抗和非洲杯夺冠经历让他具备了超越年龄的大场面掌控力，单兵突破能力是球队打破僵局的重要手段。'
+  },
+  'Nicolas Pépé': {
+    careerReview: '佩佩，31岁边锋老将，里尔成名后高价加盟阿森纳，几经辗转，现效力西甲比利亚雷亚尔。2025-26赛季西甲出场38次贡献5球5助攻。左脚内切射门极具威胁，丰富的欧战大赛经验是科特迪瓦锋线不可替代的资产。55次国家队出场打入12球。',
+    wcSpotlight: '佩佩在比利亚雷亚尔重新找回状态——38场5球5助攻的数据证明他仍是科特迪瓦最稳定的边路输出点。31岁的经验与能力处于最佳平衡点，左脚兜射远角和不讲理的突然加速是他的核心武器，大赛经验在年轻锋线上将发挥关键作用。'
+  },
+  'Evann Guessand': {
+    careerReview: '盖桑，24岁前锋，效力英超水晶宫。可胜任中锋、边锋和前腰多个位置，跑动积极，逼抢能力突出。22次国家队出场打入4球。',
+    wcSpotlight: '盖桑是多位置属性和积极跑动的结合体——水晶宫的英超高强度比赛让他的身体对抗和逼抢达到了新水准。作为锋线轮换，他的万能属性在密集赛程中是战术调整的灵活选择。'
+  },
+  'Bazoumana Touré': {
+    careerReview: '图雷，20岁新锐边锋，效力德甲霍芬海姆。盘带与速度出众，年轻球员冲击力十足。6次国家队出场打入2球。',
+    wcSpotlight: '图雷是德甲赛场上崭露头角的边路新星——霍芬海姆的快速攻防转换体系与他的速度天赋完美契合。作为科特迪瓦最年轻的攻击手之一，他的不可预测性是替补登场时的独特优势。'
+  }
+};
+
+let applied = 0;
+const results = [];
+
+for (const [name, updates] of Object.entries(corrections)) {
+  const entry = wiki[name];
+  if (!entry) {
+    console.log(`NOT FOUND: ${name}`);
+    results.push({ name, status: 'NOT_FOUND' });
+    continue;
+  }
+
+  const original = { careerReview: entry.careerReview, wcSpotlight: entry.wcSpotlight };
+
+  if (updates.careerReview) {
+    entry.careerReview = oppFix(cleanProse(updates.careerReview));
+  }
+  if (updates.wcSpotlight) {
+    entry.wcSpotlight = oppFix(cleanProse(updates.wcSpotlight));
+  }
+
+  applied++;
+  results.push({
+    name,
+    status: 'UPDATED',
+    careerChanged: original.careerReview !== entry.careerReview,
+    wcChanged: original.wcSpotlight !== entry.wcSpotlight,
+  });
+}
+
+// GC fixes for remaining players
+const ciPlayers = ci.players.map(p => p.name);
+for (const name of ciPlayers) {
+  const entry = wiki[name];
+  if (!entry || corrections[name]) continue;
+
+  let changed = false;
+  if (entry.careerReview && (entry.careerReview.match(/德国队|同组对手|科特迪瓦队|库拉索队|最被低估|X因素|救赎|不可或缺|万能拼图|隐形基石/))) {
+    entry.careerReview = oppFix(cleanProse(entry.careerReview));
+    changed = true;
+  }
+  if (entry.wcSpotlight && (entry.wcSpotlight.match(/德国队|同组对手|科特迪瓦队|库拉索队|最被低估|X因素|救赎|不可或缺|万能拼图|隐形基石/))) {
+    entry.wcSpotlight = oppFix(cleanProse(entry.wcSpotlight));
+    changed = true;
+  }
+
+  if (changed) {
+    console.log(`GC fix: ${name}`);
+    applied++;
+  }
+}
+
+fs.writeFileSync(playersWikiPath, JSON.stringify(wiki, null, 2), 'utf8');
+
+console.log(`\n=== Ivory Coast Summary ===`);
+console.log(`Applied: ${applied}`);
+for (const r of results) {
+  if (r.status === 'UPDATED') {
+    const changes = [];
+    if (r.careerChanged) changes.push('careerReview');
+    if (r.wcChanged) changes.push('wcSpotlight');
+    console.log(`  ${r.name}: ${changes.join(',')}`);
+  } else {
+    console.log(`  ${r.name}: ${r.status}`);
+  }
+}
+
+console.log(`\n=== Verification ===`);
+for (const p of ciPlayers) {
+  if (!wiki[p.name]) console.log(`  MISSING: ${p.name}`);
+}
+console.log('Done.');

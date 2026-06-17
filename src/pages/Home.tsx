@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { fetchSeasonEvents, fetchPastEvents } from '../api/thesportsdb';
 import { lookupTeam } from '../utils/teamLookup';
 import { venueLabel, venueIdFromName } from '../utils/venueLabels';
-import { formatBeijingTime } from '../utils/datetime';
+import { formatBeijingTime, formatBeijingDate } from '../utils/datetime';
 import teamsData from '../data/teams.json';
 import fifaRankings from '../data/fifa-rankings.json';
 import scheduleData from '../data/venue-schedule.json';
@@ -199,7 +199,10 @@ function FeaturedMatchCard({ match }: { match: FlatMatch }) {
   const away = lookupTeam(match.strAwayTeam);
   const isLive = match.strStatus && match.strStatus !== 'FT' && match.strStatus !== 'NS';
   const isFinished = match.strStatus === 'FT';
-  const isToday = match.dateEvent === today;
+  const bjNow = new Intl.DateTimeFormat('zh-CN', { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit', hour12: false }).format(new Date()).replace(/\//g, '-');
+  const bjDate = formatBeijingDate(match.dateEvent, match.strTime);
+  const isToday = bjDate.iso === bjNow;
+  const bjTime = formatBeijingTime(match.dateEvent, match.strTime);
 
   return (
     <Link
@@ -208,7 +211,7 @@ function FeaturedMatchCard({ match }: { match: FlatMatch }) {
     >
       <div className="mb-3 flex items-center justify-between">
         <span className="text-xs text-sky-200">
-          {isToday ? '今日' : match.dateEvent.slice(5)} {match.strTime?.slice(0, 5)}
+          {isToday ? '今日' : bjDate.label} {bjTime.slice(bjTime.lastIndexOf(' ')+1)}
         </span>
         {isLive && (
           <span className="flex items-center gap-1.5 rounded-full bg-red-500/30 px-2.5 py-0.5 text-xs font-medium text-red-200">

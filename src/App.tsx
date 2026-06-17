@@ -12,6 +12,7 @@ const Venues = lazy(() => import('./pages/Venues'));
 const VenueDetail = lazy(() => import('./pages/VenueDetail'));
 const Bracket = lazy(() => import('./pages/Bracket'));
 const MatchDetail = lazy(() => import('./pages/MatchDetail'));
+const Rankings = lazy(() => import('./pages/Rankings'));
 
 function PageLoader() {
   return (
@@ -37,6 +38,7 @@ export default function App() {
             <Route path="/venues/:venueId" element={<VenueDetail />} />
             <Route path="/bracket" element={<Bracket />} />
             <Route path="/match/:eventId" element={<MatchDetail />} />
+            <Route path="/rankings" element={<Rankings />} />
           </Route>
         </Routes>
       </Suspense>

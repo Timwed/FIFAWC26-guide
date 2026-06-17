@@ -9,6 +9,7 @@ const navItems = [
   { path: '/standings', label: '积分榜' },
   { path: '/bracket', label: '淘汰赛' },
   { path: '/venues', label: '场馆' },
+  { path: '/rankings', label: '排名' },
 ];
 
 export default function Layout() {

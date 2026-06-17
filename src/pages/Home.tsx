@@ -5,6 +5,7 @@ import { lookupTeam } from '../utils/teamLookup';
 import { venueLabel, venueIdFromName } from '../utils/venueLabels';
 import { formatBeijingTime } from '../utils/datetime';
 import teamsData from '../data/teams.json';
+import fifaRankings from '../data/fifa-rankings.json';
 import scheduleData from '../data/venue-schedule.json';
 
 interface TeamEntry {
@@ -74,42 +75,58 @@ export default function Home() {
   const today = new Date().toISOString().slice(0, 10);
 
   const upcomingMatches = useMemo(() =>
-    allMatches
+    merged
       .filter((m) => m.strStatus !== 'FT' && m.dateEvent >= today)
       .sort((a, b) => (a.dateEvent + a.strTime).localeCompare(b.dateEvent + b.strTime))
       .slice(0, 6),
-    [today]);
+    [merged, today]);
+
+  const featuredMatch = useMemo(() => {
+    const live = merged.find((m) => m.strStatus && m.strStatus !== 'FT' && m.strStatus !== 'NS');
+    if (live) return live;
+    return upcomingMatches[0] || null;
+  }, [merged, upcomingMatches]);
 
   return (
     <div className="space-y-8">
-      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-sky-600 to-indigo-700 p-8 md:p-12">
+      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-sky-600 to-indigo-700 p-6 md:p-10">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iLjA1Ij48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-50" />
-        <div className="relative">
-          <p className="text-sm font-medium uppercase tracking-widest text-sky-200">
-            2026 FIFA World Cup
-          </p>
-          <h2 className="mt-2 text-3xl font-extrabold md:text-5xl">
-            美加墨世界杯
-          </h2>
-          <p className="mt-4 max-w-xl text-sky-100">
-            2026年6月11日 — 7月19日 &middot; 美国 · 加拿大 · 墨西哥
-            <br />
-            首届48队参赛的世界杯，12个小组，104场比赛
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link
-              to="/teams"
-              className="rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-sky-700 shadow-lg transition hover:bg-sky-50"
-            >
-              浏览球队
-            </Link>
-            <Link
-              to="/schedule"
-              className="rounded-lg border border-white/30 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20"
-            >
-              查看赛程
-            </Link>
+        <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+          {/* Left: Title & buttons */}
+          <div className="lg:max-w-md">
+            <p className="text-sm font-medium uppercase tracking-widest text-sky-200">
+              2026 FIFA World Cup
+            </p>
+            <h2 className="mt-2 text-3xl font-extrabold md:text-5xl">
+              美加墨世界杯
+            </h2>
+            <p className="mt-4 text-sky-100">
+              2026年6月11日 — 7月19日 &middot; 美国 · 加拿大 · 墨西哥
+              <br />
+              首届48队参赛的世界杯，12个小组，104场比赛
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link
+                to="/teams"
+                className="rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-sky-700 shadow-lg transition hover:bg-sky-50"
+              >
+                浏览球队
+              </Link>
+              <Link
+                to="/schedule"
+                className="rounded-lg border border-white/30 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20"
+              >
+                查看赛程
+              </Link>
+            </div>
           </div>
+
+          {/* Right: Featured match card */}
+          {featuredMatch && (
+            <div className="shrink-0 lg:w-80">
+              <FeaturedMatchCard match={featuredMatch} />
+            </div>
+          )}
         </div>
       </section>
 
@@ -137,13 +154,22 @@ export default function Home() {
 
       <section>
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-xl font-bold">参赛球队（48队）</h3>
-          <Link to="/teams" className="text-sm text-sky-400 hover:text-sky-300">
-            查看全部 →
-          </Link>
+          <h3 className="text-xl font-bold">参赛球队（按 FIFA 排名）</h3>
+          <div className="flex items-center gap-3">
+            <Link to="/rankings" className="text-sm text-sky-400 hover:text-sky-300">
+              查看完整排名 →
+            </Link>
+            <Link to="/teams" className="text-sm text-slate-400 hover:text-slate-300">
+              全部球队 →
+            </Link>
+          </div>
         </div>
-        <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
-          {teams.slice(0, 24).map((team) => (
+          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
+            {teams
+              .slice()
+              .sort((a, b) => (fifaRankings[a.shortName as keyof typeof fifaRankings]?.rank ?? 99) - (fifaRankings[b.shortName as keyof typeof fifaRankings]?.rank ?? 99))
+              .slice(0, 24)
+              .map((team) => (
             <Link
               key={team.shortName}
               to={`/teams/${team.shortName}`}
@@ -168,6 +194,87 @@ export default function Home() {
   );
 }
 
+function FeaturedMatchCard({ match }: { match: FlatMatch }) {
+  const home = lookupTeam(match.strHomeTeam);
+  const away = lookupTeam(match.strAwayTeam);
+  const isLive = match.strStatus && match.strStatus !== 'FT' && match.strStatus !== 'NS';
+  const isFinished = match.strStatus === 'FT';
+  const isToday = match.dateEvent === today;
+
+  return (
+    <Link
+      to={`/match/${match.idEvent}`}
+      className="block rounded-xl bg-white/10 backdrop-blur p-5 ring-1 ring-white/20 transition hover:bg-white/15"
+    >
+      <div className="mb-3 flex items-center justify-between">
+        <span className="text-xs text-sky-200">
+          {isToday ? '今日' : match.dateEvent.slice(5)} {match.strTime?.slice(0, 5)}
+        </span>
+        {isLive && (
+          <span className="flex items-center gap-1.5 rounded-full bg-red-500/30 px-2.5 py-0.5 text-xs font-medium text-red-200">
+            <span className="h-1.5 w-1.5 rounded-full bg-red-400 animate-pulse" />
+            进行中
+          </span>
+        )}
+        {isFinished && (
+          <span className="rounded-full bg-white/10 px-2.5 py-0.5 text-xs text-sky-200">
+            已结束
+          </span>
+        )}
+      </div>
+
+      <div className="flex items-center gap-3">
+        {/* Home team */}
+        <div className="flex flex-1 flex-col items-center gap-1.5 min-w-0">
+          {home && (
+            <img src={home.flagUrl} alt="" className="h-10 w-10 object-contain" />
+          )}
+          <span className="text-center text-xs font-medium leading-tight truncate w-full">
+            {home?.cnName ?? match.strHomeTeam}
+          </span>
+        </div>
+
+        {/* Score */}
+        <div className="shrink-0 text-center">
+          <div className="text-3xl font-bold tabular-nums tracking-tight">
+            <span>{isFinished || isLive ? (match.intHomeScore ?? '0') : '-'}</span>
+            <span className="mx-1 text-white/40">:</span>
+            <span>{isFinished || isLive ? (match.intAwayScore ?? '0') : '-'}</span>
+          </div>
+          {isLive && (
+            <div className="mt-0.5 text-xs font-medium text-red-300 animate-pulse">
+              {match.strStatus === '1H' ? '上半场' : match.strStatus === '2H' ? '下半场' : match.strStatus}
+            </div>
+          )}
+        </div>
+
+        {/* Away team */}
+        <div className="flex flex-1 flex-col items-center gap-1.5 min-w-0">
+          {away && (
+            <img src={away.flagUrl} alt="" className="h-10 w-10 object-contain" />
+          )}
+          <span className="text-center text-xs font-medium leading-tight truncate w-full">
+            {away?.cnName ?? match.strAwayTeam}
+          </span>
+        </div>
+      </div>
+
+      <div className="mt-3 flex items-center gap-2 text-xs text-sky-200/70">
+        <svg className="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        <span className="truncate">{match.strVenue}</span>
+        {match.strGroup && (
+          <span className="ml-auto rounded bg-white/10 px-1.5 py-0.5 font-mono text-xs">
+            {match.strGroup} 组
+          </span>
+        )}
+      </div>
+    </Link>
+  );
+}
+
 function MatchCard({ match }: { match: FlatMatch }) {
   const home = lookupTeam(match.strHomeTeam);
   const away = lookupTeam(match.strAwayTeam);
@@ -189,22 +296,36 @@ function MatchCard({ match }: { match: FlatMatch }) {
           </span>
         )}
       </div>
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2">
+        <div className="flex flex-1 min-w-0 items-center gap-2">
           {home && (
-            <img src={home.flagUrl} alt="" className="h-8 w-8 object-contain" />
+            <Link to={`/teams/${home.shortName}`} className="shrink-0 hover:opacity-75 transition">
+              <img src={home.flagUrl} alt="" className="h-8 w-8 object-contain" />
+            </Link>
           )}
-          <span className="text-sm font-medium">{home?.cnName ?? match.strHomeTeam}</span>
+          <Link
+            to={home ? `/teams/${home.shortName}` : '#'}
+            className="min-w-0 truncate text-sm font-medium hover:text-sky-400 transition"
+          >
+            {home?.cnName ?? match.strHomeTeam}
+          </Link>
         </div>
-        <div className="flex items-center gap-2 text-lg font-bold">
+        <div className="flex shrink-0 items-center gap-2 text-lg font-bold">
           <span>{match.intHomeScore ?? '-'}</span>
           <span className="text-slate-500">:</span>
           <span>{match.intAwayScore ?? '-'}</span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">{away?.cnName ?? match.strAwayTeam}</span>
+        <div className="flex flex-1 min-w-0 items-center gap-2 justify-end">
+          <Link
+            to={away ? `/teams/${away.shortName}` : '#'}
+            className="min-w-0 truncate text-sm font-medium hover:text-sky-400 transition"
+          >
+            {away?.cnName ?? match.strAwayTeam}
+          </Link>
           {away && (
-            <img src={away.flagUrl} alt="" className="h-8 w-8 object-contain" />
+            <Link to={`/teams/${away.shortName}`} className="shrink-0 hover:opacity-75 transition">
+              <img src={away.flagUrl} alt="" className="h-8 w-8 object-contain" />
+            </Link>
           )}
         </div>
       </div>

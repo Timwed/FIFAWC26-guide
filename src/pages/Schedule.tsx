@@ -518,13 +518,23 @@ export default function Schedule() {
                       <>
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex flex-1 items-start gap-3">
-                          <img
-                            src={home ? home.flagUrl : e.strHomeTeamBadge}
-                            alt=""
-                            className="mt-0.5 h-10 w-10 shrink-0 object-contain"
-                          />
+                          <Link
+                            to={hCode ? `/teams/${hCode}` : '#'}
+                            className="shrink-0 hover:opacity-75 transition"
+                          >
+                            <img
+                              src={home ? home.flagUrl : e.strHomeTeamBadge}
+                              alt=""
+                              className="mt-0.5 h-10 w-10 object-contain"
+                            />
+                          </Link>
                           <div className="min-w-0 flex-1">
-                            <p className="truncate font-semibold">{home?.cnName ?? e.strHomeTeam}</p>
+                            <Link
+                              to={hCode ? `/teams/${hCode}` : '#'}
+                              className="block truncate font-semibold hover:text-sky-400 transition"
+                            >
+                              {home?.cnName ?? e.strHomeTeam}
+                            </Link>
                             <p className="text-xs text-slate-500">主场</p>
                             {hg.length > 0 && (
                               <div className="mt-1.5 flex flex-wrap gap-1">
@@ -580,7 +590,12 @@ export default function Schedule() {
 
                         <div className="flex flex-1 items-start gap-3 justify-end">
                           <div className="min-w-0 flex-1 text-right">
-                            <p className="truncate font-semibold">{away?.cnName ?? e.strAwayTeam}</p>
+                            <Link
+                              to={aCode ? `/teams/${aCode}` : '#'}
+                              className="block truncate font-semibold hover:text-sky-400 transition"
+                            >
+                              {away?.cnName ?? e.strAwayTeam}
+                            </Link>
                             <p className="text-xs text-slate-500">客场</p>
                             {ag.length > 0 && (
                               <div className="mt-1.5 flex flex-wrap justify-end gap-1">
@@ -588,11 +603,16 @@ export default function Schedule() {
                               </div>
                             )}
                           </div>
-                          <img
-                            src={away ? away.flagUrl : e.strAwayTeamBadge}
-                            alt=""
-                            className="mt-0.5 h-10 w-10 shrink-0 object-contain"
-                          />
+                          <Link
+                            to={aCode ? `/teams/${aCode}` : '#'}
+                            className="shrink-0 hover:opacity-75 transition"
+                          >
+                            <img
+                              src={away ? away.flagUrl : e.strAwayTeamBadge}
+                              alt=""
+                              className="mt-0.5 h-10 w-10 object-contain"
+                            />
+                          </Link>
                         </div>
                       </div>
                       {showHalf && (

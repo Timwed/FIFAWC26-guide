@@ -1,9 +1,13 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import teamsData from '../data/teams.json';
 import squadsData from '../data/squads.json';
 import wikiTeamsData from '../data/wiki-teams.json';
+import scheduleData from '../data/venue-schedule.json';
+import { fetchSeasonEvents, fetchPastEvents } from '../api/thesportsdb';
+import { formatBeijingTime } from '../utils/datetime';
 import { lookupPlayerByExactName } from '../utils/playerLookup';
+import type { MatchEvent, StaticGoal } from '../types';
 
 interface TeamEntry {
   shortName: string;
@@ -87,6 +91,41 @@ function findTeamWiki(enName: string): string | null {
   return null;
 }
 
+interface TeamMatch extends MatchEvent {
+  goals?: StaticGoal[];
+}
+
+const allScheduleMatches: TeamMatch[] = (
+  Object.values(scheduleData as unknown as Record<string, TeamMatch[]>).flat()
+);
+
+const EN_NAME_ALIASES: Record<string, string> = {
+  'Bosnia-Herzegovina': 'Bosnia and Herzegovina',
+  'USA': 'United States',
+};
+
+function findOpponentFlag(enName: string): string | undefined {
+  const t = teams.find((x) => x.enName === enName);
+  if (t) return t.olgIcon;
+  const alias = EN_NAME_ALIASES[enName];
+  if (alias) {
+    const a = teams.find((x) => x.enName === alias);
+    if (a) return a.olgIcon;
+  }
+  return undefined;
+}
+
+function findOpponentCn(enName: string): string | undefined {
+  const t = teams.find((x) => x.enName === enName);
+  if (t) return t.cnName;
+  const alias = EN_NAME_ALIASES[enName];
+  if (alias) {
+    const a = teams.find((x) => x.enName === alias);
+    if (a) return a.cnName;
+  }
+  return undefined;
+}
+
 export default function TeamDetail() {
   const { shortName } = useParams<{ shortName: string }>();
 
@@ -99,6 +138,34 @@ export default function TeamDetail() {
     [team]
   );
   const wikiExtract = useMemo(() => (team ? findTeamWiki(team.enName) : null), [team]);
+
+  const [liveMap, setLiveMap] = useState<Map<string, MatchEvent>>(new Map());
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([fetchSeasonEvents(), fetchPastEvents()]).then(([season, past]) => {
+      if (cancelled) return;
+      const map = new Map<string, MatchEvent>();
+      for (const e of past) map.set(e.idEvent, e);
+      for (const e of season) {
+        if (!map.has(e.idEvent)) map.set(e.idEvent, e);
+      }
+      setLiveMap(map);
+    });
+    return () => { cancelled = true; };
+  }, []);
+
+  const teamMatches = useMemo(() => {
+    if (!team) return [];
+    return allScheduleMatches
+      .filter((m) => m.strHomeTeam === team.enName || m.strAwayTeam === team.enName)
+      .map((m) => {
+        const live = liveMap.get(m.idEvent);
+        if (!live) return m;
+        return { ...m, intHomeScore: live.intHomeScore, intAwayScore: live.intAwayScore, strStatus: live.strStatus };
+      })
+      .sort((a, b) => (a.dateEvent + a.strTime).localeCompare(b.dateEvent + b.strTime));
+  }, [team, liveMap]);
 
   const [posFilter, setPosFilter] = useState('All');
 
@@ -184,6 +251,117 @@ export default function TeamDetail() {
         }
         return null;
       })()}
+
+      {teamMatches.length > 0 && (
+        <section className="rounded-xl border border-white/5 bg-white/5 p-5">
+          <h3 className="mb-4 text-lg font-bold">比赛战况</h3>
+          <div className="space-y-3">
+            {teamMatches.map((m) => {
+              const isHomeTeam = m.strHomeTeam === team.enName;
+              const homeFlag = isHomeTeam ? team.olgIcon : findOpponentFlag(m.strHomeTeam);
+              const awayFlag = isHomeTeam ? findOpponentFlag(m.strAwayTeam) : team.olgIcon;
+              const homeCn = isHomeTeam ? team.cnName : findOpponentCn(m.strHomeTeam);
+              const awayCn = isHomeTeam ? findOpponentCn(m.strAwayTeam) : team.cnName;
+              const finished = m.strStatus === 'FT';
+              const live = m.strStatus && m.strStatus !== 'FT' && m.strStatus !== 'NS' && m.strStatus !== null;
+              const bjTime = formatBeijingTime(m.dateEvent, m.strTime);
+              const homeGoals = m.goals?.filter((g) => g.team === 'home') || [];
+              const awayGoals = m.goals?.filter((g) => g.team === 'away') || [];
+
+              return (
+                <div
+                  key={m.idEvent}
+                  className="rounded-lg border border-white/5 bg-white/[0.03] p-4"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <span
+                      className={`rounded px-2 py-0.5 text-xs font-medium ${
+                        finished
+                          ? 'bg-emerald-500/20 text-emerald-400'
+                          : live
+                            ? 'bg-red-500/20 text-red-400'
+                            : 'bg-slate-500/20 text-slate-400'
+                      }`}
+                    >
+                      {finished ? '已结束' : live ? '进行中' : '即将开始'}
+                    </span>
+                    <span className="text-xs text-slate-500">
+                      {bjTime}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-center gap-3">
+                    <div className="flex w-24 flex-col items-center">
+                      <img
+                        src={homeFlag}
+                        alt=""
+                        className="mb-1 h-9 w-9 object-contain"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                      />
+                      <span className="w-full truncate text-center text-sm font-bold">
+                        {homeCn || m.strHomeTeam}
+                      </span>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-2">
+                      {finished || live ? (
+                        <>
+                          <span className="text-2xl font-bold tabular-nums text-white">
+                            {m.intHomeScore ?? '-'}
+                          </span>
+                          <span className="text-slate-500">-</span>
+                          <span className="text-2xl font-bold tabular-nums text-white">
+                            {m.intAwayScore ?? '-'}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="text-lg font-bold text-slate-500">VS</span>
+                      )}
+                    </div>
+                    <div className="flex w-24 flex-col items-center">
+                      <img
+                        src={awayFlag}
+                        alt=""
+                        className="mb-1 h-9 w-9 object-contain"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                      />
+                      <span className="w-full truncate text-center text-sm font-bold">
+                        {awayCn || m.strAwayTeam}
+                      </span>
+                    </div>
+                  </div>
+
+                  {finished && m.goals && m.goals.length > 0 && (
+                    <div className="mt-3 flex gap-4 border-t border-white/5 pt-3">
+                      <div className="flex-1 space-y-0.5 text-xs text-slate-400">
+                        {homeGoals.map((g, i) => (
+                          <div key={i}>
+                            {g.name} {g.minute}&apos;
+                            {g.isPenalty ? ' (P)' : ''}
+                            {g.isOwnGoal ? ' (OG)' : ''}
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex-1 space-y-0.5 text-right text-xs text-slate-400">
+                        {awayGoals.map((g, i) => (
+                          <div key={i}>
+                            {g.name} {g.minute}&apos;
+                            {g.isPenalty ? ' (P)' : ''}
+                            {g.isOwnGoal ? ' (OG)' : ''}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       <section>
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

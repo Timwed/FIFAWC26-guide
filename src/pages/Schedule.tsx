@@ -75,6 +75,12 @@ function beijingPeriod(strTime: string): { label: string; color: string } {
   return { label: '上午', color: 'text-amber-400' };
 }
 
+const isLive = (e: StaticMatchEvent) =>
+  e.strStatus !== 'FT' && e.strStatus !== 'NS' && e.strStatus !== null;
+const isFinished = (e: StaticMatchEvent) =>
+  e.strStatus === 'FT' || e.intHomeScore !== null;
+const isUpcoming = (e: StaticMatchEvent) => !isFinished(e) && !isLive(e);
+
 export default function Schedule() {
   const [events, setEvents] = useState<StaticMatchEvent[]>(cachedFlat);
   const [openLigaMatches, setOpenLigaMatches] = useState<OpenLigaMatch[]>([]);
@@ -201,6 +207,7 @@ export default function Schedule() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     load(false);
     return () => { cancelledRef.current = true; };
   }, [load]);
@@ -275,12 +282,6 @@ export default function Schedule() {
     }, 30_000);
     return () => clearInterval(interval);
   }, [pollScores]);
-
-  const isLive = (e: StaticMatchEvent) =>
-    e.strStatus !== 'FT' && e.strStatus !== 'NS' && e.strStatus !== null;
-  const isFinished = (e: StaticMatchEvent) =>
-    e.strStatus === 'FT' || e.intHomeScore !== null;
-  const isUpcoming = (e: StaticMatchEvent) => !isFinished(e) && !isLive(e);
 
   const filtered =
     (tab === 'all'

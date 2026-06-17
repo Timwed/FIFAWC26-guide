@@ -420,14 +420,52 @@
       "idEvent": "2391741",
       "strHomeTeam": "Austria",
       "strAwayTeam": "Jordan",
-      "intHomeScore": "1",
-      "intAwayScore": "0",
-      "strStatus": "1H",
+      "intHomeScore": "3",
+      "intAwayScore": "1",
+      "strStatus": "FT",
       "strVenue": "Levi's Stadium",
       "strGroup": "J",
       "dateEvent": "2026-06-17",
       "strTime": "04:00:00",
-      "strTimeLocal": "21:00:00"
+      "strTimeLocal": "21:00:00",
+      "goals": [
+        {
+          "team": "home",
+          "name": "Romano Schmid",
+          "minute": 21,
+          "homeScore": 1,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Ali Olwan",
+          "minute": 50,
+          "homeScore": 1,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Yazan Al-Arab",
+          "minute": 76,
+          "homeScore": 2,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": true
+        },
+        {
+          "team": "home",
+          "name": "Marko Arnautovic",
+          "minute": 90,
+          "homeScore": 3,
+          "awayScore": 1,
+          "isPenalty": true,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2461111",
@@ -898,9 +936,9 @@
       "idEvent": "2461108",
       "strHomeTeam": "Portugal",
       "strAwayTeam": "DR Congo",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "1",
+      "intAwayScore": "0",
+      "strStatus": "1H",
       "strVenue": "Reliant Stadium",
       "strGroup": "K",
       "dateEvent": "2026-06-17",

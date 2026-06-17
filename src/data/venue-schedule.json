@@ -420,9 +420,9 @@
       "idEvent": "2391741",
       "strHomeTeam": "Austria",
       "strAwayTeam": "Jordan",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "1",
+      "intAwayScore": "0",
+      "strStatus": "1H",
       "strVenue": "Levi's Stadium",
       "strGroup": "J",
       "dateEvent": "2026-06-17",
@@ -507,14 +507,52 @@
       "idEvent": "2391742",
       "strHomeTeam": "France",
       "strAwayTeam": "Senegal",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "3",
+      "intAwayScore": "1",
+      "strStatus": "FT",
       "strVenue": "MetLife Stadium",
       "strGroup": "I",
       "dateEvent": "2026-06-16",
       "strTime": "19:00:00",
-      "strTimeLocal": "15:00:00"
+      "strTimeLocal": "15:00:00",
+      "goals": [
+        {
+          "team": "home",
+          "name": "Kylian Mbappé",
+          "minute": 66,
+          "homeScore": 1,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Bradley Barcola",
+          "minute": 82,
+          "homeScore": 2,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Kylian Mbappé",
+          "minute": 90,
+          "homeScore": 3,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Ibrahim MBaye",
+          "minute": 90,
+          "homeScore": 2,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2391760",
@@ -585,14 +623,61 @@
       "idEvent": "2461107",
       "strHomeTeam": "Iraq",
       "strAwayTeam": "Norway",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "1",
+      "intAwayScore": "4",
+      "strStatus": "FT",
       "strVenue": "Gillette Stadium",
       "strGroup": "I",
       "dateEvent": "2026-06-16",
       "strTime": "22:00:00",
-      "strTimeLocal": "18:00:00"
+      "strTimeLocal": "18:00:00",
+      "goals": [
+        {
+          "team": "away",
+          "name": "E. Haaland",
+          "minute": 29,
+          "homeScore": 0,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "A. Hussein",
+          "minute": 39,
+          "homeScore": 1,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "E. Haaland",
+          "minute": 43,
+          "homeScore": 1,
+          "awayScore": 2,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Leo Østigård",
+          "minute": 76,
+          "homeScore": 1,
+          "awayScore": 3,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "K. Thorstvedt",
+          "minute": 90,
+          "homeScore": 1,
+          "awayScore": 4,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2391749",
@@ -1353,14 +1438,43 @@
       "idEvent": "2391740",
       "strHomeTeam": "Argentina",
       "strAwayTeam": "Algeria",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "3",
+      "intAwayScore": "0",
+      "strStatus": "FT",
       "strVenue": "GEHA Field at Arrowhead Stadium",
       "strGroup": "J",
       "dateEvent": "2026-06-17",
       "strTime": "01:00:00",
-      "strTimeLocal": "20:00:00"
+      "strTimeLocal": "20:00:00",
+      "goals": [
+        {
+          "team": "home",
+          "name": "Lionel Messi",
+          "minute": 17,
+          "homeScore": 1,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Lionel Messi",
+          "minute": 60,
+          "homeScore": 2,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Lionel Messi",
+          "minute": 76,
+          "homeScore": 3,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2391751",

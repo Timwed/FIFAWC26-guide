@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
+import PlayerSearch from './PlayerSearch';
 
 const navItems = [
   { path: '/', label: '首页' },
@@ -47,6 +48,7 @@ export default function Layout() {
                 {item.label}
               </Link>
             ))}
+            <PlayerSearch />
           </nav>
           <button
             className="md:hidden rounded-lg p-2 text-slate-300 hover:bg-white/10"

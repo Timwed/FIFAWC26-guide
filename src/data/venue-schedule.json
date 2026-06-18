@@ -37,14 +37,52 @@
       "idEvent": "2391745",
       "strHomeTeam": "Uzbekistan",
       "strAwayTeam": "Colombia",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "1",
+      "intAwayScore": "3",
+      "strStatus": "FT",
       "strVenue": "Estadio Azteca",
       "strGroup": "K",
       "dateEvent": "2026-06-18",
       "strTime": "02:00:00",
-      "strTimeLocal": "20:00:00"
+      "strTimeLocal": "20:00:00",
+      "goals": [
+        {
+          "team": "away",
+          "name": "Daniel Muñoz",
+          "minute": 41,
+          "homeScore": 0,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "",
+          "minute": 60,
+          "homeScore": 1,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Luis Díaz",
+          "minute": 65,
+          "homeScore": 1,
+          "awayScore": 2,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Jaminton Campaz",
+          "minute": 99,
+          "homeScore": 1,
+          "awayScore": 3,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2461116",
@@ -188,7 +226,18 @@
       "strGroup": "L",
       "dateEvent": "2026-06-17",
       "strTime": "23:00:00",
-      "strTimeLocal": "19:00:00"
+      "strTimeLocal": "19:00:00",
+      "goals": [
+        {
+          "team": "home",
+          "name": "Samuel Yirenkyi",
+          "minute": 90,
+          "homeScore": 1,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2391752",

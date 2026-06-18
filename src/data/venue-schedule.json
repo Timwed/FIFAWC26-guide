@@ -395,14 +395,61 @@
       "idEvent": "2461110",
       "strHomeTeam": "Switzerland",
       "strAwayTeam": "Bosnia-Herzegovina",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "4",
+      "intAwayScore": "1",
+      "strStatus": "FT",
       "strVenue": "SoFi Stadium",
       "strGroup": "B",
       "dateEvent": "2026-06-18",
       "strTime": "19:00:00",
-      "strTimeLocal": "12:00:00"
+      "strTimeLocal": "12:00:00",
+      "goals": [
+        {
+          "team": "home",
+          "name": "Johan Manzambi",
+          "minute": 74,
+          "homeScore": 1,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Ruben Vargas",
+          "minute": 84,
+          "homeScore": 2,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Granit Xhaka",
+          "minute": 90,
+          "homeScore": 4,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Johan Manzambi",
+          "minute": 90,
+          "homeScore": 3,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Ermin Mahmic",
+          "minute": 90,
+          "homeScore": 3,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2391754",
@@ -1408,14 +1455,34 @@
       "idEvent": "2461109",
       "strHomeTeam": "Czech Republic",
       "strAwayTeam": "South Africa",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "1",
+      "intAwayScore": "1",
+      "strStatus": "FT",
       "strVenue": "Mercedes-Benz Stadium",
       "strGroup": "A",
       "dateEvent": "2026-06-18",
       "strTime": "16:00:00",
-      "strTimeLocal": "12:00:00"
+      "strTimeLocal": "12:00:00",
+      "goals": [
+        {
+          "team": "home",
+          "name": "Michal Sadilek",
+          "minute": 6,
+          "homeScore": 1,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Teboho Mokoena",
+          "minute": 83,
+          "homeScore": 1,
+          "awayScore": 1,
+          "isPenalty": true,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2391756",

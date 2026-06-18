@@ -80,6 +80,9 @@ export default function Layout() {
                 {item.label}
               </Link>
             ))}
+            <div className="mt-2 pt-2 border-t border-white/5">
+              <PlayerSearch />
+            </div>
           </nav>
         )}
       </header>

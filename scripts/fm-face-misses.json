@@ -222,12 +222,6 @@
     "club": "Barcelona B"
   },
   {
-    "team": "Egypt",
-    "player": "Ahmed Fatouh",
-    "age": 28,
-    "club": "Zamalek"
-  },
-  {
     "team": "Iran",
     "player": "Amirmohammad Razzaghinia",
     "age": 20,
@@ -328,12 +322,6 @@
     "player": "Mohammad Al-Dawoud",
     "age": 34,
     "club": "Al-Wehdat"
-  },
-  {
-    "team": "DR Congo",
-    "player": "Meschak Elia",
-    "age": 28,
-    "club": "Alanyaspor"
   },
   {
     "team": "Uzbekistan",

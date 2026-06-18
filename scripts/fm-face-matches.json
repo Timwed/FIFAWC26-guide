@@ -8126,6 +8126,19 @@
   },
   {
     "team": "Egypt",
+    "player": "Ahmed Fatouh",
+    "age": 28,
+    "club": "Zamalek",
+    "uid": "13226670",
+    "fmName": "Ahmed Aboul Fotouh",
+    "fmAge": 24,
+    "fmClub": "Zamalek Sporting Club",
+    "hasFace": true,
+    "method": "exact",
+    "score": 157
+  },
+  {
+    "team": "Egypt",
     "player": "Hamdy Fathy",
     "age": 31,
     "club": "Al-Wakrah",
@@ -13297,6 +13310,19 @@
     "hasFace": true,
     "method": "exact",
     "score": 227
+  },
+  {
+    "team": "DR Congo",
+    "player": "Meschak Elia",
+    "age": 28,
+    "club": "Alanyaspor",
+    "uid": "13173388",
+    "fmName": "Meschack Elia",
+    "fmAge": 24,
+    "fmClub": "Berner Sport Club Young Boys",
+    "hasFace": true,
+    "method": "exact",
+    "score": 167
   },
   {
     "team": "DR Congo",

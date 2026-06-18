@@ -118,6 +118,8 @@ const aliases = {
   'Hossein Kanaanizadegan': ['Hossein Kanani'],
   'Amirhossein Hosseinzadeh': ['Amir Hossein Hosseinzadeh'],
   'Khalil Ayari': ['Khaled Ayari'],
+  'Ahmed Fatouh': ['Ahmed Aboul Fotouh'],
+  'Meschak Elia': ['Meschack Elia'],
 };
 
 function automaticAliases(name) {

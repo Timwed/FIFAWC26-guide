@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchSeasonEvents, fetchPastEvents } from '../api/thesportsdb';
 import { lookupTeam } from '../utils/teamLookup';
-import { venueLabel, venueIdFromName } from '../utils/venueLabels';
+import { venueLabel } from '../utils/venueLabels';
 import { formatBeijingTime, formatBeijingDate } from '../utils/datetime';
 import teamsData from '../data/teams.json';
 import fifaRankings from '../data/fifa-rankings.json';

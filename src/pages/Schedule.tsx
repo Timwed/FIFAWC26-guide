@@ -4,19 +4,71 @@ import { fetchSeasonEvents, fetchPastEvents } from '../api/thesportsdb';
 import { fetchAllMatches, fetchMatchGoals } from '../api/openligadb';
 import { lookupTeam } from '../utils/teamLookup';
 import { lookupGoalScorer } from '../utils/playerLookup';
-import { venueLabel, venueIdFromName } from '../utils/venueLabels';
+import { venueLabel } from '../utils/venueLabels';
 import { formatBeijingTime, formatBeijingDate } from '../utils/datetime';
 import { cache } from '../utils/cache';
 import scheduleData from '../data/venue-schedule.json';
+import { buildAllMatches, type BracketMatch } from '../data/bracket';
 import type { MatchEvent, StaticGoal } from '../types';
 import type { OpenLigaMatch } from '../api/openligadb';
 
 interface StaticMatchEvent extends MatchEvent {
   goals?: StaticGoal[];
+  stageKey?: StageFilter;
 }
 
-const staticFlat: StaticMatchEvent[] = (Object.values(scheduleData as unknown as Record<string, StaticMatchEvent[]>).flat())
+type StageFilter = 'all' | 'G1' | 'G2' | 'G3' | BracketMatch['round'];
+
+const stageOptions: { key: StageFilter; label: string }[] = [
+  { key: 'all', label: '全部阶段' },
+  { key: 'G1', label: '小组第1轮' },
+  { key: 'G2', label: '小组第2轮' },
+  { key: 'G3', label: '小组第3轮' },
+  { key: 'R32', label: '1/16决赛' },
+  { key: 'R16', label: '1/8决赛' },
+  { key: 'QF', label: '1/4决赛' },
+  { key: 'SF', label: '半决赛' },
+  { key: '3P', label: '三四名' },
+  { key: 'F', label: '决赛' },
+];
+
+const groupFlat: StaticMatchEvent[] = (Object.values(scheduleData as unknown as Record<string, StaticMatchEvent[]>).flat())
   .sort((a, b) => a.dateEvent.localeCompare(b.dateEvent));
+
+const knockoutFlat: StaticMatchEvent[] = buildAllMatches().map((m) => ({
+  idEvent: m.id,
+  strEvent: `${m.homeLabel} vs ${m.awayLabel}`,
+  strEventAlternate: '',
+  strSeason: '2026',
+  idLeague: '',
+  strLeague: 'FIFA World Cup',
+  strHomeTeam: m.homeLabel,
+  strAwayTeam: m.awayLabel,
+  idHomeTeam: '',
+  idAwayTeam: '',
+  intRound: String(m.matchNo),
+  intHomeScore: null,
+  intAwayScore: null,
+  strTimestamp: `${m.dateEvent}T${m.strTime}Z`,
+  dateEvent: m.dateEvent,
+  dateEventLocal: m.dateEvent,
+  strTime: m.strTime,
+  strTimeLocal: '',
+  strHomeTeamBadge: '',
+  strAwayTeamBadge: '',
+  strVenue: m.venue,
+  strCountry: '',
+  strThumb: '',
+  strPoster: '',
+  strStatus: 'NS',
+  strPostponed: '',
+  strGroup: undefined,
+  strFilename: '',
+  stageKey: m.round,
+}));
+
+const staticFlat = [...groupFlat, ...knockoutFlat]
+  .sort((a, b) => (a.dateEvent + a.strTime).localeCompare(b.dateEvent + b.strTime));
 
 const roundMap: Record<string, string> = (() => {
   const grouped: Record<string, MatchEvent[]> = {};
@@ -80,6 +132,16 @@ const isLive = (e: StaticMatchEvent) =>
 const isFinished = (e: StaticMatchEvent) =>
   e.strStatus === 'FT' || e.intHomeScore !== null;
 const isUpcoming = (e: StaticMatchEvent) => !isFinished(e) && !isLive(e);
+const getStageKey = (e: StaticMatchEvent): StageFilter => {
+  if (e.stageKey) return e.stageKey;
+  const round = roundMap[e.idEvent];
+  if (round === '1') return 'G1';
+  if (round === '2') return 'G2';
+  if (round === '3') return 'G3';
+  return 'all';
+};
+const getStageLabel = (e: StaticMatchEvent): string =>
+  stageOptions.find((stage) => stage.key === getStageKey(e))?.label ?? '';
 
 export default function Schedule() {
   const [events, setEvents] = useState<StaticMatchEvent[]>(cachedFlat);
@@ -89,6 +151,7 @@ export default function Schedule() {
   const [refreshing, setRefreshing] = useState(false);
   const [tab, setTab] = useState<'all' | 'upcoming' | 'completed' | 'live'>('all');
   const [selectedGroup, setSelectedGroup] = useState('all');
+  const [selectedStage, setSelectedStage] = useState<StageFilter>('all');
   const cancelledRef = useRef(false);
   const scrolledRef = useRef(false);
 
@@ -291,7 +354,8 @@ export default function Schedule() {
         : tab === 'completed'
           ? events.filter(isFinished)
           : events.filter(isLive))
-    .filter((e) => selectedGroup === 'all' || e.strGroup === selectedGroup);
+    .filter((e) => selectedGroup === 'all' || e.strGroup === selectedGroup)
+    .filter((e) => selectedStage === 'all' || getStageKey(e) === selectedStage);
 
   const dateGroups = new Map<string, { iso: string; label: string; matches: StaticMatchEvent[] }>();
   for (const e of filtered) {
@@ -370,7 +434,8 @@ export default function Schedule() {
         ))}
       </div>
 
-      <div className="flex flex-wrap gap-1 mt-2">
+      <div className="flex flex-wrap items-center gap-1 mt-2">
+        <span className="mr-1 text-xs text-slate-500">小组</span>
         <button
           onClick={() => setSelectedGroup('all')}
           className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
@@ -388,6 +453,21 @@ export default function Schedule() {
             }`}
           >
             {g}组
+          </button>
+        ))}
+      </div>
+
+      <div className="flex flex-wrap items-center gap-1 mt-2">
+        <span className="mr-1 text-xs text-slate-500">阶段</span>
+        {stageOptions.map((stage) => (
+          <button
+            key={stage.key}
+            onClick={() => setSelectedStage(stage.key)}
+            className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+              selectedStage === stage.key ? 'bg-sky-500 text-white' : 'bg-white/5 text-slate-400 hover:bg-white/10'
+            }`}
+          >
+            {stage.label}
           </button>
         ))}
       </div>
@@ -410,7 +490,7 @@ export default function Schedule() {
               return (
                 <Link
                   key={e.idEvent}
-                  to={`/match/${e.idEvent}`}
+                  to={e.stageKey ? '/bracket' : `/match/${e.idEvent}`}
                   className={`block rounded-xl border p-4 transition hover:border-sky-500/20 ${
                     isLive(e)
                       ? 'border-red-500/30 bg-red-500/5'
@@ -510,13 +590,15 @@ export default function Schedule() {
                       <>
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex flex-1 items-start gap-3">
-                          <span className="shrink-0">
-                            <img
-                              src={home ? home.flagUrl : e.strHomeTeamBadge}
-                              alt=""
-                              className="mt-0.5 h-10 w-10 object-contain"
-                            />
-                          </span>
+                          {(home || e.strHomeTeamBadge) && (
+                            <span className="shrink-0">
+                              <img
+                                src={home ? home.flagUrl : e.strHomeTeamBadge}
+                                alt=""
+                                className="mt-0.5 h-10 w-10 object-contain"
+                              />
+                            </span>
+                          )}
                           <div className="min-w-0 flex-1">
                             <span className="block truncate font-semibold">
                               {home?.cnName ?? e.strHomeTeam}
@@ -581,13 +663,15 @@ export default function Schedule() {
                               </div>
                             )}
                           </div>
-                          <span className="shrink-0">
-                            <img
-                              src={away ? away.flagUrl : e.strAwayTeamBadge}
-                              alt=""
-                              className="mt-0.5 h-10 w-10 object-contain"
-                            />
-                          </span>
+                          {(away || e.strAwayTeamBadge) && (
+                            <span className="shrink-0">
+                              <img
+                                src={away ? away.flagUrl : e.strAwayTeamBadge}
+                                alt=""
+                                className="mt-0.5 h-10 w-10 object-contain"
+                              />
+                            </span>
+                          )}
                         </div>
                       </div>
                       {showHalf && (
@@ -604,13 +688,12 @@ export default function Schedule() {
 
                   <div className="mt-2 flex items-center justify-between text-xs text-slate-500">
                     <span>{venueLabel(e.strVenue)}</span>
-                    {(e.strGroup || roundMap[e.idEvent]) && (
-                      <span>
-                        {e.strGroup && `第 ${e.strGroup} 组`}
-                        {e.strGroup && roundMap[e.idEvent] && '    '}
-                        {roundMap[e.idEvent] && `第 ${roundMap[e.idEvent]} 轮`}
-                      </span>
-                    )}
+                    <span>
+                      {e.strGroup && `第 ${e.strGroup} 组`}
+                      {e.strGroup && roundMap[e.idEvent] && '    '}
+                      {roundMap[e.idEvent] && `第 ${roundMap[e.idEvent]} 轮`}
+                      {!e.strGroup && getStageLabel(e)}
+                    </span>
                   </div>
                 </Link>
               );

@@ -4,6 +4,7 @@ import scheduleData from '../data/venue-schedule.json';
 import teamsData from '../data/teams.json';
 import squadsData from '../data/squads.json';
 import { fetchSeasonEvents } from '../api/thesportsdb';
+import { buildMatchPatchMap } from '../utils/matchMerge';
 import { fetchAllMatches } from '../api/openligadb';
 import type { OpenLigaMatch } from '../api/openligadb';
 import { lookupTeam } from '../utils/teamLookup';
@@ -72,7 +73,7 @@ const POSITION_LABELS: Record<string, string> = {
 
 export default function MatchDetail() {
   const { eventId } = useParams<{ eventId: string }>();
-  const [liveScores, setLiveScores] = useState<Map<string, { hs: string; as: string; st: string }>>(new Map());
+  const [liveScores, setLiveScores] = useState<Map<string, { intHomeScore: string | null; intAwayScore: string | null; strStatus: string | null }>>(new Map());
 
   const match = useMemo(
     () => allMatches.find((m) => m.idEvent === eventId),
@@ -135,26 +136,21 @@ export default function MatchDetail() {
     pollingRef.current = true;
     try {
       const events = await fetchSeasonEvents();
-      const m = new Map<string, { hs: string; as: string; st: string }>();
-      for (const e of events) {
-        if (e.intHomeScore != null) {
-          m.set(e.idEvent, { hs: e.intHomeScore, as: e.intAwayScore || '0', st: e.strStatus || '' });
-        }
-      }
-      setLiveScores(m);
-    } catch {} finally {
+      setLiveScores(buildMatchPatchMap(events, []));
+    } catch { /* ignore */ } finally {
       pollingRef.current = false;
     }
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     pollScores();
   }, [pollScores]);
 
   const hasLiveRef = useRef(false);
   useEffect(() => {
     const live = liveScores.get(match?.idEvent ?? '');
-    hasLiveRef.current = !!(live && live.st && live.st !== 'FT' && live.st !== 'NS');
+    hasLiveRef.current = !!(live && live.strStatus && live.strStatus !== 'FT' && live.strStatus !== 'NS');
   }, [liveScores, match]);
 
   useEffect(() => {
@@ -176,9 +172,9 @@ export default function MatchDetail() {
   }
 
   const live = liveScores.get(match.idEvent);
-  const homeScore = live?.hs ?? match.intHomeScore;
-  const awayScore = live?.as ?? match.intAwayScore;
-  const status = live?.st ?? match.strStatus;
+  const homeScore = live?.intHomeScore ?? match.intHomeScore;
+  const awayScore = live?.intAwayScore ?? match.intAwayScore;
+  const status = live?.strStatus ?? match.strStatus;
   const finished = status === 'FT';
   const isLive = status && status !== 'FT' && status !== 'NS' && status !== null;
   const bjTime = formatBeijingTime(match.dateEvent, match.strTime);

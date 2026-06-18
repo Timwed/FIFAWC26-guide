@@ -1,0 +1,380 @@
+[
+  {
+    "team": "Czech Republic",
+    "player": "Hugo Sochůrek",
+    "age": 18,
+    "club": "Sparta Prague"
+  },
+  {
+    "team": "Mexico",
+    "player": "Raúl Rangel",
+    "age": 26,
+    "club": "Guadalajara"
+  },
+  {
+    "team": "Mexico",
+    "player": "Gilberto Mora",
+    "age": 17,
+    "club": "Tijuana"
+  },
+  {
+    "team": "Mexico",
+    "player": "Mateo Chávez",
+    "age": 22,
+    "club": "AZ"
+  },
+  {
+    "team": "South Africa",
+    "player": "Khulumani Ndamane",
+    "age": 22,
+    "club": "Mamelodi Sundowns"
+  },
+  {
+    "team": "South Africa",
+    "player": "Relebohile Mofokeng",
+    "age": 21,
+    "club": "Orlando Pirates"
+  },
+  {
+    "team": "South Africa",
+    "player": "Mbekezeli Mbokazi",
+    "age": 20,
+    "club": "Chicago Fire FC"
+  },
+  {
+    "team": "South Africa",
+    "player": "Samukele Kabini",
+    "age": 22,
+    "club": "Molde"
+  },
+  {
+    "team": "Bosnia and Herzegovina",
+    "player": "Mladen Jurkas",
+    "age": 18,
+    "club": "Borac Banja Luka"
+  },
+  {
+    "team": "Bosnia and Herzegovina",
+    "player": "Kerim Alajbegović",
+    "age": 18,
+    "club": "Red Bull Salzburg"
+  },
+  {
+    "team": "Qatar",
+    "player": "Issa Laye",
+    "age": 28,
+    "club": "Al-Arabi"
+  },
+  {
+    "team": "Qatar",
+    "player": "Ayoub Al-Oui",
+    "age": 21,
+    "club": "Al-Gharafa"
+  },
+  {
+    "team": "Qatar",
+    "player": "Tahsin Jamshid",
+    "age": 19,
+    "club": "Al-Duhail"
+  },
+  {
+    "team": "Qatar",
+    "player": "Mohamed Manai",
+    "age": 23,
+    "club": "Al-Shamal"
+  },
+  {
+    "team": "Haiti",
+    "player": "Louicius Deedson",
+    "age": 25,
+    "club": "FC Dallas"
+  },
+  {
+    "team": "Haiti",
+    "player": "Woodensky Pierre",
+    "age": 21,
+    "club": "Violette"
+  },
+  {
+    "team": "Morocco",
+    "player": "Ayyoub Bouaddi",
+    "age": 18,
+    "club": "Lille"
+  },
+  {
+    "team": "Morocco",
+    "player": "Gessime Yassine",
+    "age": 20,
+    "club": "Strasbourg"
+  },
+  {
+    "team": "Scotland",
+    "player": "Tyler Fletcher",
+    "age": 19,
+    "club": "Manchester United"
+  },
+  {
+    "team": "Australia",
+    "player": "Lucas Herrington",
+    "age": 18,
+    "club": "Colorado Rapids"
+  },
+  {
+    "team": "Paraguay",
+    "player": "Alexandro Maidana",
+    "age": 20,
+    "club": "Talleres"
+  },
+  {
+    "team": "Ivory Coast",
+    "player": "Ange-Yoan Bonny",
+    "age": 22,
+    "club": "Inter Milan"
+  },
+  {
+    "team": "Ivory Coast",
+    "player": "Yan Diomande",
+    "age": 19,
+    "club": "RB Leipzig"
+  },
+  {
+    "team": "Ivory Coast",
+    "player": "Christ Inao Oulaï",
+    "age": 20,
+    "club": "Trabzonspor"
+  },
+  {
+    "team": "Japan",
+    "player": "Zion Suzuki",
+    "age": 23,
+    "club": "Parma"
+  },
+  {
+    "team": "Japan",
+    "player": "Yūto Nagatomo",
+    "age": 39,
+    "club": "FC Tokyo"
+  },
+  {
+    "team": "Japan",
+    "player": "Shuto Machino",
+    "age": 26,
+    "club": "Borussia Mönchengladbach"
+  },
+  {
+    "team": "Japan",
+    "player": "Keisuke Gotō",
+    "age": 21,
+    "club": "Sint-Truiden"
+  },
+  {
+    "team": "Japan",
+    "player": "Keisuke Ōsako",
+    "age": 26,
+    "club": "Sanfrecce Hiroshima"
+  },
+  {
+    "team": "Japan",
+    "player": "Kōki Ogawa",
+    "age": 28,
+    "club": "NEC"
+  },
+  {
+    "team": "Japan",
+    "player": "Tomoki Hayakawa",
+    "age": 27,
+    "club": "Kashima Antlers"
+  },
+  {
+    "team": "Japan",
+    "player": "Kaishū Sano",
+    "age": 25,
+    "club": "Mainz 05"
+  },
+  {
+    "team": "Japan",
+    "player": "Junnosuke Suzuki",
+    "age": 22,
+    "club": "Copenhagen"
+  },
+  {
+    "team": "Japan",
+    "player": "Kento Shiogai",
+    "age": 21,
+    "club": "VfL Wolfsburg"
+  },
+  {
+    "team": "Tunisia",
+    "player": "Mouhib Chamakh",
+    "age": 24,
+    "club": "Club Africain"
+  },
+  {
+    "team": "Tunisia",
+    "player": "Rayan Elloumi",
+    "age": 18,
+    "club": "Vancouver Whitecaps FC"
+  },
+  {
+    "team": "Egypt",
+    "player": "Hamza Abdelkarim",
+    "age": 18,
+    "club": "Barcelona B"
+  },
+  {
+    "team": "Egypt",
+    "player": "Ahmed Fatouh",
+    "age": 28,
+    "club": "Zamalek"
+  },
+  {
+    "team": "Iran",
+    "player": "Amirmohammad Razzaghinia",
+    "age": 20,
+    "club": "Esteghlal"
+  },
+  {
+    "team": "New Zealand",
+    "player": "Tyler Bindon",
+    "age": 21,
+    "club": "Sheffield United"
+  },
+  {
+    "team": "New Zealand",
+    "player": "Michael Woud",
+    "age": 27,
+    "club": "Auckland FC"
+  },
+  {
+    "team": "Saudi Arabia",
+    "player": "Ali Majrashi",
+    "age": 26,
+    "club": "Al-Ahli"
+  },
+  {
+    "team": "Iraq",
+    "player": "Ahmed Maknzi",
+    "age": 24,
+    "club": "Al-Karma"
+  },
+  {
+    "team": "Iraq",
+    "player": "Ali Jasim",
+    "age": 22,
+    "club": "Al-Najma"
+  },
+  {
+    "team": "Algeria",
+    "player": "Achref Abada",
+    "age": 26,
+    "club": "USM Alger"
+  },
+  {
+    "team": "Algeria",
+    "player": "Oussama Benbot",
+    "age": 31,
+    "club": "USM Alger"
+  },
+  {
+    "team": "Algeria",
+    "player": "Ibrahim Maza",
+    "age": 20,
+    "club": "Bayer Leverkusen"
+  },
+  {
+    "team": "Jordan",
+    "player": "Abdallah Nasib",
+    "age": 32,
+    "club": "Al-Zawraa"
+  },
+  {
+    "team": "Jordan",
+    "player": "Husam Abu Dahab",
+    "age": 26,
+    "club": "Al-Faisaly"
+  },
+  {
+    "team": "Jordan",
+    "player": "Mohammad Abu Zrayq",
+    "age": 28,
+    "club": "Raja Casablanca"
+  },
+  {
+    "team": "Jordan",
+    "player": "Rajaei Ayed",
+    "age": 32,
+    "club": "Al-Hussein"
+  },
+  {
+    "team": "Jordan",
+    "player": "Mo Abualnadi",
+    "age": 25,
+    "club": "Selangor"
+  },
+  {
+    "team": "Jordan",
+    "player": "Ihsan Haddad",
+    "age": 32,
+    "club": "Al-Hussein"
+  },
+  {
+    "team": "Jordan",
+    "player": "Ali Azaizeh",
+    "age": 22,
+    "club": "Al-Shabab"
+  },
+  {
+    "team": "Jordan",
+    "player": "Mohammad Al-Dawoud",
+    "age": 34,
+    "club": "Al-Wehdat"
+  },
+  {
+    "team": "DR Congo",
+    "player": "Meschak Elia",
+    "age": 28,
+    "club": "Alanyaspor"
+  },
+  {
+    "team": "Uzbekistan",
+    "player": "Farrukh Sayfiev",
+    "age": 35,
+    "club": "Neftchi Fergana"
+  },
+  {
+    "team": "Uzbekistan",
+    "player": "Abdulla Abdullaev",
+    "age": 28,
+    "club": "Dibba"
+  },
+  {
+    "team": "Uzbekistan",
+    "player": "Bekhruz Karimov",
+    "age": 18,
+    "club": "Surkhon Termiz"
+  },
+  {
+    "team": "Uzbekistan",
+    "player": "Avazbek Ulmasaliev",
+    "age": 26,
+    "club": "AGMK"
+  },
+  {
+    "team": "Uzbekistan",
+    "player": "Jakhongir Urozov",
+    "age": 22,
+    "club": "Dinamo Samarqand"
+  },
+  {
+    "team": "Ghana",
+    "player": "Caleb Yirenkyi",
+    "age": 20,
+    "club": "Nordsjælland"
+  },
+  {
+    "team": "Ghana",
+    "player": "Christopher Bonsu Baah",
+    "age": 21,
+    "club": "Al-Qadsiah"
+  }
+]

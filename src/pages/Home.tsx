@@ -4,6 +4,7 @@ import { fetchSeasonEvents, fetchPastEvents } from '../api/thesportsdb';
 import { lookupTeam } from '../utils/teamLookup';
 import { venueLabel } from '../utils/venueLabels';
 import { formatBeijingTime, formatBeijingDate } from '../utils/datetime';
+import { buildMatchPatchMap, mergeMatchPatches } from '../utils/matchMerge';
 import teamsData from '../data/teams.json';
 import fifaRankings from '../data/fifa-rankings.json';
 import scheduleData from '../data/venue-schedule.json';
@@ -37,34 +38,20 @@ const staticSchedule = (scheduleData as Record<string, FlatMatch[]>);
 const allMatches = Object.values(staticSchedule).flat();
 
 export default function Home() {
-  const [liveMap, setLiveMap] = useState<Record<string, { intHomeScore: string | null; intAwayScore: string | null; strStatus: string | null }>>({});
+  const [liveMap, setLiveMap] = useState(new Map<string, { idEvent: string; intHomeScore: string | null; intAwayScore: string | null; strStatus: string | null }>());
 
   useEffect(() => {
     let cancelled = false;
     Promise.all([fetchSeasonEvents(), fetchPastEvents()])
       .then(([season, past]) => {
         if (cancelled) return;
-        const map: typeof liveMap = {};
-        for (const e of [...past, ...season]) {
-          map[e.idEvent] = {
-            intHomeScore: e.intHomeScore,
-            intAwayScore: e.intAwayScore,
-            strStatus: e.strStatus,
-          };
-        }
-        setLiveMap(map);
+        setLiveMap(buildMatchPatchMap(season, past));
       })
       .catch(() => {});
     return () => { cancelled = true; };
   }, []);
 
-  const merged = useMemo(() =>
-    allMatches.map((m) => {
-      const live = liveMap[m.idEvent];
-      return live
-        ? { ...m, intHomeScore: live.intHomeScore, intAwayScore: live.intAwayScore, strStatus: live.strStatus }
-        : m;
-    }), [liveMap]);
+  const merged = useMemo(() => mergeMatchPatches(allMatches, liveMap), [liveMap]);
 
   const pastMatches = useMemo(() =>
     merged

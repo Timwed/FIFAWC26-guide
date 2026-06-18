@@ -5,6 +5,8 @@ import squadsData from '../data/squads.json';
 import wikiTeamsData from '../data/wiki-teams.json';
 import scheduleData from '../data/venue-schedule.json';
 import { fetchSeasonEvents, fetchPastEvents } from '../api/thesportsdb';
+import { buildMatchPatchMap, mergeMatchPatches } from '../utils/matchMerge';
+import type { MatchScorePatch } from '../utils/matchMerge';
 import { formatBeijingTime } from '../utils/datetime';
 import { lookupPlayerByExactName } from '../utils/playerLookup';
 import type { MatchEvent, StaticGoal } from '../types';
@@ -139,32 +141,23 @@ export default function TeamDetail() {
   );
   const wikiExtract = useMemo(() => (team ? findTeamWiki(team.enName) : null), [team]);
 
-  const [liveMap, setLiveMap] = useState<Map<string, MatchEvent>>(new Map());
+  const [liveMap, setLiveMap] = useState<Map<string, MatchScorePatch>>(new Map());
 
   useEffect(() => {
     let cancelled = false;
     Promise.all([fetchSeasonEvents(), fetchPastEvents()]).then(([season, past]) => {
       if (cancelled) return;
-      const map = new Map<string, MatchEvent>();
-      for (const e of past) map.set(e.idEvent, e);
-      for (const e of season) {
-        if (!map.has(e.idEvent)) map.set(e.idEvent, e);
-      }
-      setLiveMap(map);
-    });
+      setLiveMap(buildMatchPatchMap(season, past));
+    }).catch(() => {});
     return () => { cancelled = true; };
   }, []);
 
   const teamMatches = useMemo(() => {
     if (!team) return [];
-    return allScheduleMatches
-      .filter((m) => m.strHomeTeam === team.enName || m.strAwayTeam === team.enName)
-      .map((m) => {
-        const live = liveMap.get(m.idEvent);
-        if (!live) return m;
-        return { ...m, intHomeScore: live.intHomeScore, intAwayScore: live.intAwayScore, strStatus: live.strStatus };
-      })
-      .sort((a, b) => (a.dateEvent + a.strTime).localeCompare(b.dateEvent + b.strTime));
+    return mergeMatchPatches(
+      allScheduleMatches.filter((m) => m.strHomeTeam === team.enName || m.strAwayTeam === team.enName),
+      liveMap
+    ).sort((a, b) => (a.dateEvent + a.strTime).localeCompare(b.dateEvent + b.strTime));
   }, [team, liveMap]);
 
   const [posFilter, setPosFilter] = useState('All');
@@ -269,9 +262,10 @@ export default function TeamDetail() {
               const awayGoals = m.goals?.filter((g) => g.team === 'away') || [];
 
               return (
-                <div
+                <Link
+                  to={`/match/${m.idEvent}`}
                   key={m.idEvent}
-                  className="rounded-lg border border-white/5 bg-white/[0.03] p-4"
+                  className="block rounded-lg border border-white/5 bg-white/[0.03] p-4 transition hover:border-sky-500/20"
                 >
                   <div className="mb-2 flex items-center justify-between">
                     <span
@@ -356,7 +350,7 @@ export default function TeamDetail() {
                       </div>
                     </div>
                   )}
-                </div>
+                </Link>
               );
             })}
           </div>

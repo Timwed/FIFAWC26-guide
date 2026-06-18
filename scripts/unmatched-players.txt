@@ -1,0 +1,105 @@
+无头像球员名单（63人不在FM26数据库 + 9人匹配到UID但缺头像文件）
+=================================================================
+
+统计：1248人 → 1185人匹配UID → 1176人有头像 → 1175人已写入players-wiki.json
+
+== 日本 (12人，J联赛/海外小球队，FM26覆盖不足) ==
+Zion Suzuki         23 岁  Parma
+Yūto Nagatomo       39 岁  FC Tokyo
+Shuto Machino       26 岁  Borussia Mönchengladbach
+Keisuke Gotō        21 岁  Sint-Truiden
+Keisuke Ōsako       26 岁  Sanfrecce Hiroshima
+Kōki Ogawa          28 岁  NEC
+Tomoki Hayakawa     27 岁  Kashima Antlers
+Kaishū Sano         25 岁  Mainz 05
+Junnosuke Suzuki    22 岁  Copenhagen
+Kento Shiogai       21 岁  VfL Wolfsburg
+
+== 约旦 (7人，阿拉伯联赛，FM26覆盖不足) ==
+Abdallah Nasib      32 岁  Al-Zawraa
+Husam Abu Dahab     26 岁  Al-Faisaly
+Mohammad Abu Zrayq  28 岁  Raja Casablanca
+Rajaei Ayed         32 岁  Al-Hussein
+Mo Abualnadi        25 岁  Selangor
+Ihsan Haddad        32 岁  Al-Hussein
+Ali Azaizeh         22 岁  Al-Shabab
+
+== 乌兹别克斯坦 (5人，非豪门球员，FM26覆盖不足) ==
+Farrukh Sayfiev     35 岁  Neftchi Fergana
+Abdulla Abdullaev   28 岁  Dibba
+Bekhruz Karimov     18 岁  Surkhon Termiz
+Avazbek Ulmasaliev  26 岁  AGMK
+Jakhongir Urozov    22 岁  Dinamo Samarqand
+
+== 卡塔尔 (4人，卡塔尔联赛，FM26覆盖不足) ==
+Issa Laye           28 岁  Al-Arabi
+Ayoub Al-Oui        21 岁  Al-Gharafa
+Tahsin Jamshid      19 岁  Al-Duhail
+Mohamed Manai       23 岁  Al-Shamal
+
+== 南非 (4人，南非/北欧联赛，FM26覆盖不足) ==
+Khulumani Ndamane   22 岁  Mamelodi Sundowns
+Relebohile Mofokeng 21 岁  Orlando Pirates
+Mbekezeli Mbokazi   20 岁  Chicago Fire FC (MLS)
+Samukele Kabini     22 岁  Molde
+
+== 墨西哥 (3人，青训/荷甲，FM26覆盖不足) ==
+Raúl Rangel         26 岁  Guadalajara
+Gilberto Mora       17 岁  Tijuana
+Mateo Chávez        22 岁  AZ
+
+== 阿尔及利亚 (3人，北非联赛，FM26覆盖不足) ==
+Achref Abada        26 岁  USM Alger
+Oussama Benbot      31 岁  USM Alger
+Ibrahim Maza        20 岁  Bayer Leverkusen
+
+== 科特迪瓦 (3人，非洲/土耳其联赛，FM26覆盖不足) ==
+Ange-Yoan Bonny     22 岁  Inter Milan
+Yan Diomande        19 岁  RB Leipzig
+Christ Inao Oulaï   20 岁  Trabzonspor
+
+== 伊朗 (3人，伊朗联赛，FM26覆盖不足) ==
+Amirmohammad Razzaghinia  20 岁  Esteghlal
+
+== 波黑 (2人，年轻球员，FM26覆盖不足) ==
+Mladen Jurkas       18 岁  Borac Banja Luka
+Kerim Alajbegović   18 岁  Red Bull Salzburg
+
+== 海地 (2人，中北美小联赛，FM26覆盖不足) ==
+Louicius Deedson    25 岁  FC Dallas
+Woodensky Pierre    21 岁  Violette
+
+== 摩洛哥 (2人，法国青训系统，FM26覆盖不足) ==
+Ayyoub Bouaddi      18 岁  Lille
+Gessime Yassine     20 岁  Strasbourg
+
+== 新西兰 (2人，大洋洲联赛，FM26覆盖不足) ==
+Tyler Bindon        21 岁  Sheffield United
+Michael Woud        27 岁  Auckland FC
+
+== 伊拉克 (2人，伊拉克联赛，FM26覆盖不足) ==
+Ahmed Maknzi        24 岁  Al-Karma
+Ali Jasim           22 岁  Al-Najma
+
+== 突尼斯 (2人，突尼斯联赛/MLS，FM26覆盖不足) ==
+Mouhib Chamakh      24 岁  Club Africain
+Rayan Elloumi       18 岁  Vancouver Whitecaps FC
+
+== 埃及 (2人，埃及联赛/巴萨B，FM26覆盖不足) ==
+Hamza Abdelkarim    18 岁  Barcelona B
+Ahmed Fatouh        28 岁  Zamalek
+
+== 以下各1人 ==
+Hugo Sochůrek       18 岁  Sparta Prague           (捷克)
+Tyler Fletcher      19 岁  Manchester United        (苏格兰)
+Lucas Herrington    18 岁  Colorado Rapids          (澳大利亚)
+Alexandro Maidana   20 岁  Talleres                 (巴拉圭)
+Caleb Yirenkyi      20 岁  Nordsjælland            (加纳)
+Christopher Bonsu Baah 21 岁  Al-Qadsiah            (加纳)
+Ali Majrashi        26 岁  Al-Ahli                  (沙特阿拉伯)
+Meschak Elia        28 岁  Alanyaspor               (民主刚果)
+Mohammad Al-Dawoud  34 岁  Al-Wehdat                (约旦)
+
+== 匹配到UID但头像文件缺失的 (9人) ==
+（已匹配到FM26 UID，但faces目录下无对应PNG文件）
+具体名单见 scripts/fm-face-matches.json 中 hasFace=false 的条目

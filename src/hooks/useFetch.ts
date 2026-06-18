@@ -16,6 +16,7 @@ export function useFetch<T>(fetchFn: () => Promise<T>, deps: unknown[] = []) {
     } finally {
       setLoading(false);
     }
+    // eslint-disable-next-line react-hooks/use-memo
   }, deps);
 
   useEffect(() => {

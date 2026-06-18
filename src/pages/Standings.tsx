@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { fetchSeasonEvents, fetchPastEvents } from '../api/thesportsdb';
+import { buildMatchPatchMap, mergeMatchPatches } from '../utils/matchMerge';
 import type { MatchEvent } from '../types';
 import type { OpenLigaGroupTable, OpenLigaGroupTableTeam } from '../api/openligadb';
 import teamsData from '../data/teams.json';
 import scheduleData from '../data/venue-schedule.json';
 
 interface FlatMatch {
+  idEvent: string;
   strHomeTeam: string;
   strAwayTeam: string;
   intHomeScore: string | null;
@@ -127,25 +129,8 @@ export default function Standings() {
         fetchPastEvents(),
       ]).catch(() => [[], []] as [MatchEvent[], MatchEvent[]]);
       if (cancelled) return;
-
-      const pastIds = new Set(past.map((e) => e.idEvent));
-      const merged: MatchEvent[] = [...past];
-      for (const e of season) {
-        if (!pastIds.has(e.idEvent)) merged.push(e);
-      }
-
-      const map = new Map(merged.map((e) => [e.idEvent, e]));
-      const updated = allMatches.map((m) => {
-        const live = map.get((m as any).idEvent as string);
-        if (!live) return m;
-        return {
-          ...m,
-          intHomeScore: live.intHomeScore,
-          intAwayScore: live.intAwayScore,
-          strStatus: live.strStatus,
-        };
-      });
-      setLiveMatches(updated);
+      const liveMap = buildMatchPatchMap(season, past);
+      setLiveMatches(mergeMatchPatches(allMatches, liveMap));
     })();
     return () => { cancelled = true; };
   }, []);

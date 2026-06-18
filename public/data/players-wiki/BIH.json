@@ -1,14 +1,15 @@
 {
   "Nikola Vasilj": {
     "careerReview": "出道于莫斯塔尔兹林斯基，辗转德国纽伦堡、乌克兰索尔亚后于2021年加盟圣保利，逐步从轮换门将成长为绝对主力。2023-24赛季以主力身份帮助球队以德乙亚军身份升入德甲，2024-25赛季德甲扑救次数位列联赛前列，门线反应迅捷、手抛球发动反击能力突出。2025-26赛季圣保利战绩不佳最终降级，瓦西里全赛季联赛出场31次，保持稳定的扑救成功率，是球队后防线最可靠的一环。国家队层面从替补逐步上位，在世预赛、欧预赛中积累了丰富的硬仗经验，现为波黑主力门将。",
-    "wcSpotlight": "30岁正值门将黄金年龄，身体状态与比赛阅读能力均处于巅峰。波黑小组赛对手实力均衡，他的门线发挥是球队拿分的关键保障，具备贡献单场高水准扑救、成为赛事黑马门将的潜力。"
+    "wcSpotlight": "30岁正值门将黄金年龄，身体状态与比赛阅读能力均处于巅峰。波黑小组赛对手实力均衡，他的门线发挥是球队拿分的关键保障，具备贡献单场高水准扑救、成为赛事黑马门将的潜力。",
+    "image": "/players/21024436.png"
   },
   "Nihad Mujakić": {
     "number": "2",
     "fullName": "Nihad Mujakić",
     "position": "Defender",
     "currentClub": "Gaziantep",
-    "image": "",
+    "image": "/players/21028829.png",
     "clubCareer": [
       {
         "years": "2017–2019",
@@ -43,7 +44,7 @@
     "fullName": "Dennis Hadžikadunić",
     "position": "Defender",
     "currentClub": "Sampdoria",
-    "image": "",
+    "image": "/players/93060314.png",
     "clubCareer": [
       {
         "years": "2018–2020",
@@ -78,7 +79,7 @@
     "fullName": "Tarik Muharemović",
     "position": "Defender",
     "currentClub": "Sassuolo",
-    "image": "",
+    "image": "/players/16337326.png",
     "clubCareer": [
       {
         "years": "2020–2022",
@@ -109,7 +110,7 @@
     "fullName": "Sead Kolašinac",
     "position": "Defender",
     "currentClub": "Atalanta",
-    "image": "",
+    "image": "/players/92029805.png",
     "clubCareer": [
       {
         "years": "2013–2017",
@@ -140,7 +141,7 @@
     "fullName": "Benjamin Tahirović",
     "position": "Midfielder",
     "currentClub": "Brøndby",
-    "image": "",
+    "image": "/players/93145052.png",
     "clubCareer": [
       {
         "years": "2020–2021",
@@ -171,7 +172,7 @@
     "fullName": "Amar Dedić",
     "position": "Defender",
     "currentClub": "Benfica",
-    "image": "",
+    "image": "/players/16283629.png",
     "clubCareer": [
       {
         "years": "2019–2021",
@@ -198,7 +199,7 @@
     "fullName": "Armin Gigović",
     "position": "Midfielder",
     "currentClub": "Young Boys",
-    "image": "",
+    "image": "/players/93122308.png",
     "clubCareer": [
       {
         "years": "2020–2022",
@@ -229,7 +230,7 @@
     "fullName": "Samed Baždar",
     "position": "Forward",
     "currentClub": "Jagiellonia Białystok",
-    "image": "",
+    "image": "/players/2000027057.png",
     "clubCareer": [
       {
         "years": "2020–2023",
@@ -256,7 +257,7 @@
     "fullName": "Ermedin Demirović",
     "position": "Forward",
     "currentClub": "VfB Stuttgart",
-    "image": "",
+    "image": "/players/91158071.png",
     "clubCareer": [
       {
         "years": "2017–2020",
@@ -287,7 +288,7 @@
     "fullName": "Edin Džeko",
     "position": "Forward",
     "currentClub": "Schalke 04",
-    "image": "",
+    "image": "/players/8502440.png",
     "clubCareer": [
       {
         "years": "2003–2005",
@@ -342,7 +343,7 @@
     "fullName": "Ivan Bašić",
     "position": "Midfielder",
     "currentClub": "Astana",
-    "image": "",
+    "image": "/players/2000044656.png",
     "clubCareer": [
       {
         "years": "2021–2023",
@@ -373,7 +374,7 @@
     "fullName": "Ivan Šunjić",
     "position": "Midfielder",
     "currentClub": "Pafos",
-    "image": "",
+    "image": "/players/24039617.png",
     "clubCareer": [
       {
         "years": "2014–2019",
@@ -404,7 +405,7 @@
     "fullName": "Amar Memić",
     "position": "Midfielder",
     "currentClub": "Viktoria Plzeň",
-    "image": "",
+    "image": "/players/2000056780.png",
     "clubCareer": [
       {
         "years": "2021–2023",
@@ -435,7 +436,7 @@
     "fullName": "Amir Hadžiahmetović",
     "position": "Midfielder",
     "currentClub": "Hull City",
-    "image": "",
+    "image": "/players/21026981.png",
     "clubCareer": [
       {
         "years": "2014–2022",
@@ -462,7 +463,7 @@
     "fullName": "Dženis Burnić",
     "position": "Midfielder",
     "currentClub": "Karlsruher SC",
-    "image": "",
+    "image": "/players/92068724.png",
     "clubCareer": [
       {
         "years": "2015–2018",
@@ -497,7 +498,7 @@
     "fullName": "Nikola Katić",
     "position": "Defender",
     "currentClub": "Schalke 04",
-    "image": "",
+    "image": "/players/24047814.png",
     "clubCareer": [
       {
         "years": "2016–2018",
@@ -555,7 +556,7 @@
     "fullName": "Esmir Bajraktarević",
     "position": "Forward",
     "currentClub": "PSV Eindhoven",
-    "image": "",
+    "image": "/players/2000143821.png",
     "clubCareer": [
       {
         "years": "2022–2024",
@@ -582,7 +583,7 @@
     "fullName": "Stjepan Radeljić",
     "position": "Defender",
     "currentClub": "Rijeka",
-    "image": "",
+    "image": "/players/91181821.png",
     "clubCareer": [
       {
         "years": "2018–2021",
@@ -609,7 +610,7 @@
     "fullName": "Martin Zlomislić",
     "position": "Goalkeeper",
     "currentClub": "Rijeka",
-    "image": "",
+    "image": "/players/2000045461.png",
     "clubCareer": [
       {
         "years": "2021–2023",
@@ -636,7 +637,7 @@
     "fullName": "Haris Tabaković",
     "position": "Forward",
     "currentClub": "Borussia Mönchengladbach",
-    "image": "",
+    "image": "/players/98029083.png",
     "clubCareer": [
       {
         "years": "2016–2019",
@@ -667,7 +668,7 @@
     "fullName": "Arjan Malić",
     "position": "Defender",
     "currentClub": "Sturm Graz",
-    "image": "",
+    "image": "/players/2000105372.png",
     "clubCareer": [
       {
         "years": "2021–2023",
@@ -694,7 +695,7 @@
     "fullName": "Jovo Lukić",
     "position": "Forward",
     "currentClub": "Universitatea Cluj",
-    "image": "",
+    "image": "/players/21029564.png",
     "clubCareer": [
       {
         "years": "2020–2022",
@@ -721,7 +722,7 @@
     "fullName": "Ermin Mahmić",
     "position": "Midfielder",
     "currentClub": "Slovan Liberec",
-    "image": "",
+    "image": "/players/2000091823.png",
     "clubCareer": [
       {
         "years": "2022–2024",

@@ -7,6 +7,7 @@ import { lookupGoalScorer } from '../utils/playerLookup';
 import { venueLabel } from '../utils/venueLabels';
 import { formatBeijingTime, formatBeijingDate } from '../utils/datetime';
 import { cache } from '../utils/cache';
+import { buildMatchPatchMap, mergeMatchPatches, buildOpenLigaGoals } from '../utils/matchMerge';
 import scheduleData from '../data/venue-schedule.json';
 import { buildAllMatches, type BracketMatch } from '../data/bracket';
 import type { MatchEvent, StaticGoal } from '../types';
@@ -95,32 +96,6 @@ const cachedFlat: StaticMatchEvent[] = staticFlat.map(e => {
   return e;
 });
 
-function buildApiGoals(
-  olm: OpenLigaMatch,
-  event: StaticMatchEvent
-): StaticGoal[] {
-  const home = lookupTeam(event.strHomeTeam);
-  const team1IsHome = home ? olm.team1.shortName === home.shortName : true;
-  let lastH = 0;
-  const goals: StaticGoal[] = [];
-  for (const g of olm.goals) {
-    const hScore = team1IsHome ? g.scoreTeam1 : g.scoreTeam2;
-    const aScore = team1IsHome ? g.scoreTeam2 : g.scoreTeam1;
-    const team: 'home' | 'away' = hScore > lastH ? 'home' : 'away';
-    goals.push({
-      team,
-      name: g.goalGetterName || '',
-      minute: g.matchMinute,
-      homeScore: hScore,
-      awayScore: aScore,
-      isPenalty: !!g.isPenalty,
-      isOwnGoal: !!g.isOwnGoal,
-    });
-    lastH = hScore;
-  }
-  return goals;
-}
-
 function beijingPeriod(strTime: string): { label: string; color: string } {
   const bjHour = (parseInt(strTime.split(':')[0], 10) + 8) % 24;
   if (bjHour < 6) return { label: '凌晨', color: 'text-indigo-400' };
@@ -169,21 +144,8 @@ export default function Schedule() {
     if (cancelledRef.current) return;
 
     // Merge API results into static schedule: keep static as base, overlay live scores
-    const liveMap = new Map<string, MatchEvent>();
-    for (const e of past) liveMap.set(e.idEvent, e);
-    for (const e of season) {
-      if (!liveMap.has(e.idEvent)) liveMap.set(e.idEvent, e);
-    }
-    const merged = staticFlat.map((e) => {
-      const live = liveMap.get(e.idEvent);
-      if (!live) return e;
-      return {
-        ...e,
-        intHomeScore: live.intHomeScore,
-        intAwayScore: live.intAwayScore,
-        strStatus: live.strStatus,
-      };
-    }) as StaticMatchEvent[];
+    const liveMap = buildMatchPatchMap(season, past);
+    const merged = mergeMatchPatches(staticFlat, liveMap) as StaticMatchEvent[];
     merged.sort((a, b) => a.dateEvent.localeCompare(b.dateEvent));
     setEvents(merged);
 
@@ -256,7 +218,7 @@ export default function Schedule() {
               ) < 3600000)
         );
         const goals = olm && olm.goals.length > 0
-          ? buildApiGoals(olm, event)
+          ? buildOpenLigaGoals(olm, event.strHomeTeam)
           : event.goals;
         cache.setEvent(event.idEvent, {
           intHomeScore: event.intHomeScore,
@@ -307,28 +269,8 @@ export default function Schedule() {
     pollingRef.current = true;
     try {
       const [season, past] = await Promise.all([fetchSeasonEvents(), fetchPastEvents()]);
-      const liveMap = new Map<string, MatchEvent>();
-      for (const e of past) liveMap.set(e.idEvent, e);
-      for (const e of season) {
-        if (!liveMap.has(e.idEvent)) liveMap.set(e.idEvent, e);
-      }
-      setEvents(prev =>
-        prev.map(e => {
-          const live = liveMap.get(e.idEvent);
-          if (!live) return e;
-          if (
-            live.intHomeScore === e.intHomeScore &&
-            live.intAwayScore === e.intAwayScore &&
-            live.strStatus === e.strStatus
-          ) return e;
-          return {
-            ...e,
-            intHomeScore: live.intHomeScore,
-            intAwayScore: live.intAwayScore,
-            strStatus: live.strStatus,
-          };
-        })
-      );
+      const liveMap = buildMatchPatchMap(season, past);
+      setEvents(prev => mergeMatchPatches(prev, liveMap));
     } finally {
       pollingRef.current = false;
     }

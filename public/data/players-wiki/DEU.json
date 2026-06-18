@@ -4,7 +4,7 @@
     "fullName": "Manuel Neuer",
     "position": "GK",
     "currentClub": "Bayern Munich",
-    "image": "",
+    "image": "/players/8718372.png",
     "clubCareer": [
       {
         "years": "2005–2011",
@@ -27,7 +27,7 @@
     "fullName": "Antonio Rüdiger",
     "position": "DF",
     "currentClub": "Real Madrid",
-    "image": "",
+    "image": "/players/92023410.png",
     "clubCareer": [
       {
         "years": "2011–2015",
@@ -62,7 +62,7 @@
     "fullName": "Waldemar Anton",
     "position": "DF",
     "currentClub": "Borussia Dortmund",
-    "image": "",
+    "image": "/players/91137493.png",
     "clubCareer": [
       {
         "years": "2015–2020",
@@ -89,7 +89,7 @@
     "fullName": "Jonathan Tah",
     "position": "DF",
     "currentClub": "Bayern Munich",
-    "image": "",
+    "image": "/players/91119700.png",
     "clubCareer": [
       {
         "years": "2013–2015",
@@ -116,7 +116,7 @@
     "fullName": "Aleksandar Pavlović",
     "position": "MF",
     "currentClub": "Bayern Munich",
-    "image": "",
+    "image": "/players/2000171034.png",
     "clubCareer": [
       {
         "years": "2023–",
@@ -135,7 +135,7 @@
     "fullName": "Joshua Kimmich",
     "position": "DF",
     "currentClub": "Bayern Munich",
-    "image": "",
+    "image": "/players/92039023.png",
     "clubCareer": [
       {
         "years": "2012–2013",
@@ -162,7 +162,7 @@
     "fullName": "Kai Havertz",
     "position": "FW",
     "currentClub": "Arsenal",
-    "image": "",
+    "image": "/players/91151081.png",
     "clubCareer": [
       {
         "years": "2016–2020",
@@ -189,7 +189,7 @@
     "fullName": "Leon Goretzka",
     "position": "MF",
     "currentClub": "Bayern Munich",
-    "image": "",
+    "image": "/players/91104807.png",
     "clubCareer": [
       {
         "years": "2012–2013",
@@ -216,7 +216,7 @@
     "fullName": "Jamie Leweling",
     "position": "MF",
     "currentClub": "VfB Stuttgart",
-    "image": "",
+    "image": "/players/92103754.png",
     "clubCareer": [
       {
         "years": "2019–2022",
@@ -243,7 +243,7 @@
     "fullName": "Jamal Musiala",
     "position": "MF",
     "currentClub": "Bayern Munich",
-    "image": "",
+    "image": "/players/28124579.png",
     "clubCareer": [
       {
         "years": "2020–",
@@ -262,7 +262,7 @@
     "fullName": "Nick Woltemade",
     "position": "FW",
     "currentClub": "Newcastle United",
-    "image": "",
+    "image": "/players/91187791.png",
     "clubCareer": [
       {
         "years": "2023–2024",
@@ -289,7 +289,7 @@
     "fullName": "Oliver Baumann",
     "position": "GK",
     "currentClub": "TSG Hoffenheim",
-    "image": "",
+    "image": "/players/35017377.png",
     "clubCareer": [
       {
         "years": "2009–2014",
@@ -312,7 +312,7 @@
     "fullName": "Pascal Groß",
     "position": "MF",
     "currentClub": "Brighton & Hove Albion",
-    "image": "",
+    "image": "/players/92017376.png",
     "clubCareer": [
       {
         "years": "2010–2012",
@@ -339,7 +339,7 @@
     "fullName": "Maximilian Beier",
     "position": "FW",
     "currentClub": "Borussia Dortmund",
-    "image": "",
+    "image": "/players/91207281.png",
     "clubCareer": [
       {
         "years": "2019–2024",
@@ -366,7 +366,7 @@
     "fullName": "Nico Schlotterbeck",
     "position": "DF",
     "currentClub": "Borussia Dortmund",
-    "image": "",
+    "image": "/players/92088306.png",
     "clubCareer": [
       {
         "years": "2018–2022",
@@ -393,7 +393,7 @@
     "fullName": "Angelo Stiller",
     "position": "MF",
     "currentClub": "VfB Stuttgart",
-    "image": "",
+    "image": "/players/91184426.png",
     "clubCareer": [
       {
         "years": "2020–2023",
@@ -416,7 +416,7 @@
     "fullName": "Florian Wirtz",
     "position": "MF",
     "currentClub": "Liverpool",
-    "image": "",
+    "image": "/players/91193048.png",
     "clubCareer": [
       {
         "years": "2020–2025",
@@ -439,7 +439,7 @@
     "fullName": "Nathaniel Brown",
     "position": "DF",
     "currentClub": "Eintracht Frankfurt",
-    "image": "",
+    "image": "/players/2000068585.png",
     "clubCareer": [
       {
         "years": "2021–2024",
@@ -462,7 +462,7 @@
     "fullName": "Leroy Sané",
     "position": "MF",
     "currentClub": "Galatasaray",
-    "image": "",
+    "image": "/players/91138280.png",
     "clubCareer": [
       {
         "years": "2014–2016",
@@ -494,7 +494,7 @@
     "fullName": "Nadiem Amiri",
     "position": "MF",
     "currentClub": "Mainz 05",
-    "image": "",
+    "image": "/players/91143491.png",
     "clubCareer": [
       {
         "years": "2014–2019",
@@ -525,7 +525,7 @@
     "fullName": "Alexander Nübel",
     "position": "GK",
     "currentClub": "VfB Stuttgart",
-    "image": "",
+    "image": "/players/92071707.png",
     "clubCareer": [
       {
         "years": "2015–2020",
@@ -556,7 +556,7 @@
     "fullName": "David Raum",
     "position": "DF",
     "currentClub": "RB Leipzig",
-    "image": "",
+    "image": "/players/91175517.png",
     "clubCareer": [
       {
         "years": "2017-2021",
@@ -583,7 +583,7 @@
     "fullName": "Felix Nmecha",
     "position": "MF",
     "currentClub": "Borussia Dortmund",
-    "image": "",
+    "image": "/players/28113827.png",
     "clubCareer": [
       {
         "years": "2019–2021",
@@ -614,7 +614,7 @@
     "fullName": "Malick Thiaw",
     "position": "DF",
     "currentClub": "Newcastle United",
-    "image": "",
+    "image": "/players/91206164.png",
     "clubCareer": [
       {
         "years": "2019–2022",
@@ -641,7 +641,7 @@
     "fullName": "Assan Ouédraogo",
     "position": "MF",
     "currentClub": "RB Leipzig",
-    "image": "",
+    "image": "/players/2000188173.png",
     "clubCareer": [
       {
         "years": "2023–2024",
@@ -664,7 +664,7 @@
     "fullName": "Deniz Undav",
     "position": "FW",
     "currentClub": "VfB Stuttgart",
-    "image": "",
+    "image": "/players/91157307.png",
     "clubCareer": [
       {
         "years": "2015–2017",

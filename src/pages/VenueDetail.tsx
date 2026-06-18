@@ -3,9 +3,10 @@ import { useMemo, useEffect, useState } from 'react';
 import venuesData from '../data/venues.json';
 import venueScheduleData from '../data/venue-schedule.json';
 import { fetchSeasonEvents, fetchPastEvents } from '../api/thesportsdb';
+import { buildMatchPatchMap, mergeMatchPatches } from '../utils/matchMerge';
 import { lookupTeam } from '../utils/teamLookup';
 import { formatBeijingTime } from '../utils/datetime';
-import type { MatchEvent } from '../types';
+import type { MatchScorePatch } from '../utils/matchMerge';
 
 interface Venue {
   id: string;
@@ -53,22 +54,14 @@ export default function VenueDetail() {
   );
 
   const staticMatches: ScheduleMatch[] = venueId ? (scheduleByVenue[venueId] ?? []) : [];
-  const [liveScores, setLiveScores] = useState<Record<string, Pick<MatchEvent, 'intHomeScore' | 'intAwayScore' | 'strStatus'>>>({});
+  const [liveScores, setLiveScores] = useState<Map<string, MatchScorePatch>>(new Map());
 
   useEffect(() => {
     let cancelled = false;
     Promise.all([fetchSeasonEvents(), fetchPastEvents()])
       .then(([season, past]) => {
         if (cancelled) return;
-        const map: typeof liveScores = {};
-        for (const e of [...past, ...season]) {
-          map[e.idEvent] = {
-            intHomeScore: e.intHomeScore,
-            intAwayScore: e.intAwayScore,
-            strStatus: e.strStatus,
-          };
-        }
-        setLiveScores(map);
+        setLiveScores(buildMatchPatchMap(season, past));
       })
       .catch(() => {});
     return () => { cancelled = true; };
@@ -85,12 +78,7 @@ export default function VenueDetail() {
     );
   }
 
-  const mergedMatches = staticMatches.map((m) => {
-    const live = liveScores[m.idEvent];
-    return live
-      ? { ...m, intHomeScore: live.intHomeScore, intAwayScore: live.intAwayScore, strStatus: live.strStatus }
-      : m;
-  });
+  const mergedMatches = mergeMatchPatches(staticMatches, liveScores);
 
   const grouped = mergedMatches.reduce<Record<string, ScheduleMatch[]>>((acc, m) => {
     if (!acc[m.dateEvent]) acc[m.dateEvent] = [];
@@ -178,9 +166,10 @@ export default function VenueDetail() {
                   const away = lookupTeam(m.strAwayTeam);
                   const s = getStatus(m);
                   return (
-                    <div
+                    <Link
                       key={m.idEvent}
-                      className="flex items-center gap-3 rounded-lg bg-white/5 px-3 py-2 text-sm"
+                      to={`/match/${m.idEvent}`}
+                      className="flex items-center gap-3 rounded-lg bg-white/5 px-3 py-2 text-sm transition hover:bg-white/10"
                     >
                       <div className="flex min-w-0 flex-1 items-center gap-2 justify-end">
                         <span className="truncate">{home?.cnName ?? m.strHomeTeam}</span>
@@ -206,7 +195,7 @@ export default function VenueDetail() {
                           {m.strGroup}组
                         </span>
                       )}
-                    </div>
+                    </Link>
                   );
                 })}
               </div>

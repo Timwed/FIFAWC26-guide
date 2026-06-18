@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { searchPlayers } from '../utils/playerSearch';
 import type { SearchPlayer } from '../utils/playerSearch';
@@ -12,21 +12,23 @@ export default function PlayerSearch() {
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (query.trim().length < 1) {
+  const handleQuery = useCallback((value: string) => {
+    setQuery(value);
+    if (value.trim().length < 1) {
       setResults([]);
       setOpen(false);
       setSelectedIdx(-1);
       return;
     }
-    const r = searchPlayers(query, 8);
+    const r = searchPlayers(value, 8);
     setResults(r);
-    setOpen(true);
+    setOpen(r.length > 0);
     setSelectedIdx(-1);
-  }, [query]);
+  }, []);
 
   const close = () => {
     setQuery('');
+    setResults([]);
     setOpen(false);
     setSelectedIdx(-1);
     setExpanded(false);
@@ -63,7 +65,7 @@ export default function PlayerSearch() {
             ref={inputRef}
             type="text"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => handleQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="搜索球员..."
             className="w-full rounded-lg bg-white/10 px-3 py-1.5 text-sm text-white placeholder-slate-400 outline-none ring-1 ring-white/10 focus:ring-sky-400/50"

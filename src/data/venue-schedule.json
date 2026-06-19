@@ -828,9 +828,9 @@
       "idEvent": "2391749",
       "strHomeTeam": "Scotland",
       "strAwayTeam": "Morocco",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "0",
+      "intAwayScore": "1",
+      "strStatus": "2H",
       "strVenue": "Gillette Stadium",
       "strGroup": "C",
       "dateEvent": "2026-06-19",
@@ -1620,14 +1620,34 @@
       "idEvent": "2391750",
       "strHomeTeam": "USA",
       "strAwayTeam": "Australia",
-      "intHomeScore": "1",
+      "intHomeScore": "2",
       "intAwayScore": "0",
-      "strStatus": "1H",
+      "strStatus": "FT",
       "strVenue": "Lumen Field",
       "strGroup": "D",
       "dateEvent": "2026-06-19",
       "strTime": "19:00:00",
-      "strTimeLocal": "12:00:00"
+      "strTimeLocal": "12:00:00",
+      "goals": [
+        {
+          "team": "home",
+          "name": "Cameron Burgess",
+          "minute": 11,
+          "homeScore": 1,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": true
+        },
+        {
+          "team": "home",
+          "name": "Alexander Freeman",
+          "minute": 43,
+          "homeScore": 2,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2461115",

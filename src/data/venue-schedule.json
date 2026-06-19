@@ -145,14 +145,25 @@
       "idEvent": "2391747",
       "strHomeTeam": "Mexico",
       "strAwayTeam": "South Korea",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "1",
+      "intAwayScore": "0",
+      "strStatus": "FT",
       "strVenue": "Estadio Akron",
       "strGroup": "A",
       "dateEvent": "2026-06-19",
       "strTime": "01:00:00",
-      "strTimeLocal": "19:00:00"
+      "strTimeLocal": "19:00:00",
+      "goals": [
+        {
+          "team": "home",
+          "name": "L. Romo",
+          "minute": 50,
+          "homeScore": 1,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2461114",
@@ -891,14 +902,70 @@
       "idEvent": "2391746",
       "strHomeTeam": "Canada",
       "strAwayTeam": "Qatar",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "6",
+      "intAwayScore": "0",
+      "strStatus": "FT",
       "strVenue": "BC Place",
       "strGroup": "B",
       "dateEvent": "2026-06-18",
       "strTime": "22:00:00",
-      "strTimeLocal": "15:00:00"
+      "strTimeLocal": "15:00:00",
+      "goals": [
+        {
+          "team": "home",
+          "name": "Cyle Larin",
+          "minute": 16,
+          "homeScore": 1,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Jonathan David",
+          "minute": 29,
+          "homeScore": 2,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Jonathan David",
+          "minute": 48,
+          "homeScore": 3,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "N. Saliba",
+          "minute": 64,
+          "homeScore": 4,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "M. Manai",
+          "minute": 75,
+          "homeScore": 5,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": true
+        },
+        {
+          "team": "home",
+          "name": "Jonathan David",
+          "minute": 92,
+          "homeScore": 6,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2391755",

@@ -578,14 +578,25 @@
       "idEvent": "2461111",
       "strHomeTeam": "Turkey",
       "strAwayTeam": "Paraguay",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "0",
+      "intAwayScore": "1",
+      "strStatus": "FT",
       "strVenue": "Levi's Stadium",
       "strGroup": "D",
       "dateEvent": "2026-06-20",
       "strTime": "03:00:00",
-      "strTimeLocal": "21:00:00"
+      "strTimeLocal": "21:00:00",
+      "goals": [
+        {
+          "team": "away",
+          "name": "Matias Galarza",
+          "minute": 2,
+          "homeScore": 0,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2391759",
@@ -830,12 +841,23 @@
       "strAwayTeam": "Morocco",
       "intHomeScore": "0",
       "intAwayScore": "1",
-      "strStatus": "2H",
+      "strStatus": "FT",
       "strVenue": "Gillette Stadium",
       "strGroup": "C",
       "dateEvent": "2026-06-19",
       "strTime": "22:00:00",
-      "strTimeLocal": "18:00:00"
+      "strTimeLocal": "18:00:00",
+      "goals": [
+        {
+          "team": "away",
+          "name": "Ismael Saibari",
+          "minute": 2,
+          "homeScore": 0,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2391761",
@@ -1358,14 +1380,43 @@
       "idEvent": "2391748",
       "strHomeTeam": "Brazil",
       "strAwayTeam": "Haiti",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "3",
+      "intAwayScore": "0",
+      "strStatus": "FT",
       "strVenue": "Lincoln Financial Field",
       "strGroup": "C",
       "dateEvent": "2026-06-20",
       "strTime": "00:30:00",
-      "strTimeLocal": "21:00:00"
+      "strTimeLocal": "21:00:00",
+      "goals": [
+        {
+          "team": "home",
+          "name": "Cunha, M.",
+          "minute": 24,
+          "homeScore": 1,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Cunha, M.",
+          "minute": 36,
+          "homeScore": 2,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Vinicius Junior",
+          "minute": 48,
+          "homeScore": 3,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2461113",

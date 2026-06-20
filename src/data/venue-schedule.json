@@ -254,9 +254,9 @@
       "idEvent": "2391752",
       "strHomeTeam": "Germany",
       "strAwayTeam": "Ivory Coast",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "1",
+      "intAwayScore": "1",
+      "strStatus": "2H",
       "strVenue": "BMO Field",
       "strGroup": "E",
       "dateEvent": "2026-06-20",
@@ -1154,14 +1154,70 @@
       "idEvent": "2461112",
       "strHomeTeam": "Netherlands",
       "strAwayTeam": "Sweden",
-      "intHomeScore": "1",
-      "intAwayScore": "0",
-      "strStatus": "1H",
+      "intHomeScore": "5",
+      "intAwayScore": "1",
+      "strStatus": "FT",
       "strVenue": "Reliant Stadium",
       "strGroup": "F",
       "dateEvent": "2026-06-20",
       "strTime": "17:00:00",
-      "strTimeLocal": "12:00:00"
+      "strTimeLocal": "12:00:00",
+      "goals": [
+        {
+          "team": "home",
+          "name": " Brian Brobbey ",
+          "minute": 5,
+          "homeScore": 1,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": " Brian Brobbey ",
+          "minute": 17,
+          "homeScore": 2,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Cody Gakpo",
+          "minute": 47,
+          "homeScore": 3,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Cody Gakpo",
+          "minute": 54,
+          "homeScore": 4,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Anthony Elanga",
+          "minute": 58,
+          "homeScore": 4,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Cyrensio Summerville",
+          "minute": 89,
+          "homeScore": 5,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2391763",

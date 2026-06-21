@@ -254,14 +254,43 @@
       "idEvent": "2391752",
       "strHomeTeam": "Germany",
       "strAwayTeam": "Ivory Coast",
-      "intHomeScore": "1",
+      "intHomeScore": "2",
       "intAwayScore": "1",
-      "strStatus": "2H",
+      "strStatus": "FT",
       "strVenue": "BMO Field",
       "strGroup": "E",
       "dateEvent": "2026-06-20",
       "strTime": "20:00:00",
-      "strTimeLocal": "16:00:00"
+      "strTimeLocal": "16:00:00",
+      "goals": [
+        {
+          "team": "home",
+          "name": "Franck Kessié",
+          "minute": 30,
+          "homeScore": 1,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Deniz Undav",
+          "minute": 68,
+          "homeScore": 1,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Deniz Undav",
+          "minute": 90,
+          "homeScore": 1,
+          "awayScore": 2,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2391762",
@@ -1588,14 +1617,52 @@
       "idEvent": "2391753",
       "strHomeTeam": "Tunisia",
       "strAwayTeam": "Japan",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "0",
+      "intAwayScore": "4",
+      "strStatus": "FT",
       "strVenue": "Estadio BBVA",
       "strGroup": "F",
       "dateEvent": "2026-06-21",
       "strTime": "04:00:00",
-      "strTimeLocal": "22:00:00"
+      "strTimeLocal": "22:00:00",
+      "goals": [
+        {
+          "team": "away",
+          "name": "Daichi Kamada",
+          "minute": 4,
+          "homeScore": 0,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Ayase Ueda",
+          "minute": 31,
+          "homeScore": 0,
+          "awayScore": 2,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Jun'ya Ito",
+          "minute": 69,
+          "homeScore": 0,
+          "awayScore": 3,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Ayase Ueda",
+          "minute": 83,
+          "homeScore": 0,
+          "awayScore": 4,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2391766",
@@ -1904,9 +1971,9 @@
       "idEvent": "2391751",
       "strHomeTeam": "Ecuador",
       "strAwayTeam": "Curaçao",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "0",
+      "intAwayScore": "0",
+      "strStatus": "FT",
       "strVenue": "GEHA Field at Arrowhead Stadium",
       "strGroup": "E",
       "dateEvent": "2026-06-21",

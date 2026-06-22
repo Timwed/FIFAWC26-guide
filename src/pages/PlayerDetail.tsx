@@ -92,6 +92,7 @@ const POSITION_COLORS: Record<string, string> = {
 export default function PlayerDetail() {
   const { teamCode, playerName } = useParams<{ teamCode: string; playerName: string }>();
   const [wikiPlayers, setWikiPlayers] = useState<Record<string, WikiPlayer> | null>(null);
+  const [failedImage, setFailedImage] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -166,6 +167,8 @@ export default function PlayerDetail() {
   const initials = player.name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase();
   const info = lookupPlayerByExactName(player.name);
   const cnName = info?.cnName || null;
+  const imageSrc = wiki?.image || '';
+  const showImage = imageSrc && failedImage !== imageSrc;
 
   return (
     <div className="space-y-8">
@@ -175,14 +178,16 @@ export default function PlayerDetail() {
 
       {/* Header */}
       <div className="flex flex-col gap-6 md:flex-row md:items-center">
-        {wiki?.image ? (
+        {showImage ? (
           <img
-            src={wiki.image}
+            src={imageSrc}
             alt={player.name}
+            loading="lazy"
+            decoding="async"
+            width={192}
+            height={192}
             className="h-40 w-40 shrink-0 rounded-2xl border-2 border-white/10 object-cover md:h-48 md:w-48"
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = 'none';
-            }}
+            onError={() => setFailedImage(imageSrc)}
           />
         ) : (
           <div className="flex h-40 w-40 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-600 to-indigo-700 text-5xl font-bold text-white/50 md:h-48 md:w-48">

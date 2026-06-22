@@ -3,11 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import scheduleData from '../data/venue-schedule.json';
 import teamsData from '../data/teams.json';
 import squadsData from '../data/squads.json';
-import { fetchSeasonEvents } from '../api/thesportsdb';
-import { buildMatchPatchMap } from '../utils/matchMerge';
-import { fetchAllMatches } from '../api/openligadb';
-import type { OpenLigaMatch } from '../api/openligadb';
-import { lookupTeam } from '../utils/teamLookup';
+import { fetchOpenLigaGoalsForMatch, fetchSeasonScorePatches } from '../utils/matchData';
 import { formatBeijingTime } from '../utils/datetime';
 import { venueIdFromName, venueLabel } from '../utils/venueLabels';
 import { lookupPlayerByExactName } from '../utils/playerLookup';
@@ -40,6 +36,7 @@ interface MatchData {
   strVenue: string;
   strGroup: string | null;
   dateEvent: string;
+  strTimestamp?: string;
   strTime: string;
   strTimeLocal: string | null;
   goals?: StaticGoal[];
@@ -93,39 +90,12 @@ export default function MatchDetail() {
 
   useEffect(() => {
     if (!match) return;
-    const homeTeam = lookupTeam(match.strHomeTeam);
-    const awayTeam = lookupTeam(match.strAwayTeam);
-    if (!homeTeam || !awayTeam) return;
     let cancelled = false;
-    fetchAllMatches().then((matches: OpenLigaMatch[]) => {
-      if (cancelled) return;
-      const ol = matches.find(
-        (m: OpenLigaMatch) =>
-          (m.team1.shortName === homeTeam.shortName && m.team2.shortName === awayTeam.shortName) ||
-          (m.team1.shortName === awayTeam.shortName && m.team2.shortName === homeTeam.shortName)
-      );
-      if (!ol || !ol.goals.length) return;
-      const team1IsHome = ol.team1.shortName === homeTeam.shortName;
-      const gs: StaticGoal[] = [];
-      let hs = 0, as = 0;
-      for (const g of ol.goals) {
-        const goalTeam = team1IsHome
-          ? (g.scoreTeam1 > hs ? 'home' : 'away')
-          : (g.scoreTeam2 > as ? 'away' : 'home');
-        hs = g.scoreTeam1;
-        as = g.scoreTeam2;
-        gs.push({
-          team: goalTeam,
-          name: g.goalGetterName,
-          minute: g.matchMinute,
-          homeScore: team1IsHome ? g.scoreTeam1 : g.scoreTeam2,
-          awayScore: team1IsHome ? g.scoreTeam2 : g.scoreTeam1,
-          isPenalty: g.isPenalty,
-          isOwnGoal: g.isOwnGoal,
-        });
-      }
-      setOpenLigaGoals(gs);
-    }).catch(() => {});
+    fetchOpenLigaGoalsForMatch(match.strHomeTeam, match.strAwayTeam, match.strTimestamp)
+      .then((goals) => {
+        if (!cancelled) setOpenLigaGoals(goals);
+      })
+      .catch(() => {});
     return () => { cancelled = true; };
   }, [match]);
 
@@ -135,8 +105,7 @@ export default function MatchDetail() {
     if (pollingRef.current) return;
     pollingRef.current = true;
     try {
-      const events = await fetchSeasonEvents();
-      setLiveScores(buildMatchPatchMap(events, []));
+      setLiveScores(await fetchSeasonScorePatches());
     } catch { /* ignore */ } finally {
       pollingRef.current = false;
     }

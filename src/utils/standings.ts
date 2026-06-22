@@ -1,5 +1,6 @@
 import teamsData from '../data/teams.json';
 import scheduleData from '../data/venue-schedule.json';
+import type { OpenLigaGroupTable, OpenLigaGroupTableTeam } from '../api/openligadb';
 
 interface TeamEntry {
   shortName: string;
@@ -9,7 +10,7 @@ interface TeamEntry {
   group: string;
 }
 
-interface FlatMatch {
+export interface StandingsMatch {
   strHomeTeam: string;
   strAwayTeam: string;
   intHomeScore: string | null;
@@ -19,8 +20,8 @@ interface FlatMatch {
 }
 
 const teams = teamsData as TeamEntry[];
-const allMatches: FlatMatch[] = Object.values(
-  scheduleData as Record<string, FlatMatch[]>
+const allMatches: StandingsMatch[] = Object.values(
+  scheduleData as Record<string, StandingsMatch[]>
 ).flat();
 
 export interface GroupStanding {
@@ -41,7 +42,7 @@ export interface GroupStanding {
   }[];
 }
 
-export function computeGroupStandings(): GroupStanding[] {
+export function computeGroupStandings(matches: StandingsMatch[] = allMatches): GroupStanding[] {
   const enToShort = new Map(teams.map((t) => [t.enName, t.shortName]));
   enToShort.set('Bosnia-Herzegovina', 'BIH');
   enToShort.set('USA', 'USA');
@@ -66,7 +67,7 @@ export function computeGroupStandings(): GroupStanding[] {
     rows.set(t.shortName, { shortName: t.shortName, played: 0, points: 0, gf: 0, ga: 0, won: 0, drawn: 0, lost: 0 });
   }
 
-  for (const m of allMatches) {
+  for (const m of matches) {
     if (!m.strGroup || !m.intHomeScore || !m.intAwayScore) continue;
     const h = enToShort.get(m.strHomeTeam);
     const a = enToShort.get(m.strAwayTeam);
@@ -151,4 +152,25 @@ export function computeGroupStandings(): GroupStanding[] {
           };
         }),
     }));
+}
+
+export function computeOpenLigaGroupTables(matches: StandingsMatch[]): OpenLigaGroupTable[] {
+  return computeGroupStandings(matches).map((group, idx) => ({
+    groupName: group.group,
+    groupOrderID: idx + 1,
+    groupID: idx,
+    teamInfoEntries: group.teams.map((team) => ({
+      teamInfoId: teams.find((t) => t.shortName === team.shortName)?.olgId ?? 0,
+      teamName: team.enName,
+      shortName: team.cnName,
+      teamIconUrl: team.flag,
+      points: team.points,
+      opponentGoals: team.ga,
+      goals: team.gf,
+      matches: team.played,
+      won: team.won,
+      lost: team.lost,
+      draw: team.drawn,
+    }) satisfies OpenLigaGroupTableTeam),
+  }));
 }

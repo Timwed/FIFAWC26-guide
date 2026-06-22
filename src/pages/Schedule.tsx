@@ -1,13 +1,13 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchSeasonEvents, fetchPastEvents } from '../api/thesportsdb';
+import { fetchMatchScorePatches } from '../utils/matchData';
 import { fetchAllMatches, fetchMatchGoals } from '../api/openligadb';
 import { lookupTeam } from '../utils/teamLookup';
 import { lookupGoalScorer } from '../utils/playerLookup';
 import { venueLabel } from '../utils/venueLabels';
 import { formatBeijingTime, formatBeijingDate } from '../utils/datetime';
 import { cache } from '../utils/cache';
-import { buildMatchPatchMap, mergeMatchPatches, buildOpenLigaGoals } from '../utils/matchMerge';
+import { mergeMatchPatches, buildOpenLigaGoals } from '../utils/matchMerge';
 import scheduleData from '../data/venue-schedule.json';
 import { buildAllMatches, type BracketMatch } from '../data/bracket';
 import type { MatchEvent, StaticGoal } from '../types';
@@ -137,14 +137,10 @@ export default function Schedule() {
       setSyncing(true);
     }
     cancelledRef.current = false;
-    const [season, past] = await Promise.all([
-      fetchSeasonEvents(),
-      fetchPastEvents(),
-    ]);
+    const liveMap = await fetchMatchScorePatches(skipCache);
     if (cancelledRef.current) return;
 
     // Merge API results into static schedule: keep static as base, overlay live scores
-    const liveMap = buildMatchPatchMap(season, past);
     const merged = mergeMatchPatches(staticFlat, liveMap) as StaticMatchEvent[];
     merged.sort((a, b) => a.dateEvent.localeCompare(b.dateEvent));
     setEvents(merged);
@@ -268,8 +264,7 @@ export default function Schedule() {
     if (pollingRef.current) return;
     pollingRef.current = true;
     try {
-      const [season, past] = await Promise.all([fetchSeasonEvents(), fetchPastEvents()]);
-      const liveMap = buildMatchPatchMap(season, past);
+      const liveMap = await fetchMatchScorePatches(true);
       setEvents(prev => mergeMatchPatches(prev, liveMap));
     } finally {
       pollingRef.current = false;

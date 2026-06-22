@@ -1,10 +1,10 @@
 import { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchSeasonEvents, fetchPastEvents } from '../api/thesportsdb';
 import { lookupTeam } from '../utils/teamLookup';
 import { venueLabel } from '../utils/venueLabels';
 import { formatBeijingTime, formatBeijingDate } from '../utils/datetime';
-import { buildMatchPatchMap, mergeMatchPatches } from '../utils/matchMerge';
+import { mergeMatchPatches } from '../utils/matchMerge';
+import { fetchMatchScorePatches } from '../utils/matchData';
 import teamsData from '../data/teams.json';
 import fifaRankings from '../data/fifa-rankings.json';
 import scheduleData from '../data/venue-schedule.json';
@@ -42,10 +42,10 @@ export default function Home() {
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([fetchSeasonEvents(), fetchPastEvents()])
-      .then(([season, past]) => {
+    fetchMatchScorePatches()
+      .then((patches) => {
         if (cancelled) return;
-        setLiveMap(buildMatchPatchMap(season, past));
+        setLiveMap(patches);
       })
       .catch(() => {});
     return () => { cancelled = true; };
@@ -268,7 +268,7 @@ function FeaturedMatchCard({ match }: { match: FlatMatch }) {
 function MatchCard({ match }: { match: FlatMatch }) {
   const home = lookupTeam(match.strHomeTeam);
   const away = lookupTeam(match.strAwayTeam);
-  const isFinished = match.strStatus === 'FT' || match.intHomeScore !== null;
+  const isFinished = match.strStatus === 'FT';
   const isLive = match.strStatus !== 'FT' && match.strStatus !== 'NS' && match.strStatus !== null;
 
   return (

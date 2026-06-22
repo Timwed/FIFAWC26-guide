@@ -4,12 +4,13 @@ import teamsData from '../data/teams.json';
 import squadsData from '../data/squads.json';
 import wikiTeamsData from '../data/wiki-teams.json';
 import scheduleData from '../data/venue-schedule.json';
-import { fetchSeasonEvents, fetchPastEvents } from '../api/thesportsdb';
-import { buildMatchPatchMap, mergeMatchPatches } from '../utils/matchMerge';
+import { buildOpenLigaGoals, mergeMatchPatches } from '../utils/matchMerge';
+import { fetchMatchScorePatches, fetchOpenLigaMatches, findOpenLigaMatch } from '../utils/matchData';
 import type { MatchScorePatch } from '../utils/matchMerge';
 import { formatBeijingTime } from '../utils/datetime';
 import { lookupPlayerByExactName } from '../utils/playerLookup';
 import type { MatchEvent, StaticGoal } from '../types';
+import type { OpenLigaMatch } from '../api/openligadb';
 
 interface TeamEntry {
   shortName: string;
@@ -142,12 +143,22 @@ export default function TeamDetail() {
   const wikiExtract = useMemo(() => (team ? findTeamWiki(team.enName) : null), [team]);
 
   const [liveMap, setLiveMap] = useState<Map<string, MatchScorePatch>>(new Map());
+  const [openLigaMatches, setOpenLigaMatches] = useState<OpenLigaMatch[]>([]);
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([fetchSeasonEvents(), fetchPastEvents()]).then(([season, past]) => {
+    fetchMatchScorePatches().then((patches) => {
       if (cancelled) return;
-      setLiveMap(buildMatchPatchMap(season, past));
+      setLiveMap(patches);
+    }).catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchOpenLigaMatches().then((matches) => {
+      if (cancelled) return;
+      setOpenLigaMatches(matches);
     }).catch(() => {});
     return () => { cancelled = true; };
   }, []);
@@ -258,8 +269,12 @@ export default function TeamDetail() {
               const finished = m.strStatus === 'FT';
               const live = m.strStatus && m.strStatus !== 'FT' && m.strStatus !== 'NS' && m.strStatus !== null;
               const bjTime = formatBeijingTime(m.dateEvent, m.strTime);
-              const homeGoals = m.goals?.filter((g) => g.team === 'home') || [];
-              const awayGoals = m.goals?.filter((g) => g.team === 'away') || [];
+              const openLigaMatch = findOpenLigaMatch(openLigaMatches, m.strHomeTeam, m.strAwayTeam, m.strTimestamp);
+              const goals = openLigaMatch && openLigaMatch.goals.length > 0
+                ? buildOpenLigaGoals(openLigaMatch, m.strHomeTeam)
+                : m.goals || [];
+              const homeGoals = goals.filter((g) => g.team === 'home');
+              const awayGoals = goals.filter((g) => g.team === 'away');
 
               return (
                 <Link
@@ -328,7 +343,7 @@ export default function TeamDetail() {
                     </div>
                   </div>
 
-                  {finished && m.goals && m.goals.length > 0 && (
+                  {finished && goals.length > 0 && (
                     <div className="mt-3 flex gap-4 border-t border-white/5 pt-3">
                       <div className="flex-1 space-y-0.5 text-xs text-slate-400">
                         {homeGoals.map((g, i) => (

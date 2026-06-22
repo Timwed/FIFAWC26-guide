@@ -1,19 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
-import { fetchSeasonEvents, fetchPastEvents } from '../api/thesportsdb';
-import { buildMatchPatchMap, mergeMatchPatches } from '../utils/matchMerge';
-import type { MatchEvent } from '../types';
+import { mergeMatchPatches } from '../utils/matchMerge';
+import { fetchMatchScorePatches } from '../utils/matchData';
+import { computeOpenLigaGroupTables } from '../utils/standings';
 import type { OpenLigaGroupTable, OpenLigaGroupTableTeam } from '../api/openligadb';
-import teamsData from '../data/teams.json';
+import type { StandingsMatch } from '../utils/standings';
 import scheduleData from '../data/venue-schedule.json';
 
-interface FlatMatch {
+interface FlatMatch extends StandingsMatch {
   idEvent: string;
-  strHomeTeam: string;
-  strAwayTeam: string;
-  intHomeScore: string | null;
-  intAwayScore: string | null;
-  strStatus: string | null;
-  strGroup: string | null;
 }
 
 const allMatches: FlatMatch[] = Object.values(scheduleData as Record<string, FlatMatch[]>).flat();
@@ -24,118 +18,20 @@ const groupLabels: Record<string, string> = {
   'I': 'I组', 'J': 'J组', 'K': 'K组', 'L': 'L组',
 };
 
-function computeStandings(matches: FlatMatch[]): OpenLigaGroupTable[] {
-  const teamList = Object.values(teamsData);
-  const enToShort = new Map(teamList.map((t) => [t.enName, t.shortName]));
-  // Schedule JSON uses alternate names for these
-  enToShort.set('Bosnia-Herzegovina', 'BIH');
-  enToShort.set('USA', 'USA');
-  const shortToInfo = new Map(teamList.map((t) => [t.shortName, { id: t.olgId, icon: t.olgIcon, olgName: t.olgName, cn: t.cnName }]));
-
-  type GroupRow = {
-    shortName: string;
-    cnName: string;
-    teamIconUrl: string;
-    teamInfoId: number;
-    points: number;
-    matches: number;
-    won: number;
-    draw: number;
-    lost: number;
-    goals: number;
-    opponentGoals: number;
-  };
-
-  const groups = new Map<string, GroupRow[]>();
-
-  // Initialize all teams
-  for (const t of teamList) {
-    const info = shortToInfo.get(t.shortName)!;
-    if (!groups.has(t.group)) groups.set(t.group, []);
-    groups.get(t.group)!.push({
-      shortName: t.shortName,
-      cnName: info.cn,
-      teamIconUrl: t.olgIcon,
-      teamInfoId: info.id,
-      points: 0, matches: 0, won: 0, draw: 0, lost: 0, goals: 0, opponentGoals: 0,
-    });
-  }
-
-  // Process finished group stage matches
-  for (const m of matches) {
-    if (!m.strGroup || !m.intHomeScore || !m.intAwayScore) continue;
-    const hShort = enToShort.get(m.strHomeTeam);
-    const aShort = enToShort.get(m.strAwayTeam);
-    if (!hShort || !aShort) continue;
-
-    const gName = m.strGroup;
-    const rows = groups.get(gName);
-    if (!rows) continue;
-
-    const hRow = rows.find((r) => r.shortName === hShort);
-    const aRow = rows.find((r) => r.shortName === aShort);
-    if (!hRow || !aRow) continue;
-
-    const hg = parseInt(m.intHomeScore);
-    const ag = parseInt(m.intAwayScore);
-
-    hRow.matches++; aRow.matches++;
-    hRow.goals += hg; aRow.goals += ag;
-    hRow.opponentGoals += ag; aRow.opponentGoals += hg;
-
-    if (hg > ag) { hRow.points += 3; hRow.won++; aRow.lost++; }
-    else if (ag > hg) { aRow.points += 3; aRow.won++; hRow.lost++; }
-    else { hRow.points++; aRow.points++; hRow.draw++; aRow.draw++; }
-  }
-
-  return Array.from(groups.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([groupName, rows], idx) => ({
-      groupName,
-      groupOrderID: idx + 1,
-      groupID: idx,
-      teamInfoEntries: rows
-        .sort((t1, t2) => {
-          if (t2.points !== t1.points) return t2.points - t1.points;
-          const gd1 = t1.goals - t1.opponentGoals;
-          const gd2 = t2.goals - t2.opponentGoals;
-          if (gd2 !== gd1) return gd2 - gd1;
-          return t2.goals - t1.goals;
-        })
-        .map((r) => ({
-          teamInfoId: r.teamInfoId,
-          teamName: '',
-          shortName: r.cnName,
-          teamIconUrl: r.teamIconUrl,
-          points: r.points,
-          opponentGoals: r.opponentGoals,
-          goals: r.goals,
-          matches: r.matches,
-          won: r.won,
-          lost: r.lost,
-          draw: r.draw,
-        }) satisfies OpenLigaGroupTableTeam),
-    }));
-}
-
 export default function Standings() {
   const [liveMatches, setLiveMatches] = useState<FlatMatch[]>(allMatches);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const [season, past] = await Promise.all([
-        fetchSeasonEvents(),
-        fetchPastEvents(),
-      ]).catch(() => [[], []] as [MatchEvent[], MatchEvent[]]);
+      const liveMap = await fetchMatchScorePatches().catch(() => new Map());
       if (cancelled) return;
-      const liveMap = buildMatchPatchMap(season, past);
       setLiveMatches(mergeMatchPatches(allMatches, liveMap));
     })();
     return () => { cancelled = true; };
   }, []);
 
-  const tables = useMemo(() => computeStandings(liveMatches), [liveMatches]);
+  const tables = useMemo(() => computeOpenLigaGroupTables(liveMatches), [liveMatches]);
 
   const thirdPlace = useMemo(() => {
     return tables

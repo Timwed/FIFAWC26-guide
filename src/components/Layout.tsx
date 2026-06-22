@@ -3,14 +3,20 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import PlayerSearch from './PlayerSearch';
 
 const navItems = [
-  { path: '/', label: '首页' },
-  { path: '/teams', label: '球队' },
-  { path: '/schedule', label: '赛程' },
-  { path: '/standings', label: '积分榜' },
-  { path: '/bracket', label: '淘汰赛' },
-  { path: '/venues', label: '场馆' },
-  { path: '/rankings', label: '排名' },
+  { path: '/', label: '首页', activePaths: ['/'] },
+  { path: '/teams', label: '球队', activePaths: ['/teams', '/players'] },
+  { path: '/schedule', label: '赛程', activePaths: ['/schedule', '/match'] },
+  { path: '/standings', label: '积分榜', activePaths: ['/standings'] },
+  { path: '/bracket', label: '淘汰赛', activePaths: ['/bracket'] },
+  { path: '/venues', label: '场馆', activePaths: ['/venues'] },
+  { path: '/rankings', label: '排名', activePaths: ['/rankings'] },
 ];
+
+function isNavActive(pathname: string, activePaths: string[]) {
+  return activePaths.some((path) =>
+    path === '/' ? pathname === '/' : pathname === path || pathname.startsWith(`${path}/`)
+  );
+}
 
 export default function Layout() {
   const location = useLocation();
@@ -42,7 +48,7 @@ export default function Layout() {
                 key={item.path}
                 to={item.path}
                 className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                  location.pathname === item.path
+                  isNavActive(location.pathname, item.activePaths)
                     ? 'bg-sky-500/20 text-sky-400'
                     : 'text-slate-300 hover:bg-white/5 hover:text-white'
                 }`}
@@ -72,7 +78,7 @@ export default function Layout() {
                 key={item.path}
                 to={item.path}
                 className={`block rounded-lg px-4 py-2 text-sm font-medium ${
-                  location.pathname === item.path
+                  isNavActive(location.pathname, item.activePaths)
                     ? 'bg-sky-500/20 text-sky-400'
                     : 'text-slate-300 hover:bg-white/5'
                 }`}

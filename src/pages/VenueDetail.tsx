@@ -2,8 +2,8 @@ import { useParams, Link } from 'react-router-dom';
 import { useMemo, useEffect, useState } from 'react';
 import venuesData from '../data/venues.json';
 import venueScheduleData from '../data/venue-schedule.json';
-import { fetchSeasonEvents, fetchPastEvents } from '../api/thesportsdb';
-import { buildMatchPatchMap, mergeMatchPatches } from '../utils/matchMerge';
+import { mergeMatchPatches } from '../utils/matchMerge';
+import { fetchMatchScorePatches } from '../utils/matchData';
 import { lookupTeam } from '../utils/teamLookup';
 import { formatBeijingTime } from '../utils/datetime';
 import type { MatchScorePatch } from '../utils/matchMerge';
@@ -58,10 +58,10 @@ export default function VenueDetail() {
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([fetchSeasonEvents(), fetchPastEvents()])
-      .then(([season, past]) => {
+    fetchMatchScorePatches()
+      .then((patches) => {
         if (cancelled) return;
-        setLiveScores(buildMatchPatchMap(season, past));
+        setLiveScores(patches);
       })
       .catch(() => {});
     return () => { cancelled = true; };

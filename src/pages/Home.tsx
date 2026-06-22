@@ -48,7 +48,8 @@ function loadCachedPatches(): Map<string, { idEvent: string; intHomeScore: strin
 }
 
 function saveCachedPatches(patches: Map<string, { idEvent: string; intHomeScore: string | null; intAwayScore: string | null; strStatus: string | null }>) {
-  try { localStorage.setItem(CACHE_KEY, JSON.stringify([...patches])); } catch {}
+  const finished = new Map([...patches].filter(([, v]) => v.strStatus === 'FT'));
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify([...finished])); } catch {}
 }
 
 export default function Home() {

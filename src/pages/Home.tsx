@@ -43,7 +43,8 @@ function loadCachedPatches(): Map<string, { idEvent: string; intHomeScore: strin
   try {
     const raw = localStorage.getItem(CACHE_KEY);
     if (!raw) return new Map();
-    return new Map(JSON.parse(raw));
+    const entries: [string, { idEvent: string; intHomeScore: string | null; intAwayScore: string | null; strStatus: string | null }][] = JSON.parse(raw);
+    return new Map(entries.filter(([, v]) => v.strStatus === 'FT'));
   } catch { return new Map(); }
 }
 

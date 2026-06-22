@@ -1438,14 +1438,34 @@
       "idEvent": "2391758",
       "strHomeTeam": "Argentina",
       "strAwayTeam": "Austria",
-      "intHomeScore": "1",
+      "intHomeScore": "2",
       "intAwayScore": "0",
-      "strStatus": "HT",
+      "strStatus": "FT",
       "strVenue": "AT&T Stadium",
       "strGroup": "J",
       "dateEvent": "2026-06-22",
       "strTime": "17:00:00",
-      "strTimeLocal": "12:00:00"
+      "strTimeLocal": "12:00:00",
+      "goals": [
+        {
+          "team": "home",
+          "name": "Lionel Messi",
+          "minute": 38,
+          "homeScore": 1,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Lionel Messi",
+          "minute": 90,
+          "homeScore": 2,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2461117",
@@ -1545,9 +1565,9 @@
       "idEvent": "2461113",
       "strHomeTeam": "France",
       "strAwayTeam": "Iraq",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "1",
+      "intAwayScore": "0",
+      "strStatus": "HT",
       "strVenue": "Lincoln Financial Field",
       "strGroup": "I",
       "dateEvent": "2026-06-22",

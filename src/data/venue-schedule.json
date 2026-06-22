@@ -1022,14 +1022,52 @@
       "idEvent": "2391755",
       "strHomeTeam": "New Zealand",
       "strAwayTeam": "Egypt",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "1",
+      "intAwayScore": "3",
+      "strStatus": "FT",
       "strVenue": "BC Place",
       "strGroup": "G",
       "dateEvent": "2026-06-22",
       "strTime": "01:00:00",
-      "strTimeLocal": "18:00:00"
+      "strTimeLocal": "18:00:00",
+      "goals": [
+        {
+          "team": "home",
+          "name": "Finn Surman",
+          "minute": 15,
+          "homeScore": 1,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Mostafa Ziko",
+          "minute": 59,
+          "homeScore": 1,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Mohamed Salah",
+          "minute": 68,
+          "homeScore": 1,
+          "awayScore": 2,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Mahmoud Trézéguet",
+          "minute": 82,
+          "homeScore": 1,
+          "awayScore": 3,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2391767",
@@ -1400,9 +1438,9 @@
       "idEvent": "2391758",
       "strHomeTeam": "Argentina",
       "strAwayTeam": "Austria",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "1",
+      "intAwayScore": "0",
+      "strStatus": "HT",
       "strVenue": "AT&T Stadium",
       "strGroup": "J",
       "dateEvent": "2026-06-22",
@@ -1926,14 +1964,52 @@
       "idEvent": "2391757",
       "strHomeTeam": "Uruguay",
       "strAwayTeam": "Cape Verde",
-      "intHomeScore": "0",
-      "intAwayScore": "1",
-      "strStatus": "1H",
+      "intHomeScore": "2",
+      "intAwayScore": "2",
+      "strStatus": "FT",
       "strVenue": "Hard Rock Stadium",
       "strGroup": "H",
       "dateEvent": "2026-06-21",
       "strTime": "22:00:00",
-      "strTimeLocal": "18:00:00"
+      "strTimeLocal": "18:00:00",
+      "goals": [
+        {
+          "team": "away",
+          "name": "Kevin Lenini",
+          "minute": 21,
+          "homeScore": 0,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Maximiliano Araújo",
+          "minute": 44,
+          "homeScore": 1,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Agustin Canobbio",
+          "minute": 51,
+          "homeScore": 2,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Helio Varela",
+          "minute": 61,
+          "homeScore": 2,
+          "awayScore": 2,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2391765",

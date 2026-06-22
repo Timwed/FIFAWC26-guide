@@ -37,8 +37,22 @@ const staticSchedule = (scheduleData as Record<string, FlatMatch[]>);
 
 const allMatches = Object.values(staticSchedule).flat();
 
+const CACHE_KEY = 'wc26_home_scores';
+
+function loadCachedPatches(): Map<string, { idEvent: string; intHomeScore: string | null; intAwayScore: string | null; strStatus: string | null }> {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return new Map();
+    return new Map(JSON.parse(raw));
+  } catch { return new Map(); }
+}
+
+function saveCachedPatches(patches: Map<string, { idEvent: string; intHomeScore: string | null; intAwayScore: string | null; strStatus: string | null }>) {
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify([...patches])); } catch {}
+}
+
 export default function Home() {
-  const [liveMap, setLiveMap] = useState(new Map<string, { idEvent: string; intHomeScore: string | null; intAwayScore: string | null; strStatus: string | null }>());
+  const [liveMap, setLiveMap] = useState<Map<string, { idEvent: string; intHomeScore: string | null; intAwayScore: string | null; strStatus: string | null }>>(() => loadCachedPatches());
 
   useEffect(() => {
     let cancelled = false;
@@ -46,6 +60,7 @@ export default function Home() {
       .then((patches) => {
         if (cancelled) return;
         setLiveMap(patches);
+        saveCachedPatches(patches);
       })
       .catch(() => {});
     return () => { cancelled = true; };

@@ -1,6 +1,7 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useMemo, useState, useCallback, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { fetchMatchScorePatches } from '../utils/matchData';
+import { useLiveScorePatches } from '../utils/liveScores';
 import { fetchAllMatches, fetchMatchGoals } from '../api/openligadb';
 import { lookupTeam } from '../utils/teamLookup';
 import { lookupGoalScorer } from '../utils/playerLookup';
@@ -8,14 +9,26 @@ import { venueLabel } from '../utils/venueLabels';
 import { formatBeijingTime, formatBeijingDate } from '../utils/datetime';
 import { cache } from '../utils/cache';
 import { mergeMatchPatches, buildOpenLigaGoals } from '../utils/matchMerge';
+import StarButton from '../components/StarButton';
 import scheduleData from '../data/venue-schedule.json';
 import { buildAllMatches, type BracketMatch } from '../data/bracket';
 import type { MatchEvent, StaticGoal } from '../types';
 import type { OpenLigaMatch } from '../api/openligadb';
+import { fetchJson } from '../utils/jsonData';
 
 interface StaticMatchEvent extends MatchEvent {
   goals?: StaticGoal[];
   stageKey?: StageFilter;
+}
+
+interface DqdMatchSummary {
+  overview?: {
+    bestPlayers?: {
+      home?: { name: string; rating: string } | null;
+      away?: { name: string; rating: string } | null;
+    };
+    stats?: { type: string; home: number; away: number; homePercent: number; awayPercent: number }[];
+  };
 }
 
 type StageFilter = 'all' | 'G1' | 'G2' | 'G3' | BracketMatch['round'];
@@ -99,7 +112,9 @@ const cachedFlat: StaticMatchEvent[] = staticFlat.map(e => {
 function beijingPeriod(strTime: string): { label: string; color: string } {
   const bjHour = (parseInt(strTime.split(':')[0], 10) + 8) % 24;
   if (bjHour < 6) return { label: '凌晨', color: 'text-indigo-400' };
-  return { label: '上午', color: 'text-amber-400' };
+  if (bjHour < 14) return { label: '上午', color: 'text-amber-400' };
+  if (bjHour < 19) return { label: '下午', color: 'text-emerald-400' };
+  return { label: '晚上', color: 'text-indigo-400' };
 }
 
 const isLive = (e: StaticMatchEvent) =>
@@ -107,6 +122,32 @@ const isLive = (e: StaticMatchEvent) =>
 const isFinished = (e: StaticMatchEvent) =>
   e.strStatus === 'FT' || e.intHomeScore !== null;
 const isUpcoming = (e: StaticMatchEvent) => !isFinished(e) && !isLive(e);
+function buildOpenLigaScorePatches(events: StaticMatchEvent[], matches: OpenLigaMatch[]) {
+  const patches = new Map<string, { idEvent: string; intHomeScore: string | null; intAwayScore: string | null; strStatus: string | null }>();
+  for (const event of events) {
+    const home = lookupTeam(event.strHomeTeam);
+    const away = lookupTeam(event.strAwayTeam);
+    const match = matches.find(
+      (m) =>
+        (home?.shortName && away?.shortName &&
+          ((m.team1.shortName === home.shortName && m.team2.shortName === away.shortName) ||
+           (m.team1.shortName === away.shortName && m.team2.shortName === home.shortName))) ||
+        (event.strTimestamp &&
+          Math.abs(new Date(m.matchDateTimeUTC).getTime() - new Date(event.strTimestamp).getTime()) < 3600000)
+    );
+    const result = match?.matchResults.find((r) => r.resultTypeID === 2) || match?.matchResults[match.matchResults.length - 1];
+    if (!match || !result) continue;
+    const team1IsHome = home ? match.team1.shortName === home.shortName : true;
+    patches.set(event.idEvent, {
+      idEvent: event.idEvent,
+      intHomeScore: String(team1IsHome ? result.pointsTeam1 : result.pointsTeam2),
+      intAwayScore: String(team1IsHome ? result.pointsTeam2 : result.pointsTeam1),
+      strStatus: match.matchIsFinished ? 'FT' : event.strStatus,
+    });
+  }
+  return patches;
+}
+
 const getStageKey = (e: StaticMatchEvent): StageFilter => {
   if (e.stageKey) return e.stageKey;
   const round = roundMap[e.idEvent];
@@ -119,86 +160,84 @@ const getStageLabel = (e: StaticMatchEvent): string =>
   stageOptions.find((stage) => stage.key === getStageKey(e))?.label ?? '';
 
 export default function Schedule() {
+  const navigate = useNavigate();
   const [events, setEvents] = useState<StaticMatchEvent[]>(cachedFlat);
   const [openLigaMatches, setOpenLigaMatches] = useState<OpenLigaMatch[]>([]);
   const [loading, setLoading] = useState(false);
   const [syncing, setSyncing] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [dqdMatchData, setDqdMatchData] = useState<Record<string, DqdMatchSummary>>({});
   const [tab, setTab] = useState<'all' | 'upcoming' | 'completed' | 'live'>('all');
   const [selectedGroup, setSelectedGroup] = useState('all');
   const [selectedStage, setSelectedStage] = useState<StageFilter>('all');
   const cancelledRef = useRef(false);
+  const loadSeqRef = useRef(0);
   const scrolledRef = useRef(false);
 
   const load = useCallback(async (skipCache: boolean) => {
     if (skipCache) {
       cache.clearTemporary();
-      setLoading(true);
       setSyncing(true);
     }
     cancelledRef.current = false;
-    const liveMap = await fetchMatchScorePatches(skipCache);
-    if (cancelledRef.current) return;
+    const seq = ++loadSeqRef.current;
+    const isStale = () => cancelledRef.current || seq !== loadSeqRef.current;
 
-    // Merge API results into static schedule: keep static as base, overlay live scores
-    const merged = mergeMatchPatches(staticFlat, liveMap) as StaticMatchEvent[];
-    merged.sort((a, b) => a.dateEvent.localeCompare(b.dateEvent));
-    setEvents(merged);
+    try {
+      const liveMap = await fetchMatchScorePatches(skipCache);
+      if (isStale()) return;
 
-    let allMatches = skipCache ? null : cache.getBulkMatches() as OpenLigaMatch[] | null;
-    if (!allMatches) {
-      allMatches = await fetchAllMatches();
+      const merged = mergeMatchPatches(staticFlat, liveMap) as StaticMatchEvent[];
+      merged.sort((a, b) => a.dateEvent.localeCompare(b.dateEvent));
+      setEvents(merged);
+
+      let allMatches: OpenLigaMatch[] | null = await fetchAllMatches();
+      if ((!allMatches || allMatches.length === 0) && !skipCache) {
+        allMatches = cache.getBulkMatches() as OpenLigaMatch[] | null;
+      }
       if (allMatches && allMatches.length > 0) {
         cache.setBulkMatches(allMatches);
       }
-    }
-    if (cancelledRef.current || !allMatches) {
-      setLoading(false);
-      setRefreshing(false);
-      setSyncing(false);
-      return;
-    }
-    setOpenLigaMatches(allMatches);
-    setLoading(false);
-    setSyncing(false);
+      if (isStale() || !allMatches) return;
+      setOpenLigaMatches(allMatches);
 
-    const toFetch: { match: OpenLigaMatch; idx: number }[] = [];
-    for (let i = 0; i < allMatches.length; i++) {
-      const m = allMatches[i];
-      if (m.goals.length === 0 || !m.goals.some((g) => !g.goalGetterName)) continue;
-      const cached = skipCache ? null : cache.getMatchDetail(
-        m.matchID,
-        m.matchIsFinished ? 'FT' : 'NS',
-        m.matchDateTimeUTC
-      ) as OpenLigaMatch | null;
-      if (cached) {
-        allMatches[i] = cached;
-      } else {
-        toFetch.push({ match: m, idx: i });
-      }
-    }
+      const openLigaMerged = mergeMatchPatches(merged, buildOpenLigaScorePatches(merged, allMatches)) as StaticMatchEvent[];
+      setEvents(openLigaMerged);
 
-    if (toFetch.length > 0) {
-      const details = await Promise.all(
-        toFetch.map(({ match }) => fetchMatchGoals(match.matchID))
-      );
-      if (cancelledRef.current) {
-        setRefreshing(false);
-        return;
-      }
-      for (let i = 0; i < toFetch.length; i++) {
-        const detail = details[i];
-        if (detail) {
-          const m = toFetch[i].match;
-          m.goals = detail.goals;
-          allMatches![toFetch[i].idx] = m;
-          cache.setMatchDetail(m.matchID, m);
+      const toFetch: { match: OpenLigaMatch; idx: number }[] = [];
+      for (let i = 0; i < allMatches.length; i++) {
+        const m = allMatches[i];
+        if (m.goals.length === 0 || !m.goals.some((g) => !g.goalGetterName)) continue;
+        const cached = skipCache ? null : cache.getMatchDetail(
+          m.matchID,
+          m.matchIsFinished ? 'FT' : 'NS',
+          m.matchDateTimeUTC
+        ) as OpenLigaMatch | null;
+        if (cached) {
+          allMatches[i] = cached;
+        } else {
+          toFetch.push({ match: m, idx: i });
         }
       }
-      setOpenLigaMatches([...allMatches!]);
-    }
-    if (allMatches) {
-      for (const event of merged) {
+
+      if (toFetch.length > 0) {
+        const details = await Promise.all(
+          toFetch.map(({ match }) => fetchMatchGoals(match.matchID))
+        );
+        if (isStale()) return;
+        for (let i = 0; i < toFetch.length; i++) {
+          const detail = details[i];
+          if (detail) {
+            const m = toFetch[i].match;
+            m.goals = detail.goals;
+            allMatches[toFetch[i].idx] = m;
+            cache.setMatchDetail(m.matchID, m);
+          }
+        }
+        setOpenLigaMatches([...allMatches]);
+      }
+
+      for (const event of openLigaMerged) {
         if (!isFinished(event)) continue;
         const home = lookupTeam(event.strHomeTeam);
         const away = lookupTeam(event.strAwayTeam);
@@ -208,10 +247,7 @@ export default function Schedule() {
               ((m.team1.shortName === home.shortName && m.team2.shortName === away.shortName) ||
                (m.team1.shortName === away.shortName && m.team2.shortName === home.shortName))) ||
             (event.strTimestamp &&
-              Math.abs(
-                new Date(m.matchDateTimeUTC).getTime() -
-                new Date(event.strTimestamp).getTime()
-              ) < 3600000)
+              Math.abs(new Date(m.matchDateTimeUTC).getTime() - new Date(event.strTimestamp).getTime()) < 3600000)
         );
         const goals = olm && olm.goals.length > 0
           ? buildOpenLigaGoals(olm, event.strHomeTeam)
@@ -223,8 +259,23 @@ export default function Schedule() {
           goals,
         });
       }
+    } catch {
+      return;
+    } finally {
+      if (!isStale()) {
+        setLoading(false);
+        setRefreshing(false);
+        setSyncing(false);
+      }
     }
-    setRefreshing(false);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchJson<Record<string, DqdMatchSummary>>('/data/dqd-match-summaries.json', { maxAge: 5 * 60_000 })
+      .then((data) => { if (!cancelled) setDqdMatchData(data); })
+      .catch(() => {});
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
@@ -258,32 +309,16 @@ export default function Schedule() {
     load(true);
   }, [load]);
 
-  const pollingRef = useRef(false);
-
-  const pollScores = useCallback(async () => {
-    if (pollingRef.current) return;
-    pollingRef.current = true;
-    try {
-      const liveMap = await fetchMatchScorePatches(true);
-      setEvents(prev => mergeMatchPatches(prev, liveMap));
-    } finally {
-      pollingRef.current = false;
-    }
-  }, []);
-
-  const hasLiveRef = useRef(false);
-  useEffect(() => {
-    hasLiveRef.current = events.some(isLive);
-  }, [events]);
+  const livePatches = useLiveScorePatches();
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (hasLiveRef.current) pollScores();
-    }, 30_000);
-    return () => clearInterval(interval);
-  }, [pollScores]);
+    if (livePatches.size === 0) return;
+    queueMicrotask(() => {
+      setEvents((prev) => mergeMatchPatches(prev, livePatches));
+    });
+  }, [livePatches]);
 
-  const filtered =
+  const filtered = useMemo(() =>
     (tab === 'all'
       ? events
       : tab === 'upcoming'
@@ -291,39 +326,46 @@ export default function Schedule() {
         : tab === 'completed'
           ? events.filter(isFinished)
           : events.filter(isLive))
-    .filter((e) => selectedGroup === 'all' || e.strGroup === selectedGroup)
-    .filter((e) => selectedStage === 'all' || getStageKey(e) === selectedStage);
+      .filter((e) => selectedGroup === 'all' || e.strGroup === selectedGroup)
+      .filter((e) => selectedStage === 'all' || getStageKey(e) === selectedStage),
+  [events, selectedGroup, selectedStage, tab]);
 
-  const dateGroups = new Map<string, { iso: string; label: string; matches: StaticMatchEvent[] }>();
-  for (const e of filtered) {
-    const bjDate = formatBeijingDate(e.dateEvent, e.strTime);
-    if (!dateGroups.has(bjDate.iso)) {
-      dateGroups.set(bjDate.iso, { iso: bjDate.iso, label: bjDate.label, matches: [] });
+  const groupedByDate = useMemo(() => {
+    const dateGroups = new Map<string, { iso: string; label: string; matches: StaticMatchEvent[] }>();
+    for (const e of filtered) {
+      const bjDate = formatBeijingDate(e.dateEvent, e.strTime);
+      if (!dateGroups.has(bjDate.iso)) {
+        dateGroups.set(bjDate.iso, { iso: bjDate.iso, label: bjDate.label, matches: [] });
+      }
+      dateGroups.get(bjDate.iso)!.matches.push(e);
     }
-    dateGroups.get(bjDate.iso)!.matches.push(e);
-  }
-  for (const group of dateGroups.values()) {
-    group.matches.sort((a, b) => (a.dateEvent + a.strTime).localeCompare(b.dateEvent + b.strTime));
-  }
-  const groupedByDate = [...dateGroups.values()].sort((a, b) => a.iso.localeCompare(b.iso));
+    for (const group of dateGroups.values()) {
+      group.matches.sort((a, b) => (a.dateEvent + a.strTime).localeCompare(b.dateEvent + b.strTime));
+    }
+    return [...dateGroups.values()].sort((a, b) => a.iso.localeCompare(b.iso));
+  }, [filtered]);
 
-  function findOpenLigaMatch(event: MatchEvent): OpenLigaMatch | undefined {
+  const openLigaByPair = useMemo(() => {
+    const map = new Map<string, OpenLigaMatch>();
+    for (const match of openLigaMatches) {
+      map.set(`${match.team1.shortName}|${match.team2.shortName}`, match);
+      map.set(`${match.team2.shortName}|${match.team1.shortName}`, match);
+    }
+    return map;
+  }, [openLigaMatches]);
+
+  const findOpenLigaMatch = useCallback((event: MatchEvent): OpenLigaMatch | undefined => {
     const home = lookupTeam(event.strHomeTeam);
     const away = lookupTeam(event.strAwayTeam);
-    const homeSC = home?.shortName;
-    const awaySC = away?.shortName;
-    return openLigaMatches.find(
-      (m) =>
-        (homeSC && awaySC &&
-          ((m.team1.shortName === homeSC && m.team2.shortName === awaySC) ||
-           (m.team1.shortName === awaySC && m.team2.shortName === homeSC))) ||
-        (event.strTimestamp &&
-          Math.abs(
-            new Date(m.matchDateTimeUTC).getTime() -
-              new Date(event.strTimestamp).getTime()
-          ) < 3600000)
+    const byPair = home?.shortName && away?.shortName
+      ? openLigaByPair.get(`${home.shortName}|${away.shortName}`)
+      : undefined;
+    if (byPair) return byPair;
+    return openLigaMatches.find((m) =>
+      event.strTimestamp &&
+      Math.abs(new Date(m.matchDateTimeUTC).getTime() - new Date(event.strTimestamp).getTime()) < 3600000
     );
-  }
+  }, [openLigaByPair, openLigaMatches]);
 
   if (loading) {
     return (
@@ -335,7 +377,7 @@ export default function Schedule() {
 
   return (
     <div className="space-y-6">
-      <div className="sticky top-14 z-40 -mx-4 -mt-6 px-4 pt-6 pb-3 bg-slate-900/95 backdrop-blur-xl">
+      <div className="sticky top-14 z-40 -mx-4 -mt-6 px-4 pt-6 pb-3 bg-white/95 backdrop-blur-xl dark:bg-slate-900/95">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h2 className="text-2xl font-bold">赛程与赛果</h2>
@@ -346,7 +388,7 @@ export default function Schedule() {
         <button
           onClick={handleRefresh}
           disabled={refreshing}
-          className="shrink-0 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-400 transition hover:border-white/20 hover:text-white disabled:opacity-50"
+          className="shrink-0 rounded-lg border border-slate-300 bg-slate-100 px-3 py-1.5 text-xs text-slate-500 transition hover:border-slate-400 hover:text-slate-900 disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-400 dark:hover:border-white/20 dark:hover:text-white"
         >
           {refreshing ? '刷新中...' : '强制刷新'}
         </button>
@@ -360,13 +402,14 @@ export default function Schedule() {
             className={`shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition ${
               tab === t
                 ? 'bg-sky-500 text-white'
-                : 'bg-white/5 text-slate-400 hover:bg-white/10'
+                : 'bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10'
             }`}
           >
             {t === 'all' ? '全部' : t === 'upcoming' ? '未开赛' : t === 'completed' ? '已结束' : '进行中'}
-            {t === 'live' && events.filter(isLive).length > 0 && (
-              <span className="ml-1 inline-block h-2 w-2 animate-pulse rounded-full bg-red-500" />
-            )}
+            {t === 'live'
+              ? <span className={`ml-1 inline-block h-2 w-2 rounded-full ${events.filter(isLive).length > 0 ? 'animate-pulse bg-red-500' : 'bg-slate-300 dark:bg-slate-600'}`} />
+              : events.filter(isLive).length > 0 && <span className="ml-1 inline-block h-2 w-2 animate-pulse rounded-full bg-red-500" />
+            }
           </button>
         ))}
       </div>
@@ -376,7 +419,7 @@ export default function Schedule() {
         <button
           onClick={() => setSelectedGroup('all')}
           className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
-            selectedGroup === 'all' ? 'bg-sky-500 text-white' : 'bg-white/5 text-slate-400 hover:bg-white/10'
+            selectedGroup === 'all' ? 'bg-sky-500 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10'
           }`}
         >
           全部
@@ -386,7 +429,7 @@ export default function Schedule() {
             key={g}
             onClick={() => setSelectedGroup(g)}
             className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
-              selectedGroup === g ? 'bg-sky-500 text-white' : 'bg-white/5 text-slate-400 hover:bg-white/10'
+              selectedGroup === g ? 'bg-sky-500 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10'
             }`}
           >
             {g}组
@@ -401,7 +444,7 @@ export default function Schedule() {
             key={stage.key}
             onClick={() => setSelectedStage(stage.key)}
             className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
-              selectedStage === stage.key ? 'bg-sky-500 text-white' : 'bg-white/5 text-slate-400 hover:bg-white/10'
+              selectedStage === stage.key ? 'bg-sky-500 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10'
             }`}
           >
             {stage.label}
@@ -411,12 +454,12 @@ export default function Schedule() {
       </div>
 
       {groupedByDate.length === 0 && (
-        <p className="text-sm text-slate-500">暂无比赛数据</p>
+        <p className="text-sm text-slate-400 dark:text-slate-500">暂无比赛数据</p>
       )}
 
       {groupedByDate.map(({ iso, label, matches }) => (
         <section key={iso} id={`schedule-${iso}`}>
-          <h3 className="mb-3 text-sm font-semibold uppercase tracking-widest text-slate-400">
+          <h3 className="mb-3 text-sm font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">
             {label}
           </h3>
           <div className="space-y-2">
@@ -431,7 +474,7 @@ export default function Schedule() {
                   className={`block rounded-xl border p-4 transition hover:border-sky-500/20 ${
                     isLive(e)
                       ? 'border-red-500/30 bg-red-500/5'
-                      : 'border-white/5 bg-white/5'
+                      : 'border-slate-200 bg-slate-50 dark:border-white/5 dark:bg-white/5'
                   }`}
                 >
                   {(() => {
@@ -441,9 +484,31 @@ export default function Schedule() {
                     const aCode = away?.shortName ?? '';
 
                     const goalPill = (key: string | number, scorerName: string, teamCode: string, minute: number | null, isPenalty: boolean, isOwnGoal: boolean) => {
-                      const player = lookupGoalScorer(scorerName, teamCode);
+                      const player = teamCode ? lookupGoalScorer(scorerName, teamCode) : null;
                       const displayName = player?.cnName || player?.exactName || scorerName || '未知';
-                      const nameEl = displayName;
+                      const nameEl = player && player.exactName && teamCode
+                        ? (
+                          <span
+                            role="link"
+                            tabIndex={0}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              navigate(`/players/${teamCode}/${encodeURIComponent(player.exactName)}`);
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                navigate(`/players/${teamCode}/${encodeURIComponent(player.exactName)}`);
+                              }
+                            }}
+                            className="cursor-pointer hover:underline"
+                          >
+                            {displayName}
+                          </span>
+                        )
+                        : displayName;
                       return (
                         <span
                           key={key}
@@ -540,7 +605,7 @@ export default function Schedule() {
                             <span className="block truncate font-semibold">
                               {home?.cnName ?? e.strHomeTeam}
                             </span>
-                            <p className="text-xs text-slate-500">主场</p>
+                            <p className="text-xs text-slate-400 dark:text-slate-500">主场</p>
                             {hg.length > 0 && (
                               <div className="mt-1.5 flex flex-wrap gap-1">
                                 {hg}
@@ -560,17 +625,17 @@ export default function Schedule() {
                                 {e.intAwayScore}
                               </span>
                             </div>
-                          ) : isLive(e) ? (
+                          ) : isLive(e)                           ? (
                             <div className="text-2xl font-extrabold tabular-nums">
                               <span>{e.intHomeScore ?? 0}</span>
-                              <span className="mx-1 text-slate-500">:</span>
+                              <span className="mx-1 text-slate-400 dark:text-slate-500">:</span>
                               <span>{e.intAwayScore ?? 0}</span>
                             </div>
                           ) : (
                             (() => {
                               const period = beijingPeriod(e.strTime);
                               return (
-                                <div className="flex flex-col items-center text-sm font-medium text-slate-400">
+                                <div className="flex flex-col items-center text-sm font-medium text-slate-500 dark:text-slate-400">
                                   <span>{formatBeijingTime(e.dateEvent, e.strTime).split(' ').pop()}</span>
                                   <span className={`text-xs ${period.color}`}>{period.label}</span>
 
@@ -593,7 +658,7 @@ export default function Schedule() {
                             <span className="block truncate font-semibold">
                               {away?.cnName ?? e.strAwayTeam}
                             </span>
-                            <p className="text-xs text-slate-500">客场</p>
+                            <p className="text-xs text-slate-400 dark:text-slate-500">客场</p>
                             {ag.length > 0 && (
                               <div className="mt-1.5 flex flex-wrap justify-end gap-1">
                                 {ag}
@@ -612,25 +677,45 @@ export default function Schedule() {
                         </div>
                       </div>
                       {showHalf && (
-                        <div className="mt-2 flex gap-3 text-xs text-slate-500">
+                        <div className="mt-2 flex gap-3 text-xs text-slate-400 dark:text-slate-500">
                           <span>半场: {htH}-{htA}</span>
                           {showIncomplete && (
                             <span className="text-amber-400/80">进球数据可能不完整</span>
                           )}
                         </div>
                       )}
+                      {(() => {
+                        const dqd = dqdMatchData[e.idEvent];
+                        if (!dqd || !isFinished(e)) return null;
+                        const stats = dqd.overview?.stats || [];
+                        const poss = stats.find((s) => s.type === '控球率');
+                        const shotsH = stats.find((s) => s.type === '射门')?.home;
+                        const shotsA = stats.find((s) => s.type === '射门')?.away;
+                        if (!poss && shotsH == null) return null;
+                        return (
+                          <div className="mt-2 flex items-center gap-3 border-t border-slate-200 dark:border-white/5 pt-2 text-xs text-slate-400 dark:text-slate-500">
+                            {poss && <span>控球 {poss.home}-{poss.away}</span>}
+                            {shotsH != null && <span>射门 {shotsH}-{shotsA}</span>}
+                          </div>
+                        );
+                      })()}
                       </>
                     );
                   })()}
 
-                  <div className="mt-2 flex items-center justify-between text-xs text-slate-500">
+                  <div className="mt-2 flex items-center justify-between text-xs text-slate-400 dark:text-slate-500">
                     <span>{venueLabel(e.strVenue)}</span>
-                    <span>
-                      {e.strGroup && `第 ${e.strGroup} 组`}
-                      {e.strGroup && roundMap[e.idEvent] && '    '}
-                      {roundMap[e.idEvent] && `第 ${roundMap[e.idEvent]} 轮`}
-                      {!e.strGroup && getStageLabel(e)}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span>
+                        {e.strGroup && `第 ${e.strGroup} 组`}
+                        {e.strGroup && roundMap[e.idEvent] && '    '}
+                        {roundMap[e.idEvent] && `第 ${roundMap[e.idEvent]} 轮`}
+                        {!e.strGroup && getStageLabel(e)}
+                      </span>
+                      <span onClick={(ev) => { ev.preventDefault(); ev.stopPropagation(); }}>
+                        <StarButton type="match" id={e.idEvent} />
+                      </span>
+                    </div>
                   </div>
                 </Link>
               );

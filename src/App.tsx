@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Navigate, Routes, Route, useParams } from 'react-router-dom';
 import Layout from './components/Layout';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const Home = lazy(() => import('./pages/Home'));
 const Teams = lazy(() => import('./pages/Teams'));
@@ -11,9 +12,16 @@ const Standings = lazy(() => import('./pages/Standings'));
 const Venues = lazy(() => import('./pages/Venues'));
 const VenueDetail = lazy(() => import('./pages/VenueDetail'));
 const Bracket = lazy(() => import('./pages/Bracket'));
+const BracketPredict = lazy(() => import('./pages/BracketPredict'));
 const MatchDetail = lazy(() => import('./pages/MatchDetail'));
-const Rankings = lazy(() => import('./pages/Rankings'));
+const DataHub = lazy(() => import('./pages/DataHub'));
+const Compare = lazy(() => import('./pages/Compare'));
 const NotFound = lazy(() => import('./pages/NotFound'));
+
+function LegacyMatchRedirect() {
+  const { matchId } = useParams();
+  return <Navigate to={`/match/${matchId ?? ''}`} replace />;
+}
 
 function PageLoader() {
   return (
@@ -27,6 +35,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Suspense fallback={<PageLoader />}>
+        <ErrorBoundary>
         <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
@@ -38,11 +47,15 @@ export default function App() {
             <Route path="/venues" element={<Venues />} />
             <Route path="/venues/:venueId" element={<VenueDetail />} />
             <Route path="/bracket" element={<Bracket />} />
+            <Route path="/bracket-predict" element={<BracketPredict />} />
+            <Route path="/matches/:matchId" element={<LegacyMatchRedirect />} />
             <Route path="/match/:eventId" element={<MatchDetail />} />
-            <Route path="/rankings" element={<Rankings />} />
+            <Route path="/data" element={<DataHub />} />
+            <Route path="/compare" element={<Compare />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
+        </ErrorBoundary>
       </Suspense>
     </BrowserRouter>
   );

@@ -1171,14 +1171,43 @@
       "idEvent": "2391767",
       "strHomeTeam": "Switzerland",
       "strAwayTeam": "Canada",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "2",
+      "intAwayScore": "1",
+      "strStatus": "FT",
       "strVenue": "BC Place",
       "strGroup": "B",
       "dateEvent": "2026-06-24",
       "strTime": "19:00:00",
-      "strTimeLocal": "12:00:00"
+      "strTimeLocal": "12:00:00",
+      "goals": [
+        {
+          "team": "home",
+          "name": "Ruben Vargas",
+          "minute": 46,
+          "homeScore": 1,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Johan Manzambi",
+          "minute": 57,
+          "homeScore": 2,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Promise David",
+          "minute": 76,
+          "homeScore": 2,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2391774",
@@ -2012,9 +2041,9 @@
       "idEvent": "2391764",
       "strHomeTeam": "Morocco",
       "strAwayTeam": "Haiti",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "4",
+      "intAwayScore": "2",
+      "strStatus": "2H",
       "strVenue": "Mercedes-Benz Stadium",
       "strGroup": "C",
       "dateEvent": "2026-06-24",
@@ -2097,14 +2126,52 @@
       "idEvent": "2461115",
       "strHomeTeam": "Bosnia-Herzegovina",
       "strAwayTeam": "Qatar",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "3",
+      "intAwayScore": "1",
+      "strStatus": "FT",
       "strVenue": "Lumen Field",
       "strGroup": "B",
       "dateEvent": "2026-06-24",
       "strTime": "19:00:00",
-      "strTimeLocal": "12:00:00"
+      "strTimeLocal": "12:00:00",
+      "goals": [
+        {
+          "team": "home",
+          "name": "Kerim Alajbegovic",
+          "minute": 29,
+          "homeScore": 1,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Sultan Al Brake",
+          "minute": 34,
+          "homeScore": 2,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": true
+        },
+        {
+          "team": "away",
+          "name": "Hassan Al Haydos",
+          "minute": 42,
+          "homeScore": 2,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Ermin Mahmic",
+          "minute": 81,
+          "homeScore": 3,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2391773",
@@ -2209,9 +2276,9 @@
       "idEvent": "2391765",
       "strHomeTeam": "Scotland",
       "strAwayTeam": "Brazil",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "0",
+      "intAwayScore": "3",
+      "strStatus": "2H",
       "strVenue": "Hard Rock Stadium",
       "strGroup": "C",
       "dateEvent": "2026-06-24",

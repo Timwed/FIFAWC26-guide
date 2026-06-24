@@ -169,14 +169,25 @@
       "idEvent": "2461114",
       "strHomeTeam": "Colombia",
       "strAwayTeam": "DR Congo",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "1",
+      "intAwayScore": "0",
+      "strStatus": "FT",
       "strVenue": "Estadio Akron",
       "strGroup": "K",
       "dateEvent": "2026-06-24",
       "strTime": "02:00:00",
-      "strTimeLocal": "20:00:00"
+      "strTimeLocal": "20:00:00",
+      "goals": [
+        {
+          "team": "home",
+          "name": "Daniel Muñoz",
+          "minute": 76,
+          "homeScore": 1,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2391776",
@@ -297,13 +308,24 @@
       "strHomeTeam": "Panama",
       "strAwayTeam": "Croatia",
       "intHomeScore": "0",
-      "intAwayScore": "0",
-      "strStatus": "1H",
+      "intAwayScore": "1",
+      "strStatus": "FT",
       "strVenue": "BMO Field",
       "strGroup": "L",
       "dateEvent": "2026-06-23",
       "strTime": "23:00:00",
-      "strTimeLocal": "19:00:00"
+      "strTimeLocal": "19:00:00",
+      "goals": [
+        {
+          "team": "away",
+          "name": "Budimir",
+          "minute": 54,
+          "homeScore": 0,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2461119",

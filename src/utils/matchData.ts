@@ -7,15 +7,27 @@ import type { OpenLigaMatch } from '../api/openligadb';
 import type { StaticGoal } from '../types';
 import type { MatchScorePatch } from './matchMerge';
 
+const OPENLIGA_TTL = 5 * 60_000;
+const MATCH_SCORE_TTL = 30_000;
 let matchScorePatchesPromise: Promise<Map<string, MatchScorePatch>> | null = null;
+let matchScorePatchesAt = 0;
 let openLigaMatchesPromise: Promise<OpenLigaMatch[]> | null = null;
+let openLigaMatchesAt = 0;
 
 export function fetchMatchScorePatches(force = false): Promise<Map<string, MatchScorePatch>> {
-  if (!force && matchScorePatchesPromise) return matchScorePatchesPromise;
+  if (!force && matchScorePatchesPromise && Date.now() - matchScorePatchesAt < MATCH_SCORE_TTL) return matchScorePatchesPromise;
   matchScorePatchesPromise = Promise.all([
     fetchSeasonEvents(),
     fetchPastEvents(),
-  ]).then(([season, past]) => buildMatchPatchMap(season, past));
+  ])
+    .then(([season, past]) => {
+      matchScorePatchesAt = Date.now();
+      return buildMatchPatchMap(season, past);
+    })
+    .catch((err) => {
+      matchScorePatchesPromise = null;
+      throw err;
+    });
   return matchScorePatchesPromise;
 }
 
@@ -25,16 +37,25 @@ export async function fetchSeasonScorePatches(): Promise<Map<string, MatchScoreP
 }
 
 export function fetchOpenLigaMatches(force = false): Promise<OpenLigaMatch[]> {
-  if (!force && openLigaMatchesPromise) return openLigaMatchesPromise;
-  const cached = force ? null : cache.getBulkMatches() as OpenLigaMatch[] | null;
-  if (cached) {
-    openLigaMatchesPromise = Promise.resolve(cached);
+  if (!force && openLigaMatchesPromise && Date.now() - openLigaMatchesAt < OPENLIGA_TTL) {
     return openLigaMatchesPromise;
   }
-  openLigaMatchesPromise = fetchAllMatches().then((matches) => {
-    if (matches.length > 0) cache.setBulkMatches(matches);
-    return matches;
-  });
+  const cached = force ? null : cache.getBulkMatches() as OpenLigaMatch[] | null;
+  if (cached && !openLigaMatchesPromise) {
+    openLigaMatchesPromise = Promise.resolve(cached);
+    openLigaMatchesAt = Date.now();
+    return openLigaMatchesPromise;
+  }
+  openLigaMatchesPromise = fetchAllMatches()
+    .then((matches) => {
+      if (matches.length > 0) cache.setBulkMatches(matches);
+      openLigaMatchesAt = Date.now();
+      return matches;
+    })
+    .catch((err) => {
+      openLigaMatchesPromise = null;
+      throw err;
+    });
   return openLigaMatchesPromise;
 }
 

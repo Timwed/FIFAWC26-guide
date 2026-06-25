@@ -1,12 +1,11 @@
 import { useParams, Link } from 'react-router-dom';
-import { useMemo, useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import venuesData from '../data/venues.json';
-import venueScheduleData from '../data/venue-schedule.json';
+import { getVenueSchedule } from '../utils/schedule';
 import { mergeMatchPatches } from '../utils/matchMerge';
-import { fetchMatchScorePatches } from '../utils/matchData';
+import { useLiveScorePatches } from '../utils/liveScores';
 import { lookupTeam } from '../utils/teamLookup';
 import { formatBeijingTime } from '../utils/datetime';
-import type { MatchScorePatch } from '../utils/matchMerge';
 
 interface Venue {
   id: string;
@@ -44,8 +43,6 @@ const countryCode: Record<string, string> = {
 };
 
 const venues = venuesData as Venue[];
-const scheduleByVenue = venueScheduleData as Record<string, ScheduleMatch[]>;
-
 export default function VenueDetail() {
   const { venueId } = useParams<{ venueId: string }>();
   const venue = useMemo(
@@ -53,25 +50,14 @@ export default function VenueDetail() {
     [venueId]
   );
 
-  const staticMatches: ScheduleMatch[] = venueId ? (scheduleByVenue[venueId] ?? []) : [];
-  const [liveScores, setLiveScores] = useState<Map<string, MatchScorePatch>>(new Map());
-
-  useEffect(() => {
-    let cancelled = false;
-    fetchMatchScorePatches()
-      .then((patches) => {
-        if (cancelled) return;
-        setLiveScores(patches);
-      })
-      .catch(() => {});
-    return () => { cancelled = true; };
-  }, []);
+  const staticMatches = venueId ? getVenueSchedule<ScheduleMatch>(venueId) : [];
+  const liveScores = useLiveScorePatches();
 
   if (!venue) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-20">
-        <p className="text-xl text-slate-400">未找到场馆</p>
-        <Link to="/venues" className="text-sm text-sky-400 hover:text-sky-300">
+        <p className="text-xl text-slate-500 dark:text-slate-400">未找到场馆</p>
+        <Link to="/venues" className="text-sm text-sky-600 hover:text-sky-500 dark:text-sky-400 dark:hover:text-sky-300">
           ← 返回场馆列表
         </Link>
       </div>
@@ -95,12 +81,12 @@ export default function VenueDetail() {
   const statusStyle: Record<string, string> = {
     completed: 'text-green-400',
     live: 'animate-pulse text-red-400',
-    upcoming: 'text-slate-500',
+    upcoming: 'text-slate-400 dark:text-slate-500',
   };
 
   return (
     <div className="space-y-8">
-      <Link to="/venues" className="text-sm text-sky-400 hover:text-sky-300">
+      <Link to="/venues" className="text-sm text-sky-600 hover:text-sky-500 dark:text-sky-400 dark:hover:text-sky-300">
         ← 返回场馆列表
       </Link>
 
@@ -113,54 +99,54 @@ export default function VenueDetail() {
           />
           <h2 className="text-3xl font-extrabold">{venue.name}</h2>
         </div>
-        <p className="mt-2 text-sm text-slate-400">
+        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
           {venue.city} · {venue.country}
         </p>
       </header>
 
-      <div className="grid grid-cols-2 gap-3 rounded-xl border border-white/5 bg-white/5 p-5 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 rounded-xl border border-slate-200 bg-slate-50 dark:border-white/5 dark:bg-white/5 p-5 sm:grid-cols-4">
         <div>
-          <p className="text-xs text-slate-500">容量</p>
+          <p className="text-xs text-slate-400 dark:text-slate-500">容量</p>
           <p className="text-lg font-bold tabular-nums">
             {venue.capacity.toLocaleString()}
           </p>
         </div>
         <div>
-          <p className="text-xs text-slate-500">开放年份</p>
+          <p className="text-xs text-slate-400 dark:text-slate-500">开放年份</p>
           <p className="text-lg font-bold tabular-nums">{venue.opened} 年</p>
         </div>
         <div>
-          <p className="text-xs text-slate-500">草皮类型</p>
+          <p className="text-xs text-slate-400 dark:text-slate-500">草皮类型</p>
           <p className="text-lg font-bold">{venue.surface}</p>
         </div>
         <div>
-          <p className="text-xs text-slate-500">所在城市</p>
+          <p className="text-xs text-slate-400 dark:text-slate-500">所在城市</p>
           <p className="text-lg font-bold">{venue.city}</p>
         </div>
       </div>
 
-      <section className="rounded-xl border border-white/5 bg-white/5 p-6">
+      <section className="rounded-xl border border-slate-200 bg-slate-50 dark:border-white/5 dark:bg-white/5 p-6">
         <h3 className="mb-4 text-lg font-bold">场馆故事</h3>
-        <p className="leading-relaxed text-slate-300 whitespace-pre-line">{venue.story}</p>
+        <p className="leading-relaxed text-slate-600 dark:text-slate-300 whitespace-pre-line">{venue.story}</p>
       </section>
 
-      <section className="rounded-xl border border-white/5 bg-white/5 p-6">
+      <section className="rounded-xl border border-slate-200 bg-slate-50 dark:border-white/5 dark:bg-white/5 p-6">
         <h3 className="mb-4 text-lg font-bold">2026 世界杯</h3>
-        <p className="leading-relaxed text-slate-300">{venue.wc2026}</p>
+        <p className="leading-relaxed text-slate-600 dark:text-slate-300">{venue.wc2026}</p>
       </section>
 
-      <section className="rounded-xl border border-white/5 bg-white/5 p-6">
+      <section className="rounded-xl border border-slate-200 bg-slate-50 dark:border-white/5 dark:bg-white/5 p-6">
         <h3 className="mb-4 text-lg font-bold">
           本届比赛
-          <span className="ml-2 text-xs font-normal text-slate-500">{staticMatches.length} 场</span>
+          <span className="ml-2 text-xs font-normal text-slate-400 dark:text-slate-500">{staticMatches.length} 场</span>
         </h3>
         {staticMatches.length === 0 ? (
-          <p className="text-sm text-slate-500">赛程尚未发布</p>
+          <p className="text-sm text-slate-400 dark:text-slate-500">赛程尚未发布</p>
         ) : (
           <div className="space-y-2">
             {Object.keys(grouped).sort().map((date) => (
               <div key={date}>
-                <p className="mb-1.5 text-xs font-medium uppercase text-slate-500">{date}</p>
+                <p className="mb-1.5 text-xs font-medium uppercase text-slate-400 dark:text-slate-500">{date}</p>
                 {grouped[date].map((m) => {
                   const home = lookupTeam(m.strHomeTeam);
                   const away = lookupTeam(m.strAwayTeam);
@@ -169,7 +155,7 @@ export default function VenueDetail() {
                     <Link
                       key={m.idEvent}
                       to={`/match/${m.idEvent}`}
-                      className="flex items-center gap-3 rounded-lg bg-white/5 px-3 py-2 text-sm transition hover:bg-white/10"
+                      className="flex items-center gap-3 rounded-lg bg-slate-100 dark:bg-white/5 px-3 py-2 text-sm transition hover:bg-slate-200 dark:hover:bg-white/10"
                     >
                       <div className="flex min-w-0 flex-1 items-center gap-2 justify-end">
                         <span className="truncate">{home?.cnName ?? m.strHomeTeam}</span>
@@ -191,7 +177,7 @@ export default function VenueDetail() {
                         <span className="truncate">{away?.cnName ?? m.strAwayTeam}</span>
                       </div>
                       {m.strGroup && (
-                        <span className="shrink-0 rounded bg-white/10 px-1.5 py-0.5 text-xs text-slate-500">
+                        <span className="shrink-0 rounded bg-slate-200 dark:bg-white/10 px-1.5 py-0.5 text-xs text-slate-400 dark:text-slate-500">
                           {m.strGroup}组
                         </span>
                       )}
@@ -204,11 +190,11 @@ export default function VenueDetail() {
         )}
       </section>
 
-      <section className="rounded-xl border border-white/5 bg-white/5 p-6">
+      <section className="rounded-xl border border-slate-200 bg-slate-50 dark:border-white/5 dark:bg-white/5 p-6">
         <h3 className="mb-4 text-lg font-bold">你知道吗</h3>
         <ul className="space-y-3">
           {venue.trivia.map((t, i) => (
-            <li key={i} className="flex items-start gap-3 text-slate-300">
+            <li key={i} className="flex items-start gap-3 text-slate-600 dark:text-slate-300">
               <span className="mt-0.5 shrink-0 text-xs font-bold text-sky-400">
                 {i + 1}
               </span>

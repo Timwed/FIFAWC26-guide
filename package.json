@@ -7,7 +7,12 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "data:build": "node scripts/split-to-public.cjs && node scripts/split-dqd-public.cjs && node scripts/build-search-index.cjs && node scripts/build-dqd-precomputed.cjs",
+    "data:dqd:update": "node scripts/update-dqd-data.cjs",
+    "refresh": "node scripts/refresh-all.cjs",
+    "refresh:build": "node scripts/refresh-all.cjs && npm run build",
+    "test": "node scripts/validate-generated-data.cjs"
   },
   "dependencies": {
     "react": "^19.2.6",
@@ -25,6 +30,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
+    "sharp": "^0.35.2",
     "tailwindcss": "^4.3.0",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",

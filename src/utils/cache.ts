@@ -1,4 +1,5 @@
 import type { StaticGoal } from '../types';
+import { getStorageKeys, getStorageString, removeStorageItem, setStorageJson } from './storage';
 
 const PREFIX = 'wc26_cache_';
 
@@ -8,21 +9,17 @@ interface CacheEntry<T> {
 }
 
 function set<T>(key: string, data: T): void {
-  try {
-    const entry: CacheEntry<T> = { data, at: Date.now() };
-    localStorage.setItem(PREFIX + key, JSON.stringify(entry));
-  } catch {
-    // localStorage full or unavailable — silently skip
-  }
+  const entry: CacheEntry<T> = { data, at: Date.now() };
+  setStorageJson(PREFIX + key, entry);
 }
 
 function get<T>(key: string, maxAgeMs: number): T | null {
   try {
-    const raw = localStorage.getItem(PREFIX + key);
+    const raw = getStorageString(PREFIX + key);
     if (!raw) return null;
     const entry: CacheEntry<T> = JSON.parse(raw);
     if (Date.now() - entry.at > maxAgeMs) {
-      localStorage.removeItem(PREFIX + key);
+      removeStorageItem(PREFIX + key);
       return null;
     }
     return entry.data;
@@ -32,35 +29,21 @@ function get<T>(key: string, maxAgeMs: number): T | null {
 }
 
 function remove(key: string): void {
-  try {
-    localStorage.removeItem(PREFIX + key);
-  } catch {
-    // ignore
-  }
+  removeStorageItem(PREFIX + key);
 }
 
 function clearAll(): void {
-  try {
-    const keys = Object.keys(localStorage);
-    for (const k of keys) {
-      if (k.startsWith(PREFIX)) localStorage.removeItem(k);
-    }
-  } catch {
-    // ignore
+  for (const k of getStorageKeys()) {
+    if (k.startsWith(PREFIX)) removeStorageItem(k);
   }
 }
 
 /** Clears only temporary caches (bulk, per-match detail) — keeps permanent event data. */
 function clearTemporary(): void {
-  try {
-    const keys = Object.keys(localStorage);
-    for (const k of keys) {
-      if (k.startsWith(PREFIX) && !k.startsWith(PREFIX + 'evt_')) {
-        localStorage.removeItem(k);
-      }
+  for (const k of getStorageKeys()) {
+    if (k.startsWith(PREFIX) && !k.startsWith(PREFIX + 'evt_')) {
+      removeStorageItem(k);
     }
-  } catch {
-    // ignore
   }
 }
 

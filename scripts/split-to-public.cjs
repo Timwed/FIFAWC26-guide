@@ -22,7 +22,8 @@ for (const squad of squads) {
 
   const teamData = {};
   for (const p of squad.players) {
-    const bio = wiki[p.name];
+    const altKey = p.name + ' (' + code + ')';
+    const bio = wiki[altKey] || wiki[p.name];
     if (bio) teamData[p.name] = bio;
   }
 

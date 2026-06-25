@@ -8698,16 +8698,12 @@
   },
   {
     "team": "New Zealand",
-    "player": "Matthew Garbett",
-    "age": 24,
-    "club": "Peterborough United",
-    "uid": "88025225",
-    "fmName": "Matthew Garbett",
-    "fmAge": 20,
-    "fmClub": "Torino FC",
-    "hasFace": true,
-    "method": "exact",
-    "score": 227
+    "player": "Logan Rogerson",
+    "age": 28,
+    "club": "Auckland FC",
+    "uid": "88023243",
+    "fmName": "Logan Rogerson",
+    "hasFace": true
   },
   {
     "team": "New Zealand",
@@ -14587,16 +14583,12 @@
   },
   {
     "team": "England",
-    "player": "Tino Livramento",
-    "age": 23,
-    "club": "Newcastle United",
-    "uid": "28124569",
-    "fmName": "Tino Livramento",
-    "fmAge": 19,
-    "fmClub": "Southampton",
-    "hasFace": true,
-    "method": "exact",
-    "score": 227
+    "player": "Trevoh Chalobah",
+    "age": 26,
+    "club": "Chelsea",
+    "uid": "28103591",
+    "fmName": "Trevoh Chalobah",
+    "hasFace": true
   },
   {
     "team": "England",

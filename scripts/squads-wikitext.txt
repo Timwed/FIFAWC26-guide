@@ -953,7 +953,7 @@ Coach: {{#invoke:flag|icon|ENG}} [[Darren Bazeley]]
 {{nat fs g player|no=4|pos=DF|name=[[Tyler Bindon]]|sortname=Bindon, Tyler|age={{birth date and age2|2026|6|11|2005|1|27}}|caps=25|goals=3|club=[[Sheffield United F.C.|Sheffield United]]|clubnat=ENG}}
 {{nat fs g player|no=5|pos=DF|name=[[Michael Boxall]]|sortname=Boxall, Michael|age={{birth date and age2|2026|6|11|1988|8|18}}|caps=63|goals=1|club=[[Minnesota United FC]]|clubnat=USA}}
 {{nat fs g player|no=6|pos=MF|name=[[Joe Bell (footballer)|Joe Bell]]|sortname=Bell, Joe|age={{birth date and age2|2026|6|11|1999|4|27}}|caps=32|goals=1|club=[[Viking FK|Viking]]|clubnat=NOR}}
-{{nat fs g player|no=7|pos=MF|name=[[Matthew Garbett]]|sortname=Garbett, Matthew|age={{birth date and age2|2026|6|11|2002|4|13}}|caps=37|goals=5|club=[[Peterborough United F.C.|Peterborough United]]|clubnat=ENG}}
+{{nat fs g player|no=7|pos=FW|name=[[Logan Rogerson]]|sortname=Rogerson, Logan|age={{birth date and age2|2026|6|11|1998|5|28}}|caps=18|goals=2|club=[[Auckland FC]]|clubnat=NZL}}
 {{nat fs g player|no=8|pos=MF|name=[[Marko Stamenić]]|sortname=Stamenic, Marko|age={{birth date and age2|2026|6|11|2002|2|19}}|caps=39|goals=3|club=[[Swansea City A.F.C.|Swansea City]]|clubnat=WAL}}
 {{nat fs g player|no=9|pos=FW|name=[[Chris Wood (footballer, born 1991)|Chris Wood]]|sortname=Wood, Chris|other=[[Captain (association football)|captain]]|age={{birth date and age2|2026|6|11|1991|12|7}}|caps=90|goals=45|club=[[Nottingham Forest F.C.|Nottingham Forest]]|clubnat=ENG}}
 {{nat fs g player|no=10|pos=MF|name=[[Sarpreet Singh]]|sortname=Singh, Sarpreet|age={{birth date and age2|2026|6|11|1999|2|20}}|caps=28|goals=3|club=[[Wellington Phoenix FC|Wellington Phoenix]]|clubnat=NZL}}
@@ -1582,7 +1582,7 @@ Coach: {{#invoke:flag|icon|GER}} [[Thomas Tuchel]]
 {{nat fs g player|no=9|pos=FW|name=[[Harry Kane]]|sortname=Kane, Harry|other=[[Captain (association football)|captain]]|age={{birth date and age2|2026|6|11|1993|7|28}}|caps=114|goals=79|club=[[FC Bayern Munich|Bayern Munich]]|clubnat=GER}}
 {{nat fs g player|no=10|pos=MF|name=[[Jude Bellingham]]|sortname=Bellingham, Jude|age={{birth date and age2|2026|6|11|2003|6|29}}|caps=48|goals=6|club=[[Real Madrid CF|Real Madrid]]|clubnat=ESP}}
 {{nat fs g player|no=11|pos=FW|name=[[Marcus Rashford]]|sortname=Rashford, Marcus|age={{birth date and age2|2026|6|11|1997|10|31}}|caps=72|goals=18|club=[[FC Barcelona|Barcelona]]|clubnat=ESP}}
-{{nat fs g player|no=12|pos=DF|name=[[Tino Livramento]]|sortname=Livramento, Tino|age={{birth date and age2|2026|6|11|2002|11|12}}|caps=6|goals=0|club=[[Newcastle United F.C.|Newcastle United]]|clubnat=ENG}}
+{{nat fs g player|no=12|pos=DF|name=[[Trevoh Chalobah]]|sortname=Chalobah, Trevoh|age={{birth date and age2|2026|6|11|1999|7|5}}|caps=1|goals=0|club=[[Chelsea F.C.|Chelsea]]|clubnat=ENG}}
 {{nat fs g player|no=13|pos=GK|name=[[Dean Henderson]]|sortname=Henderson, Dean|age={{birth date and age2|2026|6|11|1997|3|12}}|caps=5|goals=0|club=[[Crystal Palace F.C.|Crystal Palace]]|clubnat=ENG}}
 {{nat fs g player|no=14|pos=MF|name=[[Jordan Henderson]]|sortname=Henderson, Jordan|age={{birth date and age2|2026|6|11|1990|6|17}}|caps=90|goals=3|club=[[Brentford F.C.|Brentford]]|clubnat=ENG}}
 {{nat fs g player|no=15|pos=DF|name=[[Dan Burn]]|sortname=Burn, Dan|age={{birth date and age2|2026|6|11|1992|5|9}}|caps=8|goals=0|club=[[Newcastle United F.C.|Newcastle United]]|clubnat=ENG}}

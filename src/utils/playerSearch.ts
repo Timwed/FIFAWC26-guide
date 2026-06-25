@@ -13,6 +13,7 @@ export interface SearchPlayer {
   name: string;       // exact English name (for URL)
   cnName: string | null;
   enName: string;     // English name
+  enNameNorm: string; // pre-normalized for search
   teamCode: string;
   teamCn: string;
   teamFlag: string;
@@ -48,6 +49,7 @@ function buildIndex(): SearchPlayer[] {
         name: p.name,
         cnName: cnNames[p.name] || null,
         enName: p.name,
+        enNameNorm: normalize(p.name),
         teamCode: tm.code,
         teamCn: tm.cn,
         teamFlag: tm.flag,
@@ -72,7 +74,7 @@ export function searchPlayers(query: string, limit = 10): SearchPlayer[] {
 
   for (const p of players) {
     let score = 0;
-    const enNorm = normalize(p.enName);
+    const enNorm = p.enNameNorm;
     const cn = p.cnName || '';
 
     // Exact match on English name

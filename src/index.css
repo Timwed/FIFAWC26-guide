@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-wc-gold: #D4AF37;
   --color-wc-dark: #1a1a2e;
@@ -10,17 +12,66 @@
 
 body {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background-color: #f8fafc;
+  color: #1e293b;
+}
+
+html.dark body {
   background-color: var(--color-wc-dark);
   color: #e0e0e0;
+}
+
+@keyframes live-goal-pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  50% { transform: scale(1.06); box-shadow: 0 0 12px 2px rgba(239, 68, 68, 0.6); }
 }
 
 ::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-wc-dark);
+  background: #e2e8f0;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-wc-blue);
+  background: #94a3b8;
   border-radius: 4px;
+}
+html.dark ::-webkit-scrollbar-track {
+  background: var(--color-wc-dark);
+}
+html.dark ::-webkit-scrollbar-thumb {
+  background: var(--color-wc-blue);
+}
+
+@media print {
+  .no-print { display: none !important; }
+
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 10pt;
+  }
+
+  .dark body,
+  html.dark body {
+    background: white !important;
+    color: black !important;
+  }
+
+  * {
+    background-image: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  h1, h2, h3 { font-size: 14pt !important; color: black !important; }
+
+  [hidden], .collapsed { display: block !important; }
+
+  table { border-collapse: collapse !important; width: 100% !important; }
+  th, td { border: 1px solid #999 !important; padding: 4px 6px !important; color: black !important; }
+
+  a { color: black !important; text-decoration: none !important; }
+
+  .page-break { page-break-before: always; }
 }

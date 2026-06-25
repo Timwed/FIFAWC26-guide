@@ -50,9 +50,14 @@ export function buildMatchPatchMap(season: MatchEvent[], past: MatchEvent[]): Ma
 export function mergeMatchPatches<T extends MatchLike>(matches: T[], patches: Map<string, MatchScorePatch>): T[] {
   return matches.map((match) => {
     const patch = patches.get(match.idEvent);
-    return patch
-      ? { ...match, intHomeScore: patch.intHomeScore, intAwayScore: patch.intAwayScore, strStatus: patch.strStatus }
-      : match;
+    if (!patch) return match;
+    const best = betterMatch({
+      idEvent: match.idEvent,
+      intHomeScore: match.intHomeScore,
+      intAwayScore: match.intAwayScore,
+      strStatus: match.strStatus,
+    }, patch);
+    return { ...match, intHomeScore: best.intHomeScore, intAwayScore: best.intAwayScore, strStatus: best.strStatus };
   });
 }
 

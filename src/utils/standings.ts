@@ -7,6 +7,7 @@ interface TeamEntry {
   enName: string;
   cnName: string;
   olgIcon: string;
+  olgId: number | null;
   group: string;
 }
 
@@ -152,6 +153,39 @@ export function computeGroupStandings(matches: StandingsMatch[] = allMatches): G
           };
         }),
     }));
+}
+
+export interface ThirdPlaceTeam {
+  group: string;
+  enName: string;
+  shortName: string;
+  cnName: string;
+  flag: string;
+  played: number;
+  points: number;
+  gd: number;
+  gf: number;
+  ga: number;
+}
+
+export function computeThirdPlaceRanking(matches: StandingsMatch[] = allMatches): ThirdPlaceTeam[] {
+  const groups = computeGroupStandings(matches);
+  return groups
+    .filter((g) => g.teams.length >= 3)
+    .map((g) => ({ ...g.teams[2], group: g.group }))
+    .sort((a, b) => {
+      if (b.points !== a.points) return b.points - a.points;
+      if (b.gd !== a.gd) return b.gd - a.gd;
+      return b.gf - a.gf;
+    });
+}
+
+export function resolveThirdPlaceSlot(
+  qualifyingGroups: string[],
+  ranking: ThirdPlaceTeam[],
+): ThirdPlaceTeam | null {
+  const qSet = new Set(qualifyingGroups);
+  return ranking.find((t) => qSet.has(t.group)) || null;
 }
 
 export function computeOpenLigaGroupTables(matches: StandingsMatch[]): OpenLigaGroupTable[] {

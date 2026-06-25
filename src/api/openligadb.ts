@@ -5,7 +5,7 @@ async function fetchWithTimeout(input: RequestInfo, init?: RequestInit): Promise
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
   try {
-    const res = await fetch(input, { ...init, signal: controller.signal });
+    const res = await fetch(input, { cache: 'no-store', ...init, signal: controller.signal });
     return res;
   } finally {
     clearTimeout(timer);

@@ -559,14 +559,61 @@
       "idEvent": "2461118",
       "strHomeTeam": "Turkey",
       "strAwayTeam": "USA",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "3",
+      "intAwayScore": "2",
+      "strStatus": "FT",
       "strVenue": "SoFi Stadium",
       "strGroup": "D",
       "dateEvent": "2026-06-26",
       "strTime": "02:00:00",
-      "strTimeLocal": "19:00:00"
+      "strTimeLocal": "19:00:00",
+      "goals": [
+        {
+          "team": "away",
+          "name": "Auston Trusty",
+          "minute": 3,
+          "homeScore": 0,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Arda Güler",
+          "minute": 10,
+          "homeScore": 1,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Baris Yilmaz",
+          "minute": 31,
+          "homeScore": 2,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Sebastian Berhalter",
+          "minute": 49,
+          "homeScore": 2,
+          "awayScore": 2,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Kaan Ayhan",
+          "minute": 98,
+          "homeScore": 3,
+          "awayScore": 2,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     }
   ],
   "levis": [
@@ -724,9 +771,9 @@
       "idEvent": "2391770",
       "strHomeTeam": "Paraguay",
       "strAwayTeam": "Australia",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "0",
+      "intAwayScore": "0",
+      "strStatus": "FT",
       "strVenue": "Levi's Stadium",
       "strGroup": "D",
       "dateEvent": "2026-06-26",
@@ -1695,13 +1742,33 @@
       "strHomeTeam": "Japan",
       "strAwayTeam": "Sweden",
       "intHomeScore": "1",
-      "intAwayScore": "0",
-      "strStatus": "2H",
+      "intAwayScore": "1",
+      "strStatus": "FT",
       "strVenue": "AT&T Stadium",
       "strGroup": "F",
       "dateEvent": "2026-06-25",
       "strTime": "23:00:00",
-      "strTimeLocal": "18:00:00"
+      "strTimeLocal": "18:00:00",
+      "goals": [
+        {
+          "team": "home",
+          "name": "Daizen Maeda",
+          "minute": 56,
+          "homeScore": 1,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Anthony Elanga",
+          "minute": 62,
+          "homeScore": 1,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2391780",
@@ -2526,12 +2593,50 @@
       "strAwayTeam": "Netherlands",
       "intHomeScore": "1",
       "intAwayScore": "3",
-      "strStatus": "2H",
+      "strStatus": "FT",
       "strVenue": "GEHA Field at Arrowhead Stadium",
       "strGroup": "F",
       "dateEvent": "2026-06-25",
       "strTime": "23:00:00",
-      "strTimeLocal": "18:00:00"
+      "strTimeLocal": "18:00:00",
+      "goals": [
+        {
+          "team": "away",
+          "name": "Ellyes Skhiri",
+          "minute": 3,
+          "homeScore": 0,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": true
+        },
+        {
+          "team": "away",
+          "name": " Brian Brobbey ",
+          "minute": 7,
+          "homeScore": 0,
+          "awayScore": 2,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Hazem Mastouri",
+          "minute": 54,
+          "homeScore": 1,
+          "awayScore": 2,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Jan Paul van Hecke",
+          "minute": 62,
+          "homeScore": 1,
+          "awayScore": 3,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2391777",

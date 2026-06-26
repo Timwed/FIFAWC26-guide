@@ -883,14 +883,34 @@
       "idEvent": "2391769",
       "strHomeTeam": "Ecuador",
       "strAwayTeam": "Germany",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "2",
+      "intAwayScore": "1",
+      "strStatus": "FT",
       "strVenue": "MetLife Stadium",
       "strGroup": "E",
       "dateEvent": "2026-06-25",
       "strTime": "20:00:00",
-      "strTimeLocal": "16:00:00"
+      "strTimeLocal": "16:00:00",
+      "goals": [
+        {
+          "team": "home",
+          "name": "Nicolas Pépé",
+          "minute": 7,
+          "homeScore": 1,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Nicolas Pépé",
+          "minute": 64,
+          "homeScore": 2,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2391781",
@@ -1674,9 +1694,9 @@
       "idEvent": "2461117",
       "strHomeTeam": "Japan",
       "strAwayTeam": "Sweden",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "1",
+      "intAwayScore": "0",
+      "strStatus": "2H",
       "strVenue": "AT&T Stadium",
       "strGroup": "F",
       "dateEvent": "2026-06-25",
@@ -1810,14 +1830,34 @@
       "idEvent": "2391768",
       "strHomeTeam": "Curaçao",
       "strAwayTeam": "Ivory Coast",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "0",
+      "intAwayScore": "2",
+      "strStatus": "FT",
       "strVenue": "Lincoln Financial Field",
       "strGroup": "E",
       "dateEvent": "2026-06-25",
       "strTime": "20:00:00",
-      "strTimeLocal": "16:00:00"
+      "strTimeLocal": "16:00:00",
+      "goals": [
+        {
+          "team": "away",
+          "name": "Nicolas Pépé",
+          "minute": 7,
+          "homeScore": 0,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Nicolas Pépé",
+          "minute": 64,
+          "homeScore": 0,
+          "awayScore": 2,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     },
     {
       "idEvent": "2391779",
@@ -2484,9 +2524,9 @@
       "idEvent": "2391771",
       "strHomeTeam": "Tunisia",
       "strAwayTeam": "Netherlands",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "1",
+      "intAwayScore": "3",
+      "strStatus": "2H",
       "strVenue": "GEHA Field at Arrowhead Stadium",
       "strGroup": "F",
       "dateEvent": "2026-06-25",

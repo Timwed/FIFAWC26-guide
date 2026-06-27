@@ -222,14 +222,25 @@
       "idEvent": "2391776",
       "strHomeTeam": "Uruguay",
       "strAwayTeam": "Spain",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "0",
+      "intAwayScore": "1",
+      "strStatus": "FT",
       "strVenue": "Estadio Akron",
       "strGroup": "H",
       "dateEvent": "2026-06-27",
       "strTime": "00:00:00",
-      "strTimeLocal": "18:00:00"
+      "strTimeLocal": "18:00:00",
+      "goals": [
+        {
+          "team": "away",
+          "name": "Alex Baena",
+          "minute": 42,
+          "homeScore": 0,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     }
   ],
   "bmofield": [
@@ -1403,14 +1414,70 @@
       "idEvent": "2391774",
       "strHomeTeam": "New Zealand",
       "strAwayTeam": "Belgium",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "1",
+      "intAwayScore": "5",
+      "strStatus": "FT",
       "strVenue": "BC Place",
       "strGroup": "G",
       "dateEvent": "2026-06-27",
       "strTime": "03:00:00",
-      "strTimeLocal": "20:00:00"
+      "strTimeLocal": "20:00:00",
+      "goals": [
+        {
+          "team": "away",
+          "name": "Leandro Trossard",
+          "minute": 28,
+          "homeScore": 0,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Leandro Trossard",
+          "minute": 50,
+          "homeScore": 0,
+          "awayScore": 2,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Kevin De Bruyne",
+          "minute": 66,
+          "homeScore": 0,
+          "awayScore": 3,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Elijah Just",
+          "minute": 84,
+          "homeScore": 1,
+          "awayScore": 3,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Romelu Lukaku",
+          "minute": 86,
+          "homeScore": 1,
+          "awayScore": 4,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Alexis Saelemaekers",
+          "minute": 94,
+          "homeScore": 1,
+          "awayScore": 5,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     }
   ],
   "nrg": [
@@ -1667,9 +1734,9 @@
       "idEvent": "2391772",
       "strHomeTeam": "Cape Verde",
       "strAwayTeam": "Saudi Arabia",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "0",
+      "intAwayScore": "0",
+      "strStatus": "FT",
       "strVenue": "Reliant Stadium",
       "strGroup": "H",
       "dateEvent": "2026-06-27",
@@ -2474,14 +2541,34 @@
       "idEvent": "2391773",
       "strHomeTeam": "Egypt",
       "strAwayTeam": "Iran",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "1",
+      "intAwayScore": "1",
+      "strStatus": "FT",
       "strVenue": "Lumen Field",
       "strGroup": "G",
       "dateEvent": "2026-06-27",
       "strTime": "03:00:00",
-      "strTimeLocal": "20:00:00"
+      "strTimeLocal": "20:00:00",
+      "goals": [
+        {
+          "team": "home",
+          "name": "Mahmoud Saber",
+          "minute": 5,
+          "homeScore": 1,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Ramin Rezaeian",
+          "minute": 14,
+          "homeScore": 1,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     }
   ],
   "hardrock": [

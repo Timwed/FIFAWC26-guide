@@ -1021,14 +1021,34 @@
       "idEvent": "2391781",
       "strHomeTeam": "Panama",
       "strAwayTeam": "England",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "0",
+      "intAwayScore": "2",
+      "strStatus": "FT",
       "strVenue": "MetLife Stadium",
       "strGroup": "L",
       "dateEvent": "2026-06-27",
       "strTime": "21:00:00",
-      "strTimeLocal": "17:00:00"
+      "strTimeLocal": "17:00:00",
+      "goals": [
+        {
+          "team": "away",
+          "name": "Jude Bellingham",
+          "minute": 62,
+          "homeScore": 0,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Harry Kane",
+          "minute": 67,
+          "homeScore": 0,
+          "awayScore": 2,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     }
   ],
   "gillette": [
@@ -1935,14 +1955,52 @@
       "idEvent": "2391780",
       "strHomeTeam": "Jordan",
       "strAwayTeam": "Argentina",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "1",
+      "intAwayScore": "3",
+      "strStatus": "FT",
       "strVenue": "AT&T Stadium",
       "strGroup": "J",
       "dateEvent": "2026-06-28",
       "strTime": "02:00:00",
-      "strTimeLocal": "21:00:00"
+      "strTimeLocal": "21:00:00",
+      "goals": [
+        {
+          "team": "away",
+          "name": "Giovani Lo Celso",
+          "minute": 19,
+          "homeScore": 0,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Lautaro Martínez",
+          "minute": 31,
+          "homeScore": 0,
+          "awayScore": 2,
+          "isPenalty": true,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Musa Al-Taamari",
+          "minute": 55,
+          "homeScore": 1,
+          "awayScore": 2,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Lionel Messi",
+          "minute": 80,
+          "homeScore": 1,
+          "awayScore": 3,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     }
   ],
   "lincoln": [
@@ -2091,14 +2149,43 @@
       "idEvent": "2391779",
       "strHomeTeam": "Croatia",
       "strAwayTeam": "Ghana",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "2",
+      "intAwayScore": "1",
+      "strStatus": "FT",
       "strVenue": "Lincoln Financial Field",
       "strGroup": "L",
       "dateEvent": "2026-06-27",
       "strTime": "21:00:00",
-      "strTimeLocal": "17:00:00"
+      "strTimeLocal": "17:00:00",
+      "goals": [
+        {
+          "team": "home",
+          "name": "Petar Sucic",
+          "minute": 31,
+          "homeScore": 1,
+          "awayScore": 0,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Derrick Luckassen",
+          "minute": 73,
+          "homeScore": 1,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Nikola Vlašic",
+          "minute": 83,
+          "homeScore": 2,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     }
   ],
   "bbva": [
@@ -2418,14 +2505,52 @@
       "idEvent": "2461120",
       "strHomeTeam": "DR Congo",
       "strAwayTeam": "Uzbekistan",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "3",
+      "intAwayScore": "1",
+      "strStatus": "FT",
       "strVenue": "Mercedes-Benz Stadium",
       "strGroup": "K",
       "dateEvent": "2026-06-27",
       "strTime": "23:30:00",
-      "strTimeLocal": "19:30:00"
+      "strTimeLocal": "19:30:00",
+      "goals": [
+        {
+          "team": "away",
+          "name": "Eldor Shomurodov",
+          "minute": 10,
+          "homeScore": 0,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Yoane Wissa",
+          "minute": 68,
+          "homeScore": 1,
+          "awayScore": 1,
+          "isPenalty": true,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Fiston Mayele",
+          "minute": 78,
+          "homeScore": 2,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Yoane Wissa",
+          "minute": 91,
+          "homeScore": 3,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     }
   ],
   "lumen": [
@@ -2702,9 +2827,9 @@
       "idEvent": "2391778",
       "strHomeTeam": "Colombia",
       "strAwayTeam": "Portugal",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "0",
+      "intAwayScore": "0",
+      "strStatus": "FT",
       "strVenue": "Hard Rock Stadium",
       "strGroup": "K",
       "dateEvent": "2026-06-27",
@@ -2823,14 +2948,70 @@
       "idEvent": "2391777",
       "strHomeTeam": "Algeria",
       "strAwayTeam": "Austria",
-      "intHomeScore": null,
-      "intAwayScore": null,
-      "strStatus": "NS",
+      "intHomeScore": "3",
+      "intAwayScore": "3",
+      "strStatus": "FT",
       "strVenue": "GEHA Field at Arrowhead Stadium",
       "strGroup": "J",
       "dateEvent": "2026-06-28",
       "strTime": "02:00:00",
-      "strTimeLocal": "21:00:00"
+      "strTimeLocal": "21:00:00",
+      "goals": [
+        {
+          "team": "away",
+          "name": "Marko Arnautovic",
+          "minute": 28,
+          "homeScore": 0,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "R. Belghali",
+          "minute": 45,
+          "homeScore": 1,
+          "awayScore": 1,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "Marcel Sabitzer",
+          "minute": 55,
+          "homeScore": 1,
+          "awayScore": 2,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Riyad Mahrez",
+          "minute": 60,
+          "homeScore": 2,
+          "awayScore": 2,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "home",
+          "name": "Riyad Mahrez",
+          "minute": 94,
+          "homeScore": 3,
+          "awayScore": 2,
+          "isPenalty": false,
+          "isOwnGoal": false
+        },
+        {
+          "team": "away",
+          "name": "S. Kalajdzic",
+          "minute": 96,
+          "homeScore": 3,
+          "awayScore": 3,
+          "isPenalty": false,
+          "isOwnGoal": false
+        }
+      ]
     }
   ]
 }
